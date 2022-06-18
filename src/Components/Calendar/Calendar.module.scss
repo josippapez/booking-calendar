@@ -1,0 +1,36 @@
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, calc(100vw / 8)));
+  justify-content: center;
+  gap: 20px;
+}
+
+.mobileCalendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, fit-content);
+  justify-content: center;
+  gap: 10px;
+}
+
+.gridItem {
+  height: auto;
+  min-height: 160px;
+}
+
+.mobileGridItem {
+  width: auto;
+  height: auto;
+  min-height: 100px;
+}
+
+
+
+.dayText{
+  justify-content: start;
+}
+
+.mobileDayText{
+
+}
+
