@@ -6,18 +6,27 @@ interface Props {
   position?: 'center' | 'left' | 'right';
   children: JSX.Element;
   show: boolean;
-  height?: string;
-  width?: string;
+  height?: 'screen' | string;
+  width?: 'screen' | string;
+  animation?:
+    | 'fade'
+    | 'slide-left'
+    | 'slide-right'
+    | 'slide-top'
+    | 'slide-bottom';
 }
 
 const Modal = (props: Props): JSX.Element => {
-  const { closeModal, position, children, show, height, width } = props;
+  const { closeModal, position, children, show, height, width, animation } =
+    props;
   return (
     <div
       style={{ display: !show ? 'none' : 'flex' }}
       aria-hidden='true'
       role='button'
-      className={`${style.overlay} ${style[`${position}`]}`}
+      className={`${style.overlay}
+        ${style[`${position}`]}
+        ${style[`${animation}`]}`}
       onMouseDown={() => closeModal()}
     >
       <div

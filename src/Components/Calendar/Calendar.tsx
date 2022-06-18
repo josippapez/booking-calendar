@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 import { useState } from 'react';
 import isMobileView from '../../checkForMobileView';
 import Modal from '../Shared/Modal/Modal';
@@ -30,35 +30,41 @@ type Event = {
   start: string;
   end: string;
   description: string;
+  color: string;
   phone: string;
   extendedProps?: {
     [key: string]: any;
   };
 };
 
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 const Calendar = (props: Props) => {
   const [currentDate, setCurrentDate] = useState(DateTime.local());
+  const [dateRange, setDateRange] = useState({
+    start: '',
+    end: '',
+  });
+  const [selectedDate, setSelectedDate] = useState('');
   const [addNewEvent, setAddNewEvent] = useState(false);
+  const [showDateRangePicker, setShowDateRangePicker] = useState(true);
   const [newEvent, setNewEvent] = useState<Event>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
     title: '',
     start: '',
     end: '',
+    color: getRandomColor(),
     description: '',
     phone: '',
   });
-  const [events, setEvents] = useState<{ [key: string]: Event[] }>({
-    '2022-06-17': [
-      {
-        id: '2098508254',
-        title: 'Test',
-        start: '2022-06-17',
-        end: '2022-06-18',
-        description: 'test',
-        phone: '123124124',
-      },
-    ],
-  });
+  const [events, setEvents] = useState<{ [key: string]: Event[] }>({});
 
   const [selectedMonth, setSelectedMonth] = useState<number>(
     DateTime.local().month
@@ -68,6 +74,7 @@ const Calendar = (props: Props) => {
   );
 
   const mobileView = isMobileView();
+  console.log(Interval.fromDateTimes(dateRange.start, dateRange.end));
 
   const eachDayOfMonth = () => {
     const monthDates: Day[] = [];
@@ -99,7 +106,6 @@ const Calendar = (props: Props) => {
 
     return monthDates;
   };
-  console.log(events);
 
   const eachDayOfRange = (startDate: string, endDate: string) => {
     const start = DateTime.fromISO(startDate);
@@ -168,10 +174,7 @@ const Calendar = (props: Props) => {
           </button>
         </div>
       </div>
-
-      <div
-        className={mobileView ? style.mobileCalendarGrid : style.calendarGrid}
-      >
+      <div className={style.calendarGridHeader}>
         <div className={`${style.dayName} text-xs select-none font-bold`}>
           Mon
         </div>
@@ -193,18 +196,20 @@ const Calendar = (props: Props) => {
         <div className={`${style.dayName} text-xs select-none font-bold`}>
           Sun
         </div>
+      </div>
+      <div className={style.calendarGrid}>
         {eachDayOfMonth().map((day, index) => {
           return (
             <div
               key={index}
-              className={`text-sm ${
+              className={`text-sm relative ${
                 mobileView ? 'border-2' : 'border-2 rounded-md'
               } hover:border-blue-400 ${
                 mobileView ? style.mobileGridItem : style.gridItem
               }`}
             >
               <div
-                className={`text-xs font-bold select-none ${
+                className={`text-xs font-bold select-none h-full ${
                   ['Saturday', 'Sunday'].includes(day.name)
                     ? 'opacity-50'
                     : day.lastMonth
@@ -212,12 +217,29 @@ const Calendar = (props: Props) => {
                     : 'opacity-100'
                 } ${mobileView ? style.mobileDayText : style.dayText}`}
               >
-                {mobileView ? day.day : day.day + '. ' + day.name}
-                {events && events[day.date]?.length > 0 && (
-                  <div className={style.eventCount}>
-                    {events[day.date].length}
-                  </div>
-                )}
+                <div
+                  className={`absolute top-0 left-0 ${
+                    events[day.date]?.length > 0
+                      ? 'text-white'
+                      : 'text-slate-800'
+                  }`}
+                >
+                  {mobileView ? day.day : day.day + '. ' + day.name}
+                </div>
+                {events &&
+                  events[day.date]?.length > 0 &&
+                  events[day.date].map(event => {
+                    return (
+                      <div
+                        key={event.id}
+                        className={`${style.day} text-white font-bold px-2 py-1`}
+                        style={{
+                          height: `${100 / events[day.date].length}%`,
+                          backgroundColor: event.color,
+                        }}
+                      ></div>
+                    );
+                  })}
               </div>
             </div>
           );
@@ -231,8 +253,65 @@ const Calendar = (props: Props) => {
           +
         </button>
       </div>
-
-      <Modal show={addNewEvent} closeModal={() => setAddNewEvent(false)}>
+      <Modal
+        width='80%'
+        height='80%'
+        animation='fade'
+        show={showDateRangePicker}
+        closeModal={() => setShowDateRangePicker(false)}
+      >
+        <div className='p-4 bg-white rounded-md relative'>
+          <div className={style.calendarGrid}>
+            {eachDayOfMonth().map((day, index) => {
+              return (
+                <div
+                  key={index}
+                  className={`rounded-full
+                  border-2 hover:border-blue-400 ${
+                    style['dateRange-Day']
+                  } text-base font-bold select-none ${
+                    ['Saturday', 'Sunday'].includes(day.name)
+                      ? 'opacity-50'
+                      : day.lastMonth
+                      ? 'opacity-30 font-normal'
+                      : 'opacity-100'
+                  }`}
+                  onClick={() => {
+                    if (dateRange.start && dateRange.end) {
+                      setDateRange({
+                        start: day.date,
+                        end: '',
+                      });
+                      return;
+                    }
+                    if (dateRange.start) {
+                      setDateRange({
+                        ...dateRange,
+                        end: day.date,
+                      });
+                      return;
+                    }
+                    if (!dateRange.start) {
+                      setDateRange({
+                        ...dateRange,
+                        start: day.date,
+                      });
+                      return;
+                    }
+                  }}
+                >
+                  {day.day}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        animation='fade'
+        show={addNewEvent}
+        closeModal={() => setAddNewEvent(false)}
+      >
         <div className='p-4 bg-white rounded-md'>
           <h2 className='text-center font-bold'>Add New Reservation</h2>
           <div className='flex justify-center'>
@@ -288,13 +367,14 @@ const Calendar = (props: Props) => {
             <button
               className='bg-slate-200 hover:bg-slate-500 font-bold py-2 px-4 rounded text-lg'
               onClick={() => {
-                // create object with keys that mach the dates between newEvent start and end with luxon
+                setNewEvent({
+                  ...newEvent,
+                  color: getRandomColor(),
+                });
                 const dates = eachDayOfRange(newEvent.start, newEvent.end);
-                console.log(dates);
 
                 setEvents({
                   ...events,
-                  // add new event into the arrays with date key between start and end
                   ...dates.reduce(
                     (acc, date) => ({
                       ...acc,
@@ -302,9 +382,8 @@ const Calendar = (props: Props) => {
                     }),
                     {}
                   ),
-                  //[newEvent.start]: [...(events[newEvent.start] || []), newEvent],
                 });
-                //setAddNewEvent(false);
+                setAddNewEvent(false);
               }}
             >
               Add

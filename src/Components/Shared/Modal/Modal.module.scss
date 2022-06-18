@@ -13,6 +13,7 @@
   cursor: default;
   z-index: 1;
   align-items: center;
+
   &.center {
     justify-content: center;
   }
@@ -23,5 +24,76 @@
     z-index: 2;
     max-height: 100%;
     cursor: default;
+  }
+  .children > *:first-of-type {
+    height: 100%;
+    width: 100%;
+    min-width: fit-content;
+    min-height: fit-content;
+  }
+}
+
+.fade {
+  animation: fadeIn 0.1s ease-in-out;
+}
+
+.slide-left {
+  animation: slide-left 0.1s ease-in-out;
+}
+
+.slide-right {
+  animation: slide-right 0.1s ease-in-out;
+}
+
+.slide-top {
+  animation: slide-top 0.1s ease-in-out;
+}
+
+.slide-bottom {
+  animation: slide-bottom 0.1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-top {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }

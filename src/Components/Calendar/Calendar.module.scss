@@ -1,16 +1,25 @@
 .calendarGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, calc(100vw / 8)));
-  justify-content: center;
-  gap: 20px;
-}
-
-.mobileCalendarGrid {
-  display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(6, fit-content);
   justify-content: center;
-  gap: 10px;
+
+  .dateRange-Day {
+    min-width: fit-content;
+    min-height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: 40px;
+    height: 40px;
+  }
+}
+
+.calendarGridHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-content: center;
 }
 
 .gridItem {
@@ -24,13 +33,14 @@
   min-height: 100px;
 }
 
-
-
-.dayText{
+.dayText {
   justify-content: start;
 }
 
-.mobileDayText{
-
+.mobileDayText {
+  justify-content: center;
 }
 
+.dayName {
+  text-align: center;
+}
