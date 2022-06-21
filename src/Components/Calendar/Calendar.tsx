@@ -1,16 +1,108 @@
 import { DateTime } from 'luxon';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import isMobileView from '../../checkForMobileView';
 import calculateEachDayOfMonth from '../../Hooks/calculateEachDayOfMonth';
 import style from './Calendar.module.scss';
-import { Event } from './CalendarTypes';
+import { Day, Event } from './CalendarTypes';
 import CreateNewEvent from './CreateNewEvent/CreateNewEvent';
 
 type Props = {};
 
 const Calendar = (props: Props) => {
   const [addNewEvent, setAddNewEvent] = useState(false);
-  const [events, setEvents] = useState<{ [key: string]: Event[] }>({});
+  const [events, setEvents] = useState<{ [key: string]: Event[] }>({
+    '2022-06-08': [
+      {
+        id: '843141125',
+        title: 'asodaskodkasd',
+        start: '2022-06-08',
+        end: '2022-06-10',
+        color: '#a3f2ff',
+        description: '',
+        phone: '',
+      },
+      {
+        id: '1909057210',
+        title: 'tdrfghfghfgh',
+        start: '2022-06-08',
+        end: '2022-06-10',
+        color: '#b2f726',
+        description: '',
+        phone: '',
+      },
+    ],
+    '2022-06-09': [
+      {
+        id: '843141125',
+        title: 'asodaskodkasd',
+        start: '2022-06-08',
+        end: '2022-06-10',
+        color: '#a3f2ff',
+        description: '',
+        phone: '',
+      },
+      {
+        id: '1909057210',
+        title: 'tdrfghfghfgh',
+        start: '2022-06-08',
+        end: '2022-06-10',
+        color: '#b2f726',
+        description: '',
+        phone: '',
+      },
+    ],
+    '2022-06-10': [
+      {
+        id: '843141125',
+        title: 'asodaskodkasd',
+        start: '2022-06-08',
+        end: '2022-06-10',
+        color: '#a3f2ff',
+        description: '',
+        phone: '',
+      },
+      {
+        id: '843141126',
+        title: 'asodaskodkasd',
+        start: '2022-06-10',
+        end: '2022-06-12',
+        color: '#fca1d9',
+        description: '',
+        phone: '',
+      },
+      {
+        id: '1909057210',
+        title: 'tdrfghfghfgh',
+        start: '2022-06-08',
+        end: '2022-06-10',
+        color: '#b2f726',
+        description: '',
+        phone: '',
+      },
+    ],
+    '2022-06-11': [
+      {
+        id: '843141126',
+        title: 'asodaskodkasd',
+        start: '2022-06-10',
+        end: '2022-06-12',
+        color: '#fca1d9',
+        description: '',
+        phone: '',
+      },
+    ],
+    '2022-06-12': [
+      {
+        id: '843141126',
+        title: 'asodaskodkasd',
+        start: '2022-06-10',
+        end: '2022-06-12',
+        color: '#fca1d9',
+        description: '',
+        phone: '',
+      },
+    ],
+  });
 
   const [selectedMonth, setSelectedMonth] = useState<number>(
     DateTime.local().month
@@ -25,6 +117,29 @@ const Calendar = (props: Props) => {
     year: selectedYear,
     month: selectedMonth,
   }).dates;
+
+  const findOffsetOfEvent = useCallback(
+    (event: Event) => {
+      let biggestIndex = 0;
+      for (
+        let index = 0;
+        index <=
+        DateTime.fromISO(event.end).diff(DateTime.fromISO(event.start), 'days')
+          .days;
+        index++
+      ) {
+        const tempDate = DateTime.fromISO(event.start)
+          .plus({ days: index })
+          .toFormat('yyyy-MM-dd');
+        const newIndex = events[tempDate].findIndex(e => e.id === event.id);
+        if (newIndex > biggestIndex) {
+          biggestIndex = newIndex;
+        }
+      }
+      return biggestIndex;
+    },
+    [events]
+  );
 
   return (
     <div className='p-5'>
@@ -106,9 +221,8 @@ const Calendar = (props: Props) => {
           return (
             <div
               key={index}
-              className={`text-sm relative border-slate-300 ${
-                mobileView ? 'border-2' : 'border-2 rounded-md'
-              } hover:border-blue-400 ${
+              className={`text-sm relative border-slate-300 border-2
+              hover:border-blue-400 ${
                 mobileView ? style.mobileGridItem : style.gridItem
               }`}
             >
@@ -124,61 +238,36 @@ const Calendar = (props: Props) => {
                 <div className=''>
                   {mobileView ? day.day : day.day + '. ' + day.name}
                 </div>
-                <div
-                  className={`${style.startingDays} flex flex-col w-[70%]`}
-                ></div>
-                <div
-                  className={`${style.endingDays} flex flex-col w-[30%]`}
-                ></div>
                 {events &&
                   events[day.date]?.length > 0 &&
-                  events[day.date].map((event, index) => {
+                  events[day.date].map(event => {
                     const tempStartDate = event.start === day.date;
                     const tempEndDate = event.end === day.date;
-                    return tempStartDate ? (
+                    const offset = findOffsetOfEvent(event);
+
+                    return (
                       <div
-                        key={`${day.day}-${event.id}-${index}`}
-                        className={`${
-                          style.day
-                        } text-white font-bold px-2 py-1 relative ${
-                          tempStartDate
-                            ? 'rounded-l-full self-end'
-                            : tempEndDate && 'rounded-r-full self-start'
-                        }`}
-                        style={{
-                          backgroundColor: event.color,
-                          padding: '0.5rem',
-                          width: '70%',
-                          color: 'white',
-                        }}
-                      >
-                        {event.title}
-                      </div>
-                    ) : tempEndDate ? (
-                      <div
-                        key={`${day.day}-${event.id}-${index}`}
-                        className={`${style.day} text-white font-bold px-2 py-1 relative
-                          rounded-r-full self-start'
+                        id={`${day.day}-${event.id}`}
+                        key={`${day.day}-${event.id}`}
+                        className={`text-white font-bold px-2 py-1 absolute
+                         ${
+                           tempStartDate
+                             ? 'self-end rounded-l-full'
+                             : tempEndDate
+                             ? 'self-start rounded-r-full'
+                             : 'self-center'
+                         }
                         `}
                         style={{
                           backgroundColor: event.color,
                           padding: '0.5rem',
-                          width: '30%',
-                          color: '#fff0',
-                        }}
-                      >
-                        {event.title}
-                      </div>
-                    ) : (
-                      <div
-                        key={`${day.day}-${event.id}-${index}`}
-                        className={`${style.day} text-white font-bold px-2 py-1 relative'
-                        }`}
-                        style={{
-                          backgroundColor: event.color,
-                          padding: '0.5rem',
-                          width: '100%',
-                          color: '#fff0',
+                          width: tempStartDate
+                            ? '70%'
+                            : tempEndDate
+                            ? '30%'
+                            : '100%',
+                          color: tempStartDate ? 'white' : '#fff0',
+                          top: offset * 32 + 16 + 'px',
                         }}
                       >
                         {event.title}

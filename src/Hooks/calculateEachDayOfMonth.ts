@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Day } from './../Components/Calendar/CalendarTypes';
 
 type Props = {

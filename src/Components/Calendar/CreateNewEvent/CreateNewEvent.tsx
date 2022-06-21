@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Modal from '../../Shared/Modal/Modal';
 import { Day, Event } from '../CalendarTypes';
 import DateRangePicker from '../DateRangePicker/DateRangePicker';
@@ -45,6 +45,22 @@ const CreateNewEvent = (props: Props) => {
     return monthDates;
   };
 
+  useEffect(() => {
+    return () => {
+      if (!show) {
+        setNewEvent({
+          id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
+          title: '',
+          start: '',
+          end: '',
+          color: getRandomColor(),
+          description: '',
+          phone: '',
+        });
+      }
+    };
+  }, [show]);
+
   return (
     <>
       <Modal animation='fade' show={show} closeModal={() => setShow(false)}>
@@ -55,6 +71,7 @@ const CreateNewEvent = (props: Props) => {
               className='bg-slate-100 border-2 border-slate-300 rounded-md p-2'
               type='text'
               placeholder='Title'
+              value={newEvent.title}
               onChange={e =>
                 setNewEvent({ ...newEvent, title: e.target.value })
               }
@@ -65,6 +82,7 @@ const CreateNewEvent = (props: Props) => {
               className='bg-slate-100 border-2 border-slate-300 rounded-md p-2'
               type='text'
               placeholder='Description'
+              value={newEvent.description}
               onChange={e =>
                 setNewEvent({ ...newEvent, description: e.target.value })
               }
