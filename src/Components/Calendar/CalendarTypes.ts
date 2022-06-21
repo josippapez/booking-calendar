@@ -1,0 +1,27 @@
+export enum DayName {
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday',
+}
+
+export type Day = {
+  [key: string]: number | string | boolean;
+  day: number;
+  date: string;
+  name: string;
+  lastMonth: boolean;
+};
+
+export type Event = {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  description: string;
+  color: string;
+  phone: string;
+};

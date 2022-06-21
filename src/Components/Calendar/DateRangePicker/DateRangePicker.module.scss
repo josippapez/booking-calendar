@@ -1,6 +1,6 @@
 .calendarGrid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(40px, 1fr));
+  grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(6, fit-content);
   justify-content: center;
 
@@ -22,22 +22,9 @@
   justify-content: center;
 }
 
-.gridItem {
-  height: auto;
-  min-height: 160px;
-}
-
-.mobileGridItem {
-  width: auto;
-  height: auto;
-  min-height: 100px;
-}
-
-.dayText {
-  justify-content: start;
-}
-
-
-.dayName {
-  text-align: center;
+.dateRangeGrid {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(auto-fit, 300px);
+  justify-content: center;
 }
