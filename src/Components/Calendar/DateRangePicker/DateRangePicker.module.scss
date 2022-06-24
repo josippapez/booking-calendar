@@ -1,18 +1,18 @@
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, fit-content);
+  grid-template-rows: repeat(6, 1fr);
   justify-content: center;
 
   .dateRange-Day {
-    min-width: fit-content;
-    min-height: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-width: 40px;
-    height: 40px;
+    min-width: 2.65rem;
+    min-height: fit-content;
+    height: 2.65rem;
+    font-size: medium;
   }
 }
 
@@ -22,9 +22,19 @@
   justify-content: center;
 }
 
+.dayName {
+  text-align: center;
+  font-size: medium;
+}
+
 .dateRangeGrid {
-  display: grid;
-  gap: 30px;
-  grid-template-columns: repeat(auto-fit, 300px);
+  display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

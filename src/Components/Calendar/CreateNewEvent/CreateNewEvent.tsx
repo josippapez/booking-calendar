@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Day, Event } from '../CalendarTypes';
 import DateRangePicker from '../DateRangePicker/DateRangePicker';
@@ -64,68 +65,94 @@ const CreateNewEvent = (props: Props) => {
   return (
     <>
       <Modal animation='fade' show={show} closeModal={() => setShow(false)}>
-        <div className='p-4 bg-white rounded-md'>
-          <h2 className='text-center font-bold'>Add New Reservation</h2>
-          <div className='flex justify-center'>
-            <input
-              className='bg-slate-100 border-2 border-slate-300 rounded-md p-2'
-              type='text'
-              placeholder='Title'
-              value={newEvent.title}
-              onChange={e =>
-                setNewEvent({ ...newEvent, title: e.target.value })
-              }
-            />
-          </div>
-          <div className='flex justify-center'>
-            <input
-              className='bg-slate-100 border-2 border-slate-300 rounded-md p-2'
-              type='text'
-              placeholder='Description'
-              value={newEvent.description}
-              onChange={e =>
-                setNewEvent({ ...newEvent, description: e.target.value })
-              }
-            />
-          </div>
-          <div
-            className='flex justify-center'
-            onClick={() => {
-              setShowDateRangePicker(true);
-            }}
-          >
-            <div className='bg-slate-100 border-2 border-slate-300 rounded-md p-2 w-full'>
-              <label className='text-xs font-bold'>Date range</label>
-              <div>
-                {newEvent.start} - {newEvent.end}
+        <div className=''>
+          <div className='p-4 bg-white rounded-t-md'>
+            <h2 className='text-center font-bold mb-4'>Add New Reservation</h2>
+            <div className='flex flex-col gap-3'>
+              <div className='flex justify-center'>
+                <input
+                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  type='text'
+                  placeholder='Title'
+                  value={newEvent.title}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, title: e.target.value })
+                  }
+                />
+              </div>
+              <div className='flex justify-center'>
+                <input
+                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  type='text'
+                  placeholder='Description'
+                  value={newEvent.description}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, description: e.target.value })
+                  }
+                />
+              </div>
+              <div className='flex justify-center'>
+                <input
+                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  type='text'
+                  placeholder='Phone'
+                  value={newEvent.phone}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, phone: e.target.value })
+                  }
+                />
               </div>
             </div>
           </div>
-          <div className='flex justify-center'>
-            <button
-              className='bg-slate-200 hover:bg-slate-500 font-bold py-2 px-4 rounded text-lg'
+          <div className='bg-gray-200 p-4 border-t-2 rounded-b-md'>
+            <div
+              className='flex flex-col justify-center'
               onClick={() => {
-                setNewEvent({
-                  ...newEvent,
-                  color: getRandomColor(),
-                });
-                const dates = eachDayOfRange(newEvent.start, newEvent.end);
-
-                setEvents({
-                  ...events,
-                  ...dates.reduce(
-                    (acc, date) => ({
-                      ...acc,
-                      [date.date]: [...(events[date.date] || []), newEvent],
-                    }),
-                    {}
-                  ),
-                });
-                setShow(false);
+                setShowDateRangePicker(true);
               }}
             >
-              Add
-            </button>
+              <label className='text-xs font-bold'>Date range</label>
+              <div className='bg-white border-2 border-slate-200 rounded-md p-1 w-full flex'>
+                <div className='font-bold w-[45%]'>
+                  {newEvent.start &&
+                    DateTime.fromISO(newEvent.start).toFormat('dd. MM. yyyy.')}
+                </div>
+                <div className='px-2 text-center w-[10%]'>-</div>
+                <div className='font-bold w-[45%]'>
+                  {newEvent.end &&
+                    DateTime.fromISO(newEvent.end).toFormat('dd. MM. yyyy.')}
+                </div>
+              </div>
+            </div>
+            <div className='flex justify-center mt-3'>
+              <button
+                className='font-bold'
+                onClick={() => {
+                  setNewEvent({
+                    ...newEvent,
+                    color: getRandomColor(),
+                  });
+                  const dates = eachDayOfRange(newEvent.start, newEvent.end);
+
+                  setEvents({
+                    ...events,
+                    ...dates.reduce(
+                      (acc, date) => ({
+                        ...acc,
+                        [date.date]: [...(events[date.date] || []), newEvent],
+                      }),
+                      {}
+                    ),
+                  });
+                  setShow(false);
+                }}
+                style={{
+                  backgroundImage: `url(${Images.Check})`,
+                  height: '35px',
+                  width: '35px',
+                }}
+              />
+            </div>
           </div>
         </div>
       </Modal>

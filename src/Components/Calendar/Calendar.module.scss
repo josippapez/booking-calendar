@@ -1,43 +1,42 @@
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(40px, 1fr));
-  grid-template-rows: repeat(6, fit-content);
-  justify-content: center;
-
-  .dateRange-Day {
-    min-width: fit-content;
-    min-height: fit-content;
-    display: flex;
+.calendar {
+  margin-top: 40px;
+  .calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, fit-content);
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-width: 40px;
-    height: 40px;
+
+    .gridItem {
+      height: auto;
+      min-height: 160px;
+    }
+
+    .mobileGridItem {
+      width: auto;
+      height: auto;
+      min-height: 100px;
+    }
+
+  }
+
+  .calendarGridHeader {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-content: center;
   }
 }
 
-.calendarGridHeader {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  justify-content: center;
-}
-
-.gridItem {
-  height: auto;
-  min-height: 160px;
-}
-
-.mobileGridItem {
-  width: auto;
-  height: auto;
-  min-height: 100px;
+.emptySpace {
+  padding: '0.5rem';
+  height: 32px;
 }
 
 .dayText {
+  font-size: medium;
   justify-content: start;
 }
 
-
 .dayName {
+  font-size: medium;
   text-align: center;
 }
