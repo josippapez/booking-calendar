@@ -1,14 +1,16 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { persistReducer, persistStore } from 'redux-persist';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import { getFirebase } from 'react-redux-firebase';
 import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-} from 'redux-persist/es/constants';
+  createFirestoreInstance,
+  getFirestore,
+  reduxFirestore,
+} from 'redux-firestore';
+import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import firebaseConfig from '../Config/fbConfig';
 import { reducers, RootState } from './reducers/reducer';
 
 const persistConfig = {
@@ -18,20 +20,38 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducers);
 
+firebase.initializeApp(firebaseConfig);
+
 const store = configureStore({
   reducer: persistedReducer,
   devTools: process.env.NODE_ENV !== 'production',
   middleware: getDefaultMiddleware => {
     const middleware = getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
+      serializableCheck: false,
     });
+    middleware.concat([
+      getFirebase,
+      getFirestore,
+      reduxFirestore(firebaseConfig),
+    ]);
+
     return middleware;
   },
 });
 const persistor = persistStore(store);
-export { store, persistor };
+
+const rrfProps = {
+  firebase,
+  config: {
+    userProfile: 'users',
+    useFirestoreForProfile: true,
+    attachAuthIsReady: true,
+  },
+  dispatch: store.dispatch,
+  createFirestoreInstance,
+};
+
+export { store, persistor, rrfProps };
 
 export type AppDispatch = typeof store.dispatch;
 export type AppState = typeof store.getState;

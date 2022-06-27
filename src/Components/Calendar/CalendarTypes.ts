@@ -14,6 +14,7 @@ export type Day = {
   date: string;
   name: string;
   lastMonth: boolean;
+  weekNumber: number;
 };
 
 export type Event = {
@@ -24,4 +25,7 @@ export type Event = {
   description: string;
   color: string;
   phone: string;
+  booking: boolean;
+  price?: string;
+  weekNumber: number;
 };

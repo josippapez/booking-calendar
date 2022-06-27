@@ -6,7 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter } from 'react-router-dom';
-import { persistor, store } from './store/store';
+import { persistor, rrfProps, store } from './store/store';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 
 declare global {
   interface Window {
@@ -20,11 +21,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </PersistGate>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </PersistGate>
+      </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>
 );

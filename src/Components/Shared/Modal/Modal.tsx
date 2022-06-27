@@ -3,7 +3,7 @@ import style from './Modal.module.scss';
 
 interface Props {
   closeModal(): void;
-  position?: 'center' | 'left' | 'right';
+  position?: 'center' | 'left' | 'right' | 'bottom';
   children: JSX.Element;
   show: boolean;
   height?: 'screen' | string;
@@ -21,17 +21,24 @@ const Modal = (props: Props): JSX.Element => {
     props;
   return (
     <div
-      style={{ display: !show ? 'none' : 'flex' }}
+      style={{
+        display: !show ? 'none' : 'flex',
+      }}
       aria-hidden='true'
       role='button'
-      className={`${style.overlay}
+      className={`
+        ${style.overlay}
         ${style[`${position}`]}
-        ${style[`${animation}`]}`}
+        ${style['fade']}
+      `}
       onMouseDown={() => closeModal()}
     >
       <div
         aria-hidden='true'
-        className={`${style.children}`}
+        className={`
+          ${style.children}
+          ${style[`${animation}`]}
+        `}
         onMouseDown={e => e.stopPropagation()}
         style={{
           height: height === 'screen' ? '100vh' : height,

@@ -30,6 +30,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/dist'),
     filename: '[name].bundle.js',
+    publicPath: '/',
   },
   devServer: {
     static: './public',
@@ -43,14 +44,14 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      module: "empty",
-      dgram: "empty",
-      dns: "mock",
-      fs: "empty",
-      http2: "empty",
-      net: "empty",
-      tls: "empty",
-      child_process: "empty",
+      module: 'empty',
+      dgram: 'empty',
+      dns: 'mock',
+      fs: 'empty',
+      http2: 'empty',
+      net: 'empty',
+      tls: 'empty',
+      child_process: 'empty',
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.jsx'],
     modules: ['node_modules', path.resolve(__dirname, 'src')],

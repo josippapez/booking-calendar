@@ -1,109 +1,28 @@
 import { DateTime } from 'luxon';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useFirestore } from 'react-redux-firebase';
+import { useParams } from 'react-router';
 import isMobileView from '../../checkForMobileView';
 import calculateEachDayOfMonth from '../../Hooks/calculateEachDayOfMonth';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { removeEvent, saveEvents } from '../../store/reducers/events';
 import style from './Calendar.module.scss';
 import { Event } from './CalendarTypes';
 import CreateNewEvent from './CreateNewEvent/CreateNewEvent';
+import DayDetails from './DayDetails/DayDetails';
 
 type Props = {};
 
 const Calendar = (props: Props) => {
-  const [addNewEvent, setAddNewEvent] = useState(false);
-  const [events, setEvents] = useState<{ [key: string]: Event[] }>({
-    '2022-06-08': [
-      {
-        id: '843141125',
-        title: 'asodaskodkasd',
-        start: '2022-06-08',
-        end: '2022-06-10',
-        color: '#a3f2ff',
-        description: '',
-        phone: '',
-      },
-      {
-        id: '1909057210',
-        title: 'tdrfghfghfgh',
-        start: '2022-06-08',
-        end: '2022-06-10',
-        color: '#b2f726',
-        description: '',
-        phone: '',
-      },
-    ],
-    '2022-06-09': [
-      {
-        id: '843141125',
-        title: 'asodaskodkasd',
-        start: '2022-06-08',
-        end: '2022-06-10',
-        color: '#a3f2ff',
-        description: '',
-        phone: '',
-      },
-      {
-        id: '1909057210',
-        title: 'tdrfghfghfgh',
-        start: '2022-06-08',
-        end: '2022-06-10',
-        color: '#b2f726',
-        description: '',
-        phone: '',
-      },
-    ],
-    '2022-06-10': [
-      {
-        id: '843141125',
-        title: 'asodaskodkasd',
-        start: '2022-06-08',
-        end: '2022-06-10',
-        color: '#a3f2ff',
-        description: '',
-        phone: '',
-      },
-      {
-        id: '843141126',
-        title: 'asodaskodkasd',
-        start: '2022-06-10',
-        end: '2022-06-12',
-        color: '#fca1d9',
-        description: '',
-        phone: '',
-      },
-      {
-        id: '1909057210',
-        title: 'tdrfghfghfgh',
-        start: '2022-06-08',
-        end: '2022-06-10',
-        color: '#b2f726',
-        description: '',
-        phone: '',
-      },
-    ],
-    '2022-06-11': [
-      {
-        id: '843141126',
-        title: 'asodaskodkasd',
-        start: '2022-06-10',
-        end: '2022-06-12',
-        color: '#fca1d9',
-        description: '',
-        phone: '',
-      },
-    ],
-    '2022-06-12': [
-      {
-        id: '843141126',
-        title: 'asodaskodkasd',
-        start: '2022-06-10',
-        end: '2022-06-12',
-        color: '#fca1d9',
-        description: '',
-        phone: '',
-      },
-    ],
-  });
+  const dispatch = useAppDispatch();
+  const naviagtionParams = useParams();
+  const firestore = useFirestore();
 
+  const eventsData = useAppSelector(state => state.events.events);
+  const [showDayDetails, setShowDayDetails] = useState(false);
+  const [addNewEvent, setAddNewEvent] = useState(false);
+  const [events, setEvents] = useState(eventsData);
+  const [selectedDay, setSelectedDay] = useState<null | string>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(
     DateTime.local().month
   );
@@ -112,7 +31,6 @@ const Calendar = (props: Props) => {
   );
 
   const mobileView = isMobileView();
-
   const eachDayOfMonth = calculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
@@ -121,6 +39,7 @@ const Calendar = (props: Props) => {
   const findOffsetOfEvent = useCallback(
     (event: Event) => {
       let biggestIndex = 0;
+      let smallestIndex = 999;
       for (
         let index = 0;
         index <=
@@ -135,64 +54,117 @@ const Calendar = (props: Props) => {
         if (newIndex > biggestIndex) {
           biggestIndex = newIndex;
         }
+        if (newIndex < smallestIndex) {
+          smallestIndex = newIndex;
+        }
       }
-      return biggestIndex;
+      return { biggestIndex, smallestIndex };
     },
     [events]
   );
 
-  let lastOffset = 0;
+  const getEventsById = async (id: string) => {
+    const event = await (
+      await firestore.collection('events').doc(id).get()
+    ).data();
+
+    if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
+      dispatch(
+        saveEvents(
+          event as {
+            [key: string]: Event[];
+          }
+        )
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (naviagtionParams && naviagtionParams.id) {
+      getEventsById(naviagtionParams.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (JSON.stringify(eventsData) !== JSON.stringify(events)) {
+      dispatch(saveEvents(events));
+      if (naviagtionParams && naviagtionParams.id) {
+        firestore.collection('events').doc(naviagtionParams.id).set(events);
+      }
+    }
+  }, [events]);
+
+  useEffect(() => {
+    setEvents(eventsData);
+  }, [eventsData]);
+
+  const calculateBiggestIndexByWeekNumber = useCallback(() => {
+    let biggestIndex = 0;
+    for (const day of eachDayOfMonth) {
+      const eventsForDay = events[day.date];
+      if (eventsForDay && eventsForDay.length > biggestIndex) {
+        biggestIndex = eventsForDay.length;
+      }
+    }
+
+    return biggestIndex;
+  }, [events, eachDayOfMonth]);
 
   return (
-    <div className='p-5'>
-      <div className='flex flex-col select-none gap-3'>
-        <div className='flex items-center border-2 w-fit rounded-md'>
-          <button
-            onClick={() => {
-              if (selectedMonth === 1) {
-                setSelectedMonth(12);
+    <div>
+      <div className='flex justify-between'>
+        <div className='font-bold text-xl'>Calendar</div>
+        <div className='flex flex-row select-none gap-3'>
+          <div className='flex items-center border-2 w-fit rounded-md'>
+            <button
+              onClick={() => {
+                if (selectedMonth === 1) {
+                  setSelectedMonth(12);
+                  setSelectedYear(selectedYear - 1);
+                  return;
+                }
+                setSelectedMonth(selectedMonth - 1);
+              }}
+              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
+            >
+              {'<'}
+            </button>
+            <h2 className='w-fit px-5 select-none font-bold'>
+              {selectedMonth}
+            </h2>
+            <button
+              onClick={() => {
+                if (selectedMonth === 12) {
+                  setSelectedMonth(1);
+                  setSelectedYear(selectedYear + 1);
+                  return;
+                }
+                setSelectedMonth(selectedMonth + 1);
+              }}
+              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
+            >
+              {'>'}
+            </button>
+          </div>
+          <div className='flex items-center border-2 w-fit rounded-md'>
+            <button
+              onClick={() => {
                 setSelectedYear(selectedYear - 1);
-                return;
-              }
-              setSelectedMonth(selectedMonth - 1);
-            }}
-            className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-          >
-            {'<'}
-          </button>
-          <h2 className='w-fit px-5 select-none font-bold'>{selectedMonth}</h2>
-          <button
-            onClick={() => {
-              if (selectedMonth === 12) {
-                setSelectedMonth(1);
+              }}
+              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
+            >
+              {'<'}
+            </button>
+            <h2 className='w-fit px-5 select-none font-bold'>{selectedYear}</h2>
+            <button
+              onClick={() => {
                 setSelectedYear(selectedYear + 1);
-                return;
-              }
-              setSelectedMonth(selectedMonth + 1);
-            }}
-            className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-          >
-            {'>'}
-          </button>
-        </div>
-        <div className='flex items-center border-2 w-fit rounded-md'>
-          <button
-            onClick={() => {
-              setSelectedYear(selectedYear - 1);
-            }}
-            className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-          >
-            {'<'}
-          </button>
-          <h2 className='w-fit px-5 select-none font-bold'>{selectedYear}</h2>
-          <button
-            onClick={() => {
-              setSelectedYear(selectedYear + 1);
-            }}
-            className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-          >
-            {'>'}
-          </button>
+              }}
+              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
+            >
+              {'>'}
+            </button>
+          </div>
         </div>
       </div>
       <div className={style.calendar}>
@@ -207,7 +179,19 @@ const Calendar = (props: Props) => {
         </div>
         <div className={style.calendarGrid}>
           {eachDayOfMonth.map((day, index) => {
-            lastOffset = 0;
+            const objectOfDivs: JSX.Element[] = [];
+            if (events && events[day.date]) {
+              for (
+                let index = 0;
+                index < calculateBiggestIndexByWeekNumber();
+                index++
+              ) {
+                objectOfDivs[index] = (
+                  <div key={`${index}-${day.date}`} className={`h-[40px]`} />
+                );
+              }
+            }
+
             return (
               <div
                 key={index}
@@ -215,6 +199,12 @@ const Calendar = (props: Props) => {
               hover:border-blue-400 ${
                 mobileView ? style.mobileGridItem : style.gridItem
               }`}
+                onClick={() => {
+                  if (events[day.date]) {
+                    setSelectedDay(day.date);
+                    setShowDayDetails(true);
+                  }
+                }}
               >
                 <div
                   className={`font-bold select-none h-full flex flex-col ${
@@ -228,28 +218,15 @@ const Calendar = (props: Props) => {
                   <div>{day.day}</div>
                   {events &&
                     events[day.date]?.length > 0 &&
-                    events[day.date].map((event, index) => {
+                    events[day.date].map(event => {
+                      const offset = findOffsetOfEvent(event);
                       const tempStartDate = event.start === day.date;
                       const tempEndDate = event.end === day.date;
-                      const offset = findOffsetOfEvent(event);
-
-                      const emptyDivs = [];
-
-                      for (let i = index + lastOffset; i < offset; i++) {
-                        emptyDivs.push(<div key={i} className={`h-[40px]`} />);
-                      }
-                      console.log(index, offset, emptyDivs);
-
-                      lastOffset = emptyDivs.length;
-                      console.log(lastOffset);
-
-                      return (
-                        <>
-                          {emptyDivs}
-                          <div
-                            id={`${day.day}-${event.id}`}
-                            key={`${day.day}-${event.id}`}
-                            className={`text-white font-bold px-2 py-1
+                      objectOfDivs[offset.biggestIndex] = (
+                        <div
+                          id={`${day.day}-${event.id}`}
+                          key={`${day.day}-${event.id}`}
+                          className={`text-white flex font-bold px-2 py-1
                          ${
                            tempStartDate
                              ? 'self-end rounded-l-full'
@@ -258,22 +235,29 @@ const Calendar = (props: Props) => {
                              : 'self-center'
                          }
                         `}
-                            style={{
-                              backgroundColor: event.color,
-                              padding: '0.5rem',
-                              width: tempStartDate
-                                ? '70%'
-                                : tempEndDate
-                                ? '30%'
-                                : '100%',
-                              color: tempStartDate ? 'white' : '#fff0',
-                            }}
-                          >
-                            {event.title}
-                          </div>
-                        </>
+                          style={{
+                            backgroundColor: event.color,
+                            padding: '0.5rem',
+                            width: tempStartDate
+                              ? '70%'
+                              : tempEndDate
+                              ? '30%'
+                              : '100%',
+                            color: tempStartDate ? 'white' : '#fff0',
+                          }}
+                        >
+                          {event.booking && tempStartDate && (
+                            <div
+                              className={`rounded-full w-6 text-center bg-gray-600`}
+                            >
+                              B
+                            </div>
+                          )}
+                          {event.title}
+                        </div>
                       );
-                    })}
+                    }) &&
+                    objectOfDivs}
                 </div>
               </div>
             );
@@ -284,6 +268,13 @@ const Calendar = (props: Props) => {
           setShow={setAddNewEvent}
           events={events}
           setEvents={setEvents}
+        />
+        <DayDetails
+          show={showDayDetails}
+          setShow={setShowDayDetails}
+          events={selectedDay ? events[selectedDay] : []}
+          isMobileView={mobileView}
+          removeEvent={id => dispatch(removeEvent(id))}
         />
       </div>
       <div className='fixed bottom-0 right-0 p-3 w-fit'>

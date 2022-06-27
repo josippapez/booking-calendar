@@ -1,23 +1,10 @@
-import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import PageLoader from './Components/Shared/Loader/PageLoader';
-
-const LandingPage = lazy(() => import('./Components/Calendar/Calendar'));
+import { ProtectedRoutes } from './Components/Routes';
 
 function App() {
   return (
-    <div className='min-h-screen h-full min-w-full'>
-      <Routes>
-        <Route
-          path='/'
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <LandingPage />
-            </Suspense>
-          }
-        />
-      </Routes>
+    <div className='min-h-screen h-auto min-w-screen w-full bg-gray-100 p-10'>
+      <ProtectedRoutes />
     </div>
   );
 }

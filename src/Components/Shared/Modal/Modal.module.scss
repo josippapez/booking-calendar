@@ -20,6 +20,14 @@
   &.right {
     justify-content: right;
   }
+  &.bottom {
+    align-items: end;
+    justify-content: center;
+  }
+  &.tom {
+    align-items: start;
+    justify-content: center;
+  }
   .children {
     z-index: 2;
     max-height: 100%;

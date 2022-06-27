@@ -30,6 +30,7 @@ const calculateEachDayOfMonth = (props: Props) => {
               date: dayOfLastMonth.toFormat('yyyy-MM-dd'),
               name: dayOfLastMonth.toFormat('EEEE'),
               lastMonth: true,
+              weekNumber: dayOfLastMonth.weekNumber,
             });
           }
         }
@@ -38,6 +39,7 @@ const calculateEachDayOfMonth = (props: Props) => {
           date: day.toFormat('yyyy-MM-dd'),
           name: day.toFormat('EEEE'),
           lastMonth: false,
+          weekNumber: day.weekNumber,
         });
       }
 

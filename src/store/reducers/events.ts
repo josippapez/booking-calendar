@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PURGE } from 'redux-persist';
 import { Event } from '../../Components/Calendar/CalendarTypes';
 
+type Events = {
+  [key: string]: Event[];
+};
 export interface EventsData {
-  events: { [key: string]: Event[] };
+  events: Events;
 }
 
-const initialState: Partial<EventsData> = {
+const initialState: EventsData = {
   events: {},
 };
 
@@ -13,14 +17,28 @@ export const events = createSlice({
   name: 'events',
   initialState,
   reducers: {
-    saveEvents: (state, action: PayloadAction<EventsData>) => {
-      state.events = action.payload.events;
+    saveEvents: (state, action: PayloadAction<Events>) => {
+      state.events = action.payload;
     },
     removeEvent: (state, action: PayloadAction<string>) => {
-      if (state.events && state.events[action.payload]) {
-        delete state.events[action.payload];
+      if (state.events) {
+        const tempEvents = {} as Events;
+        Object.keys(state.events).map(key => {
+          const filtered = state.events[key].filter(
+            event => event.id !== action.payload
+          );
+          if (filtered.length > 0) {
+            tempEvents[key] = filtered;
+          }
+        });
+        state.events = tempEvents;
       }
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(PURGE, (state, action) => {
+      state.events = {};
+    });
   },
 });
 
