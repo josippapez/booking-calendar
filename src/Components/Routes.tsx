@@ -11,13 +11,13 @@ export const ProtectedRoutes = () => {
   const user = useAppSelector(state => state.user.user);
 
   useEffect(() => {
-    if (!user.accessToken) {
+    if (user && !user.accessToken) {
       navigate('/');
     }
   }, [user]);
 
   useEffect(() => {
-    if (user.accessToken) {
+    if (user && user.accessToken) {
       if (
         window.location.pathname === '/' ||
         !['apartments'].includes(window.location.pathname.split('/')[1])

@@ -11,8 +11,6 @@ export const saveEventsForAppartment = (
     { getFirebase, getFirestore }: { getFirebase: any; getFirestore: any }
   ) => {
     const firebase = getFirebase();
-    const profile = getState().firebase.profile;
-    console.log(firebase.firestore());
 
     getFirebase()
       .firestore()

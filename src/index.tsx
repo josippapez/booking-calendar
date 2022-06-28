@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { BrowserRouter } from 'react-router-dom';
-import { persistor, rrfProps, store } from './store/store';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
-
+import { BrowserRouter } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/integration/react';
+import App from './App';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
+import { persistor, rrfProps, store } from './store/store';
 declare global {
   interface Window {
     opera: any;

@@ -30,6 +30,10 @@ const LoginPage = (props: Props) => {
               id='email'
               type='text'
               placeholder='email@example.com'
+              value={email}
+              onChange={e => {
+                setEmail(e.target.value);
+              }}
             />
           </div>
           <div className='mb-6'>
@@ -44,6 +48,10 @@ const LoginPage = (props: Props) => {
               id='password'
               type='password'
               placeholder='******************'
+              value={password}
+              onChange={e => {
+                setPassword(e.target.value);
+              }}
             />
             {/* <p className='text-red-500 text-xs italic'>
             Please choose a password.

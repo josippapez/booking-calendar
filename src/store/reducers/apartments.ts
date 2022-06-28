@@ -1,6 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import firebase from 'firebase/compat/app';
-import { deleteDoc, doc, getFirestore } from 'firebase/firestore';
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PURGE } from 'redux-persist';
 
 type Apartment = {
@@ -30,27 +28,6 @@ export const apartments = createSlice({
     setApartments: (state, action: PayloadAction<Apartments>) => {
       state.apartments = action.payload;
     },
-    saveApartment: (state, action: PayloadAction<Apartment>) => {
-      state.apartments = {
-        ...state.apartments,
-        [action.payload.id]: action.payload,
-      };
-    },
-    editApartment: (state, action: PayloadAction<Apartment>) => {
-      state.apartments = {
-        ...state.apartments,
-        [action.payload.id]: action.payload,
-      };
-    },
-    removeApartment: (state, action: PayloadAction<string>) => {
-      if (state.apartments) {
-        let tempApartments = {} as Apartments;
-        tempApartments = { ...state.apartments };
-        delete tempApartments[action.payload];
-        state.apartments = tempApartments;
-        deleteDoc(doc(getFirestore(firebase.app()), 'events', action.payload));
-      }
-    },
     selectApartment: (state, action: PayloadAction<Apartment | null>) => {
       state.selectedApartment = action.payload;
     },
@@ -63,12 +40,6 @@ export const apartments = createSlice({
   },
 });
 
-export const {
-  saveApartment,
-  removeApartment,
-  selectApartment,
-  editApartment,
-  setApartments,
-} = apartments.actions;
+export const { selectApartment, setApartments } = apartments.actions;
 
 export default apartments.reducer;

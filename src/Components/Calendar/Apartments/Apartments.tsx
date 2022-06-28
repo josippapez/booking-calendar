@@ -1,12 +1,15 @@
+import isEqual from 'lodash/fp/isEqual';
 import { useEffect, useState } from 'react';
 import { useFirestore } from 'react-redux-firebase';
 import { Link } from 'react-router-dom';
-import { logout } from '../../../store/firebaseActions/authActions';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
   editApartment,
   removeApartment,
   saveApartment,
+} from '../../../store/firebaseActions/apartmentActions';
+import { logout } from '../../../store/firebaseActions/authActions';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import {
   selectApartment,
   setApartments,
 } from '../../../store/reducers/apartments';
@@ -31,18 +34,24 @@ const Apartments = (props: Props) => {
       await firestore.collection('apartments').doc(id).get()
     ).data();
 
-    if (apartmentsData) {
-      dispatch(setApartments(apartmentsData));
+    if (!isEqual(apartmentsData, apartments.apartments)) {
+      dispatch(
+        setApartments(
+          apartmentsData as {
+            [key: string]: {
+              id: string;
+              name: string;
+              address: string;
+            };
+          }
+        )
+      );
     }
   };
 
   useEffect(() => {
     getApartmentsForuser(user.id);
   }, []);
-
-  useEffect(() => {
-    firestore.collection('apartments').doc(user.id).set(apartments.apartments);
-  }, [apartments]);
 
   return (
     <div className='flex flex-col'>
