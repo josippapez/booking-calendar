@@ -1,4 +1,5 @@
 import {
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   getAuth,
   GoogleAuthProvider,
@@ -15,6 +16,9 @@ import {
 } from 'firebase/firestore';
 
 import firebase from 'firebase/compat/app';
+import { store } from '../store';
+import { setUser } from '../reducers/user';
+import { FirebaseError } from 'firebase/app';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -46,7 +50,7 @@ export const signInWithGoogle = async () => {
   }
 };
 
-const registerWithEmailAndPassword = async (
+export const registerWithEmailAndPassword = async (
   email: string,
   password: string
 ) => {
@@ -60,8 +64,49 @@ const registerWithEmailAndPassword = async (
       authProvider: 'local',
       email,
     });
+    const serializedUser: {
+      id: string;
+      email: string;
+      accessToken: string | null;
+    } = {
+      id: user.uid,
+      email: user.email ? user.email : '',
+      accessToken: await user.getIdToken(),
+    };
+    store.dispatch(setUser(serializedUser));
   } catch (err) {
     console.error(err);
+  }
+};
+
+export const signInEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
+  try {
+    const auth = getAuth(firebase.app());
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+    if (user) {
+      const serializedUser: {
+        id: string;
+        email: string;
+        accessToken: string | null;
+      } = {
+        id: user.uid,
+        email: user.email ? user.email : '',
+        accessToken: await user.getIdToken(),
+      };
+      store.dispatch(setUser(serializedUser));
+    } else {
+      registerWithEmailAndPassword(email, password);
+    }
+  } catch (err) {
+    if (err instanceof FirebaseError) {
+      if (err.code === 'auth/user-not-found') {
+        registerWithEmailAndPassword(email, password);
+      }
+    }
   }
 };
 

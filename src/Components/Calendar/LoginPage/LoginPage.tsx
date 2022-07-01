@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { useFirebase } from 'react-redux-firebase';
 import { useNavigate } from 'react-router';
-import { signInWithGoogle } from '../../../store/firebaseActions/authActions';
+import {
+  signInEmailAndPassword,
+  signInWithGoogle,
+} from '../../../store/firebaseActions/authActions';
 import { useAppDispatch } from '../../../store/hooks';
 import { setUser } from '../../../store/reducers/user';
+import Images from '../../../Styles/Assets/Images/Images';
 import style from './LoginPage.module.scss';
 
 type Props = {};
@@ -17,6 +21,7 @@ const LoginPage = (props: Props) => {
   return (
     <div className='flex justify-center h-[calc(100vh_-_80px)] items-center bg-gray-100'>
       <div className='w-full max-w-xs'>
+        <div className='font-bold text-xl mb-3'>Sign in or Register</div>
         <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'>
           <div className='mb-4'>
             <label
@@ -53,24 +58,15 @@ const LoginPage = (props: Props) => {
                 setPassword(e.target.value);
               }}
             />
-            {/* <p className='text-red-500 text-xs italic'>
-            Please choose a password.
-          </p> */}
           </div>
           <div className='flex items-center justify-center'>
             <button
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
               type='button'
               onClick={() => {
-                firebase
-                  .auth()
-                  .signInWithEmailAndPassword(email, password)
-                  .then(res => {
-                    console.log(res);
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
+                signInEmailAndPassword(email, password).then(() => {
+                  navigate('/');
+                });
               }}
             >
               Sign In
@@ -80,6 +76,9 @@ const LoginPage = (props: Props) => {
             <button
               className={`p-6 mt-4 bg-gray-200 hover:bg-gray-100 rounded focus:outline-none focus:shadow-outline ${style.google}`}
               type='button'
+              style={{
+                backgroundImage: `url(${Images.Google})`,
+              }}
               onClick={() => {
                 signInWithGoogle().then(res => {
                   if (res && res.id && res.email && res.accessToken) {

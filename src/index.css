@@ -28,16 +28,6 @@ textarea {
 }
 
 @font-face {
-  font-family: 'Opensans-Regular';
-  src: url('./Styles/Assets/Fonts/OpenSans/OpenSans-Regular.ttf');
-}
-
-@font-face {
-  font-family: 'Opensans-Bold';
-  src: url('./Styles/Assets/Fonts/OpenSans/OpenSans-Bold.ttf');
-}
-
-@font-face {
   font-family: 'Inter-variable';
   src: url('./Styles/Assets/Fonts/Inter-VariableFont.ttf');
 }

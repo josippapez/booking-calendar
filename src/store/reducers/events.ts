@@ -17,22 +17,8 @@ export const events = createSlice({
   name: 'events',
   initialState,
   reducers: {
-    saveEvents: (state, action: PayloadAction<Events>) => {
+    setEvents: (state, action: PayloadAction<Events>) => {
       state.events = action.payload;
-    },
-    removeEvent: (state, action: PayloadAction<string>) => {
-      if (state.events) {
-        const tempEvents = {} as Events;
-        Object.keys(state.events).map(key => {
-          const filtered = state.events[key].filter(
-            event => event.id !== action.payload
-          );
-          if (filtered.length > 0) {
-            tempEvents[key] = filtered;
-          }
-        });
-        state.events = tempEvents;
-      }
     },
   },
   extraReducers(builder) {
@@ -42,6 +28,6 @@ export const events = createSlice({
   },
 });
 
-export const { saveEvents, removeEvent } = events.actions;
+export const { setEvents } = events.actions;
 
 export default events.reducer;

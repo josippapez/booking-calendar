@@ -31,29 +31,21 @@ module.exports = {
     path: path.join(__dirname, '/dist'),
     filename: '[name].bundle.js',
     publicPath: '/',
-    clean: true
+    clean: true,
   },
   devServer: {
     static: './public',
     port: 3000,
     liveReload: true,
     hot: true,
-    historyApiFallback: true,
+    historyApiFallback: {
+      index: '/',
+    },
   },
   watchOptions: {
     ignored: ['**/node_modules', '**/dist', '**/.git'],
   },
   resolve: {
-    fallback: {
-      module: 'empty',
-      dgram: 'empty',
-      dns: 'mock',
-      fs: 'empty',
-      http2: 'empty',
-      net: 'empty',
-      tls: 'empty',
-      child_process: 'empty',
-    },
     extensions: ['.tsx', '.ts', '.js', '.json', '.jsx'],
     modules: ['node_modules', path.resolve(__dirname, 'src')],
   },
@@ -73,8 +65,8 @@ module.exports = {
         test: /\.css$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { importLoaders: 1 } },
+          devMode ? 'style-loader' : { loader: MiniCssExtractPlugin.loader },
+          { loader: 'css-loader', options: { importLoaders: 2 } },
           'postcss-loader',
         ],
       },
@@ -82,7 +74,7 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          devMode ? 'style-loader' : { loader: MiniCssExtractPlugin.loader },
           {
             loader: 'css-loader',
             options: {
@@ -111,24 +103,6 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'public', 'index.html'),
-      favicon: path.resolve(__dirname, 'public', 'favicon.ico'),
-      filename: 'index.html',
-      manifest: path.resolve(__dirname, 'public', 'manifest.json'),
-      inject: true,
-      minify: devMode
-        ? {}
-        : {
-            removeComments: true,
-            collapseWhitespace: true,
-            removeRedundantAttributes: true,
-            useShortDoctype: true,
-            removeEmptyAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            keepClosingSlash: true,
-            minifyJS: true,
-            minifyCSS: true,
-            minifyURLs: true,
-          },
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'server',
