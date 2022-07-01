@@ -1,7 +1,8 @@
 import isEqual from 'lodash/fp/isEqual';
 import { useEffect, useState } from 'react';
 import { useFirestore } from 'react-redux-firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import isMobileView from '../../../checkForMobileView';
 import {
   editApartment,
   removeApartment,
@@ -13,7 +14,7 @@ import {
   selectApartment,
   setApartments,
 } from '../../../store/reducers/apartments';
-import { saveEvents } from '../../../store/reducers/events';
+import { setEvents } from '../../../store/reducers/events';
 import { persistor } from '../../../store/store';
 
 type Props = {};
@@ -21,6 +22,8 @@ type Props = {};
 const Apartments = (props: Props) => {
   const dispatch = useAppDispatch();
   const firestore = useFirestore();
+  const mobileView = isMobileView();
+  const navigate = useNavigate();
   const user = useAppSelector(state => state.user.user);
   const apartments = useAppSelector(state => state.apartments);
   const [newApartment, setNewApartment] = useState({
@@ -55,30 +58,35 @@ const Apartments = (props: Props) => {
 
   return (
     <div className='flex flex-col'>
-      <div className='font-bold text-xl'>Apartments</div>
-      <button
-        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-fit self-end'
-        type='button'
-        onClick={async () => {
-          logout();
-          await persistor.purge();
-          await persistor.flush();
-        }}
-      >
-        Sign out
-      </button>
+      <div className='flex justify-between'>
+        <div className='font-bold text-xl'>Apartments</div>
+      </div>
       <div className='w-full max-w-xs'>
-        <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'>
+        <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
+          {newApartment.id && (
+            <div
+              className='absolute right-0 top-0 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-white'
+              onClick={() => {
+                setNewApartment({
+                  id: '',
+                  name: '',
+                  address: '',
+                });
+              }}
+            >
+              x
+            </div>
+          )}
           <div className='mb-4'>
             <label
               className='block text-gray-700 text-sm font-bold mb-2'
-              htmlFor='appartmentName'
+              htmlFor='apartmentName'
             >
               Apartment Name
             </label>
             <input
               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-              id='appartmentName'
+              id='apartmentName'
               type='text'
               placeholder='Apartment Name'
               value={newApartment.name}
@@ -90,13 +98,13 @@ const Apartments = (props: Props) => {
           <div className='mb-6'>
             <label
               className='block text-gray-700 text-sm font-bold mb-2'
-              htmlFor='appartmentAddress'
+              htmlFor='apartmentAddress'
             >
               Apartment Address
             </label>
             <input
               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
-              id='appartmentAddress'
+              id='apartmentAddress'
               type='text'
               placeholder='Apartment Address'
               value={newApartment.address}
@@ -167,6 +175,18 @@ const Apartments = (props: Props) => {
                 <tr
                   className='bg-white border-b dark:bg-gray-800 dark:border-gray-700'
                   key={apartments.apartments[apartment].id}
+                  onClick={() => {
+                    if (
+                      apartments.selectedApartment?.id !==
+                      apartments.apartments[apartment].id
+                    ) {
+                      dispatch(setEvents({}));
+                    }
+                    dispatch(selectApartment(apartments.apartments[apartment]));
+                    navigate(
+                      `/apartments/${apartments.apartments[apartment].id}`
+                    );
+                  }}
                 >
                   <th
                     scope='row'
@@ -177,10 +197,15 @@ const Apartments = (props: Props) => {
                   <td className='font-bold px-6 py-4'>
                     {apartments.apartments[apartment].address}
                   </td>
-                  <td className='px-6 py-4 text-right'>
+                  <td
+                    className={`px-6 py-4 text-right ${
+                      mobileView ? 'flex' : ''
+                    }`}
+                  >
                     <button
                       className='font-medium text-blue-600 dark:text-blue-500 hover:underline'
-                      onClick={() => {
+                      onClick={e => {
+                        e.stopPropagation();
                         dispatch(
                           removeApartment(apartments.apartments[apartment].id)
                         );
@@ -190,30 +215,33 @@ const Apartments = (props: Props) => {
                     </button>
                     <button
                       className='font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4'
-                      onClick={() => {
+                      onClick={e => {
+                        e.stopPropagation();
                         setNewApartment(apartments.apartments[apartment]);
                       }}
                     >
                       Edit
                     </button>
-                    <Link
-                      key={apartments.apartments[apartment].id}
-                      to={`/apartments/${apartments.apartments[apartment].id}`}
-                      className='font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4'
-                      onClick={() => {
-                        if (
-                          apartments.selectedApartment?.id !==
-                          apartments.apartments[apartment].id
-                        ) {
-                          dispatch(saveEvents({}));
-                        }
-                        dispatch(
-                          selectApartment(apartments.apartments[apartment])
-                        );
-                      }}
-                    >
-                      Select
-                    </Link>
+                    {!mobileView && (
+                      <Link
+                        key={apartments.apartments[apartment].id}
+                        to={`/apartments/${apartments.apartments[apartment].id}`}
+                        className='font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4'
+                        onClick={() => {
+                          if (
+                            apartments.selectedApartment?.id !==
+                            apartments.apartments[apartment].id
+                          ) {
+                            dispatch(setEvents({}));
+                          }
+                          dispatch(
+                            selectApartment(apartments.apartments[apartment])
+                          );
+                        }}
+                      >
+                        Select
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}

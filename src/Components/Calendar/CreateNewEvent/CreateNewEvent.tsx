@@ -200,12 +200,7 @@ const CreateNewEvent = (props: Props) => {
               <button
                 className='font-bold'
                 onClick={() => {
-                  if (
-                    newEvent.title &&
-                    newEvent.start &&
-                    newEvent.end &&
-                    newEvent.color
-                  ) {
+                  if (newEvent.start && newEvent.end && newEvent.color) {
                     const dates = eachDayOfRange(newEvent.start, newEvent.end);
                     setEvents({
                       ...events,

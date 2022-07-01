@@ -74,7 +74,8 @@ const DayDetails = (props: Props) => {
                 </div>
                 <button
                   className='bg-gray-300 hover:bg-slate-500 font-bold py-2 px-4 rounded text-lg'
-                  onClick={() => {
+                  onClick={e => {
+                    e.stopPropagation();
                     removeEvent(event.id);
                   }}
                 >

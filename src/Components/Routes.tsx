@@ -4,6 +4,7 @@ import { useAppSelector } from '../store/hooks';
 import Apartments from './Calendar/Apartments/Apartments';
 import LoginPage from './Calendar/LoginPage/LoginPage';
 import PageLoader from './Shared/Loader/PageLoader';
+import Navbar from './Shared/Navbar/Navbar';
 const CalendarPage = lazy(() => import('./Calendar/Calendar'));
 
 export const ProtectedRoutes = () => {
@@ -32,43 +33,22 @@ export const ProtectedRoutes = () => {
     }
   }, []);
 
-  return user && user.accessToken ? (
-    <Routes>
-      <Route
-        path='/'
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <Apartments />
-          </Suspense>
-        }
-      />
-      <Route
-        path='/apartments'
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <Apartments />
-          </Suspense>
-        }
-      />
-      <Route
-        path='/apartments/:id'
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <CalendarPage />
-          </Suspense>
-        }
-      />
-    </Routes>
-  ) : (
-    <Routes>
-      <Route
-        path='/'
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <LoginPage />
-          </Suspense>
-        }
-      />
-    </Routes>
+  return (
+    <Suspense fallback={<PageLoader />}>
+      {user.accessToken && <Navbar />}
+      <div className='min-h-[calc(100vh_-_60px)] h-auto min-w-screen w-full bg-gray-100 p-10'>
+        {user && user.accessToken ? (
+          <Routes>
+            <Route path='/' element={<Apartments />} />
+            <Route path='/apartments' element={<Apartments />} />
+            <Route path='/apartments/:id' element={<CalendarPage />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path='/' element={<LoginPage />} />
+          </Routes>
+        )}
+      </div>
+    </Suspense>
   );
 };
