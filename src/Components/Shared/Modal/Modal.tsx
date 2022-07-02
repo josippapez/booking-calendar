@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import style from './Modal.module.scss';
 
 interface Props {
@@ -19,8 +21,24 @@ interface Props {
 const Modal = (props: Props): JSX.Element => {
   const { closeModal, position, children, show, height, width, animation } =
     props;
-  return (
+  useEffect(() => {
+    document.body.style.overflow = show ? 'hidden' : 'auto';
+  }, [show]);
+
+  return ReactDOM.createPortal(
     <div
+      ref={el => {
+        if (el) {
+          if (show) {
+            setTimeout(() => {
+              el.style.overflowY = 'auto';
+            }, 250);
+          } else {
+            el.style.overflowY = 'hidden';
+          }
+        }
+      }}
+      id='modal-overlay'
       style={{
         display: !show ? 'none' : 'flex',
       }}
@@ -47,7 +65,8 @@ const Modal = (props: Props): JSX.Element => {
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.getElementById('root') as Element
   );
 };
 
