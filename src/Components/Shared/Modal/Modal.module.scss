@@ -2,7 +2,6 @@
   user-select: none;
   position: fixed;
   display: flex;
-  overflow-y: auto;
   width: 100vw;
   height: 100vh;
   top: 0;
@@ -24,7 +23,7 @@
     align-items: end;
     justify-content: center;
   }
-  &.tom {
+  &.top {
     align-items: start;
     justify-content: center;
   }
@@ -42,23 +41,23 @@
 }
 
 .fade {
-  animation: fadeIn 0.1s ease-in-out;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .slide-left {
-  animation: slide-left 0.1s ease-in-out;
+  animation: slide-left 0.2s ease-in-out;
 }
 
 .slide-right {
-  animation: slide-right 0.1s ease-in-out;
+  animation: slide-right 0.2s ease-in-out;
 }
 
 .slide-top {
-  animation: slide-top 0.1s ease-in-out;
+  animation: slide-top 0.2s ease-in-out;
 }
 
 .slide-bottom {
-  animation: slide-bottom 0.1s ease-in-out;
+  animation: slide-bottom 0.2s ease-in-out;
 }
 
 @keyframes fadeIn {

@@ -32,7 +32,6 @@ const DayDetails = (props: Props) => {
         className='p-4 bg-white rounded-t-md'
         style={{
           width: isMobileView ? '100vw' : '80vw',
-          minHeight: isMobileView ? '100vh' : '30vh',
         }}
       >
         {events &&
