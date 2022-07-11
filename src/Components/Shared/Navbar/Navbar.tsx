@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import isMobileView from '../../../checkForMobileView';
 import { logout } from '../../../store/firebaseActions/authActions';
 import { persistor } from '../../../store/store';
 
@@ -8,6 +9,7 @@ type Props = {};
 function Navbar({}: Props) {
   const [dropdownOpenned, setDropdownOpenned] = useState(false);
   const component = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (dropdownOpenned) {
@@ -35,8 +37,11 @@ function Navbar({}: Props) {
   return (
     <nav
       ref={component}
-      className='bg-white border-gray-200 px-10 py-2.5 rounded dark:bg-gray-800 relative'
+      className={`page-container bg-white border-gray-200 ${
+        isMobileView() ? 'px-4 py-2.5' : 'px-10 py-2.5'
+      } rounded dark:bg-gray-800 relative`}
     >
+      <div></div>
       <div className='flex flex-wrap justify-between items-center'>
         <div className='flex gap-[20px]'>
           <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
@@ -67,6 +72,7 @@ function Navbar({}: Props) {
               logout();
               await persistor.purge();
               await persistor.flush();
+              navigate('/');
             }}
           >
             Sign out
@@ -101,6 +107,7 @@ function Navbar({}: Props) {
           </button>
         </div>
       </div>
+      <div></div>
       <div
         className='hidden md:hidden justify-between items-center w-full md:w-auto md:order-1 absolute px-4 py-2.5 bg-white z-10 left-0 top-[60px] shadow-lg'
         id='mobile-menu-2'
@@ -123,6 +130,7 @@ function Navbar({}: Props) {
                 logout();
                 await persistor.purge();
                 await persistor.flush();
+                navigate('/');
               }}
             >
               Sign out

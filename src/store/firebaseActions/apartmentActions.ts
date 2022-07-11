@@ -1,5 +1,5 @@
 import firebase from 'firebase/compat/app';
-import { doc, setDoc, getFirestore, deleteDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getFirestore, setDoc } from 'firebase/firestore';
 import { setApartments } from '../reducers/apartments';
 import { AppDispatch, AppState } from './../store';
 

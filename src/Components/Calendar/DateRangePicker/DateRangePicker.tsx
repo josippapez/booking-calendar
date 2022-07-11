@@ -1,6 +1,7 @@
 import { DateTime, Interval } from 'luxon';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import calculateEachDayOfMonth from '../../../Hooks/calculateEachDayOfMonth';
+import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Day, Event } from '../CalendarTypes';
 import style from './DateRangePicker.module.scss';
@@ -134,7 +135,7 @@ const DateRangePicker = (props: Props) => {
     >
       <div className='p-4 bg-white rounded-md relative'>
         <div className='flex justify-center select-none gap-3'>
-          <div className='flex items-center border-2 w-fit rounded-md'>
+          <div className='flex items-center border-t-2 border-b-2 w-36 rounded-md h-10'>
             <button
               onClick={() => {
                 if (selectedMonth === 1) {
@@ -144,11 +145,15 @@ const DateRangePicker = (props: Props) => {
                 }
                 setSelectedMonth(selectedMonth - 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3'
-            >
-              {'<'}
-            </button>
-            <h2 className='w-fit px-5 min-w-[70px] text-center select-none font-bold'>
+              style={{
+                backgroundImage: `url(${Images.LeftArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+            />
+            <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedMonth}
             </h2>
             <button
@@ -160,31 +165,44 @@ const DateRangePicker = (props: Props) => {
                 }
                 setSelectedMonth(selectedMonth + 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3'
-            >
-              {'>'}
-            </button>
+              style={{
+                backgroundImage: `url(${Images.RightArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+            />
           </div>
-          <div className='flex items-center border-2 w-fit rounded-md'>
+          <div className='flex items-center border-t-2 border-b-2 w-[165px] rounded-md h-10'>
             <button
               onClick={() => {
                 setSelectedYear(selectedYear - 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3'
-            >
-              {'<'}
-            </button>
-            <h2 className='w-fit px-5 min-w-[70px] text-center select-none font-bold'>
+              style={{
+                backgroundImage: `url(${Images.LeftArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+            />
+
+            <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedYear}
             </h2>
             <button
               onClick={() => {
                 setSelectedYear(selectedYear + 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3'
-            >
-              {'>'}
-            </button>
+              style={{
+                backgroundImage: `url(${Images.RightArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+            />
           </div>
         </div>
         <div className={`${style.dateRangeGrid} my-4`}>
