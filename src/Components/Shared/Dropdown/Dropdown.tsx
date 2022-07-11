@@ -43,7 +43,8 @@ function Dropdown(props: Props) {
       <div
         className={`${style.dropdownInput}
         bg-white cursor-pointer border-2
-        border-gray-300 rounded-md p-1 flex`}
+        border-gray-300 rounded-md p-1 flex overflow-hidden
+        justify-between relative`}
         onClick={() => {
           setOpennedDropdown(!opennedDropdown);
         }}
@@ -61,7 +62,9 @@ function Dropdown(props: Props) {
             width: 'auto',
           }}
           alt='arrow'
-          className={style.arrow}
+          className={`${style.arrow} absolute
+          right-0 top-0
+          bg-transparent backdrop-blur-md`}
         />
       </div>
       {opennedDropdown && (
