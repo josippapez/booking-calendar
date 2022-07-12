@@ -8,14 +8,12 @@ import {
   removeApartment,
   saveApartment,
 } from '../../../store/firebaseActions/apartmentActions';
-import { logout } from '../../../store/firebaseActions/authActions';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
   selectApartment,
   setApartments,
 } from '../../../store/reducers/apartments';
 import { setEvents } from '../../../store/reducers/events';
-import { persistor } from '../../../store/store';
 
 type Props = {};
 
@@ -57,7 +55,7 @@ const Apartments = (props: Props) => {
   }, []);
 
   return (
-    <div className='flex flex-col'>
+    <div className={`${isMobileView() ? 'py-10 px-4' : 'page-container p-10'}`}>
       <div className='flex justify-between'>
         <div className='font-bold text-xl'>Apartments</div>
       </div>
@@ -173,7 +171,7 @@ const Apartments = (props: Props) => {
               apartments?.apartments &&
               Object.keys(apartments.apartments).map(apartment => (
                 <tr
-                  className='bg-white border-b dark:bg-gray-800 dark:border-gray-700'
+                  className='bg-white border-b cursor-pointer hover:bg-gray-100 hover:transition-colors duration-150'
                   key={apartments.apartments[apartment].id}
                   onClick={() => {
                     if (

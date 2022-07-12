@@ -1,17 +1,30 @@
 import { useEffect, useState } from 'react';
+import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Event } from '../CalendarTypes';
 
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
+  setShowEdit: (state: boolean) => void;
+  setSelectedEventToEdit: (event: Event) => void;
+  setSelectedDay: (day: string | null) => void;
   events: Event[];
   isMobileView: boolean;
   removeEvent: (eventId: string) => void;
 };
 
 const DayDetails = (props: Props) => {
-  const { show, setShow, events, isMobileView, removeEvent } = props;
+  const {
+    show,
+    setShow,
+    events,
+    isMobileView,
+    removeEvent,
+    setShowEdit,
+    setSelectedEventToEdit,
+    setSelectedDay,
+  } = props;
 
   const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
 
@@ -19,19 +32,22 @@ const DayDetails = (props: Props) => {
     if (!events || events.length === 0) {
       setShow(false);
     }
-  }, [events]);
+    if (!show) {
+      setSelectedDay(null);
+    }
+  }, [events, show]);
 
   return (
     <Modal
-      animation='slide-bottom'
-      position='bottom'
+      animation='fade'
+      position='center'
       show={show}
       closeModal={() => setShow(false)}
     >
       <div
-        className='p-4 bg-white rounded-t-md'
+        className='p-4 bg-white rounded-md'
         style={{
-          width: isMobileView ? '100vw' : '80vw',
+          width: isMobileView ? '90vw' : '50vw',
         }}
       >
         {events &&
@@ -39,7 +55,7 @@ const DayDetails = (props: Props) => {
           events.map((event, index) => (
             <div
               key={event.id}
-              className={`flex flex-col bg-gray-200 py-3 px-2 rounded cursor-pointer items-center ${
+              className={`flex flex-col py-3 px-2 rounded cursor-pointer items-center ${
                 index > 0 && 'mt-4'
               }`}
               onClick={() => {
@@ -50,7 +66,7 @@ const DayDetails = (props: Props) => {
                 setSelectedEvent(event);
               }}
             >
-              <div className='flex justify-between w-full'>
+              <div className='flex justify-between w-full h-10'>
                 <div className='flex items-center'>
                   <div
                     className='rounded-full font-bold h-6 w-6 text-center'
@@ -68,18 +84,41 @@ const DayDetails = (props: Props) => {
                     }}
                   >
                     <div className='flex-1'>{event.title}</div>
-                    <div className='flex-1'>{event.description}</div>
                   </div>
                 </div>
-                <button
-                  className='bg-gray-300 hover:bg-slate-500 font-bold py-2 px-4 rounded text-lg'
-                  onClick={e => {
-                    e.stopPropagation();
-                    removeEvent(event.id);
-                  }}
-                >
-                  -
-                </button>
+                <div className='flex items-center gap-3'>
+                  <button
+                    className='hover:bg-slate-500 py-2 px-4 rounded-md'
+                    style={{
+                      backgroundImage: `url(${Images.Edit})`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      backgroundSize: 'contain',
+                      height: '100%',
+                      width: 'auto',
+                    }}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setSelectedEventToEdit(event);
+                      setShowEdit(true);
+                    }}
+                  />
+                  <button
+                    className='hover:bg-slate-500 py-2 px-4 rounded-md'
+                    style={{
+                      backgroundImage: `url(${Images.Bin})`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      backgroundSize: 'contain',
+                      height: '100%',
+                      width: 'auto',
+                    }}
+                    onClick={e => {
+                      e.stopPropagation();
+                      removeEvent(event.id);
+                    }}
+                  />
+                </div>
               </div>
               {selectedEvent && selectedEvent.id === event.id && (
                 <div className='flex flex-col w-full p-2'>

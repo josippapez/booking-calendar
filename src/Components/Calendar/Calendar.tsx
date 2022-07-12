@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { useCallback, useEffect, useState } from 'react';
 import { useFirestore } from 'react-redux-firebase';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import isMobileView from '../../checkForMobileView';
 import calculateEachDayOfMonth from '../../Hooks/calculateEachDayOfMonth';
 import {
@@ -9,7 +9,10 @@ import {
   saveEventsForApartment,
 } from '../../store/firebaseActions/eventActions';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectApartment } from '../../store/reducers/apartments';
 import { setEvents } from '../../store/reducers/events';
+import Images from '../../Styles/Assets/Images/Images';
+import Dropdown from '../Shared/Dropdown/Dropdown';
 import style from './Calendar.module.scss';
 import { Event } from './CalendarTypes';
 import CreateNewEvent from './CreateNewEvent/CreateNewEvent';
@@ -20,11 +23,17 @@ type Props = {};
 const Calendar = (props: Props) => {
   const dispatch = useAppDispatch();
   const naviagtionParams = useParams();
+  const navigate = useNavigate();
   const firestore = useFirestore();
 
   const eventsData = useAppSelector(state => state.events.events);
+  const apartments = useAppSelector(state => state.apartments);
+  const [showEditEvent, setShowEditEvent] = useState(false);
   const [showDayDetails, setShowDayDetails] = useState(false);
   const [addNewEvent, setAddNewEvent] = useState(false);
+  const [selectedEventToEdit, setSelectedEventToEdit] = useState<null | Event>(
+    null
+  );
   const [selectedDay, setSelectedDay] = useState<null | string>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(
     DateTime.local().month
@@ -34,7 +43,7 @@ const Calendar = (props: Props) => {
   );
 
   const mobileView = isMobileView();
-  1;
+
   const eachDayOfMonth = calculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
@@ -68,8 +77,8 @@ const Calendar = (props: Props) => {
   );
 
   const getEventsById = async (id: string) => {
-    const event = await (
-      await firestore.collection('events').doc(id).get()
+    const event = (
+      await firestore.collection('events').doc(`${id}/data/private`).get()
     ).data();
 
     if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
@@ -87,7 +96,7 @@ const Calendar = (props: Props) => {
     if (naviagtionParams && naviagtionParams.id) {
       getEventsById(naviagtionParams.id);
     }
-  }, []);
+  }, [navigate]);
 
   const calculateBiggestIndexByWeekNumber = useCallback(() => {
     let biggestIndex = 0;
@@ -102,15 +111,43 @@ const Calendar = (props: Props) => {
   }, [eventsData, eachDayOfMonth]);
 
   return (
-    <div>
+    <div
+      className={`${isMobileView() ? 'py-10 px-2.5' : 'page-container p-10'}`}
+    >
       <div
         className={`flex justify-between ${
           mobileView ? 'flex-col' : 'flex-row'
         }`}
       >
-        <div className='font-bold text-xl'>Calendar</div>
+        <div
+          className={`font-bold text-xl flex gap-3 ${isMobileView() && 'mb-3'}`}
+        >
+          <Dropdown
+            placeholder='Select apartment'
+            data={Object.keys(apartments?.apartments).map(key => {
+              return {
+                id: apartments.apartments[key].id,
+                name: apartments.apartments[key].name,
+                value: apartments.apartments[key],
+              };
+            })}
+            selected={naviagtionParams.id}
+            setData={item => {
+              if (item !== naviagtionParams.id) {
+                dispatch(selectApartment(apartments.apartments[item]));
+                navigate(`/apartments/${item}`);
+              }
+            }}
+          />
+          <button
+            className='rounded-md h-10 border-2 px-3 bg-white hover:bg-neutral-300'
+            onClick={() => navigate(`/${naviagtionParams.id}`)}
+          >
+            Public View
+          </button>
+        </div>
         <div className={`${style.dateNavigation} flex select-none gap-3`}>
-          <div className='flex items-center border-2 w-fit rounded-md'>
+          <div className='flex items-center border-t-2 border-b-2 w-36 rounded-md h-10'>
             <button
               onClick={() => {
                 if (selectedMonth === 1) {
@@ -120,11 +157,15 @@ const Calendar = (props: Props) => {
                 }
                 setSelectedMonth(selectedMonth - 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-            >
-              {'<'}
-            </button>
-            <h2 className='w-fit px-5 select-none font-bold'>
+              style={{
+                backgroundImage: `url(${Images.LeftArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+            />
+            <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedMonth}
             </h2>
             <button
@@ -136,29 +177,43 @@ const Calendar = (props: Props) => {
                 }
                 setSelectedMonth(selectedMonth + 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-            >
-              {'>'}
-            </button>
+              style={{
+                backgroundImage: `url(${Images.RightArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+            />
           </div>
-          <div className='flex items-center border-2 w-fit rounded-md'>
+          <div className='flex items-center border-t-2 border-b-2 w-[165px] rounded-md h-10'>
             <button
               onClick={() => {
                 setSelectedYear(selectedYear - 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-            >
-              {'<'}
-            </button>
-            <h2 className='w-fit px-5 select-none font-bold'>{selectedYear}</h2>
+              style={{
+                backgroundImage: `url(${Images.LeftArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+            />
+            <h2 className='w-full text-center px-5 select-none font-bold'>
+              {selectedYear}
+            </h2>
             <button
               onClick={() => {
                 setSelectedYear(selectedYear + 1);
               }}
-              className='bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4'
-            >
-              {'>'}
-            </button>
+              style={{
+                backgroundImage: `url(${Images.RightArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+            />
           </div>
         </div>
       </div>
@@ -191,9 +246,9 @@ const Calendar = (props: Props) => {
               <div
                 key={index}
                 className={`relative border-slate-300 border-t-2
-              hover:border-blue-400 ${
-                mobileView ? style.mobileGridItem : style.gridItem
-              }`}
+                hover:border-blue-300 hover:border-2 ${
+                  mobileView ? style.mobileGridItem : style.gridItem
+                }`}
                 onClick={() => {
                   if (eventsData[day.date]) {
                     setSelectedDay(day.date);
@@ -249,7 +304,9 @@ const Calendar = (props: Props) => {
                               B
                             </div>
                           )}
-                          {event.title}
+                          <div className='text-ellipsis whitespace-nowrap overflow-hidden'>
+                            {event.title}
+                          </div>
                         </div>
                       );
                     }) &&
@@ -259,18 +316,24 @@ const Calendar = (props: Props) => {
             );
           })}
         </div>
-        <CreateNewEvent
-          show={addNewEvent}
-          setShow={setAddNewEvent}
-          events={eventsData}
-          setEvents={events => dispatch(saveEventsForApartment(events))}
-        />
         <DayDetails
           show={showDayDetails}
           setShow={setShowDayDetails}
+          setShowEdit={setShowEditEvent}
+          setSelectedDay={setSelectedDay}
+          setSelectedEventToEdit={setSelectedEventToEdit}
           events={selectedDay ? eventsData[selectedDay] : []}
           isMobileView={mobileView}
           removeEvent={id => dispatch(removeEventForApartment(id))}
+        />
+        <CreateNewEvent
+          show={addNewEvent}
+          showEdit={showEditEvent}
+          setShowEdit={setShowEditEvent}
+          setShow={setAddNewEvent}
+          selectedEventToEdit={selectedEventToEdit}
+          events={eventsData}
+          setEvents={events => dispatch(saveEventsForApartment(events))}
         />
       </div>
       <div className='fixed bottom-0 right-0 p-3 w-fit'>

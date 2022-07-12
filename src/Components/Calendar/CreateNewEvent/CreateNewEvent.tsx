@@ -9,12 +9,23 @@ import style from './CreateNewEvent.module.scss';
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
+  showEdit: boolean;
+  setShowEdit: (state: boolean) => void;
+  selectedEventToEdit: Event | null;
   setEvents: (events: { [key: string]: Event[] }) => void;
   events: { [key: string]: Event[] };
 };
 
 const CreateNewEvent = (props: Props) => {
-  const { show, setShow, events, setEvents } = props;
+  const {
+    show,
+    setShow,
+    events,
+    setEvents,
+    setShowEdit,
+    showEdit,
+    selectedEventToEdit,
+  } = props;
 
   const [newEvent, setNewEvent] = useState<Event>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
@@ -44,6 +55,8 @@ const CreateNewEvent = (props: Props) => {
         name: day.toFormat('EEEE'),
         lastMonth: false,
         weekNumber: day.weekNumber,
+        startingDay: i === 0,
+        endingDay: i === daysInMonth.days,
       });
     }
 
@@ -51,8 +64,11 @@ const CreateNewEvent = (props: Props) => {
   };
 
   useEffect(() => {
+    if (showEdit && selectedEventToEdit && selectedEventToEdit.id) {
+      setNewEvent(selectedEventToEdit);
+    }
     return () => {
-      if (!show) {
+      if (!show || !showEdit) {
         setNewEvent({
           id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
           title: '',
@@ -66,7 +82,7 @@ const CreateNewEvent = (props: Props) => {
         });
       }
     };
-  }, [show]);
+  }, [show, showEdit]);
 
   const colors = [
     '#e63946',
@@ -76,7 +92,9 @@ const CreateNewEvent = (props: Props) => {
     '#e773ad',
     '#f3b0ff',
     '#fca1d9',
-    '#b2f726',
+    '#254D32',
+    '#3A7D44',
+    '#181D27',
     '#2b2d42',
     '#023047',
     '#27d9f7',
@@ -89,7 +107,14 @@ const CreateNewEvent = (props: Props) => {
 
   return (
     <>
-      <Modal animation='fade' show={show} closeModal={() => setShow(false)}>
+      <Modal
+        animation='fade'
+        show={show || showEdit}
+        closeModal={() => {
+          setShow(false);
+          setShowEdit(false);
+        }}
+      >
         <div>
           <div className='p-4 bg-white rounded-t-md'>
             <h2 className='text-center font-bold mb-4'>Add New Reservation</h2>
@@ -178,7 +203,7 @@ const CreateNewEvent = (props: Props) => {
           </div>
           <div className='bg-gray-200 p-4 border-t-2 rounded-b-md'>
             <div
-              className='flex flex-col justify-center'
+              className='flex flex-col justify-center text-center'
               onClick={() => {
                 setShowDateRangePicker(true);
               }}
@@ -189,7 +214,7 @@ const CreateNewEvent = (props: Props) => {
                   {newEvent.start &&
                     DateTime.fromISO(newEvent.start).toFormat('dd. MM. yyyy.')}
                 </div>
-                <div className='px-2 text-center w-[10%]'>-</div>
+                <div className='px-2 w-[10%]'>-</div>
                 <div className='font-bold w-[45%]'>
                   {newEvent.end &&
                     DateTime.fromISO(newEvent.end).toFormat('dd. MM. yyyy.')}
@@ -201,14 +226,40 @@ const CreateNewEvent = (props: Props) => {
                 className='font-bold'
                 onClick={() => {
                   if (newEvent.start && newEvent.end && newEvent.color) {
+                    let editedEvents = { ...events };
+                    if (showEdit && selectedEventToEdit) {
+                      const datesToEdit = eachDayOfRange(
+                        selectedEventToEdit.start,
+                        selectedEventToEdit.end
+                      );
+                      datesToEdit.map(date => {
+                        if (editedEvents[date.date]) {
+                          const eventForDayIndex = editedEvents[
+                            date.date
+                          ].findIndex(event => event.id === newEvent.id);
+
+                          if (eventForDayIndex !== -1) {
+                            editedEvents = {
+                              ...editedEvents,
+                              [date.date]: [
+                                ...editedEvents[date.date].filter(
+                                  event => event.id !== newEvent.id
+                                ),
+                              ],
+                            };
+                          }
+                        }
+                      });
+                    }
                     const dates = eachDayOfRange(newEvent.start, newEvent.end);
                     setEvents({
-                      ...events,
+                      ...editedEvents,
                       ...dates.reduce(
                         (acc, date) => ({
                           ...acc,
                           [date.date]: [
-                            ...((events && events[date.date]) || []),
+                            ...((editedEvents && editedEvents[date.date]) ||
+                              []),
                             { ...newEvent, weekNumber: date.weekNumber },
                           ],
                         }),
@@ -216,6 +267,7 @@ const CreateNewEvent = (props: Props) => {
                       ),
                     });
                     setShow(false);
+                    setShowEdit(false);
                   }
                 }}
                 style={{

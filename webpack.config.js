@@ -104,10 +104,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'public', 'index.html'),
     }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'server',
-      openAnalyzer: false,
-    }),
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: 'server',
+    //   openAnalyzer: false,
+    // }),
     new DuplicateReporterPlugin(),
   ].concat(devMode ? [] : [new MiniCssExtractPlugin()]),
   optimization: {
