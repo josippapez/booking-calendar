@@ -180,9 +180,9 @@ const PublicCalendar = (props: Props) => {
                     `}
                     style={{
                       background: startingDay
-                        ? 'linear-gradient(to right top, transparent 50%, #DC2726 50.3%)'
+                        ? 'linear-gradient(to right bottom, transparent 50%, #DC2726 50.3%)'
                         : endingDay
-                        ? 'linear-gradient(to right top, #DC2726 50%, transparent 50.3%)'
+                        ? 'linear-gradient(to right bottom, #DC2726 50%, transparent 50.3%)'
                         : '',
                     }}
                   />

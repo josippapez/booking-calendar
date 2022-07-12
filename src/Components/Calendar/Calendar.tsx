@@ -43,7 +43,7 @@ const Calendar = (props: Props) => {
   );
 
   const mobileView = isMobileView();
-  1;
+
   const eachDayOfMonth = calculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
