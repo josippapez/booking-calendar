@@ -120,9 +120,24 @@ module.exports = () => {
               minifyURLs: true,
             },
       }),
-      new DotenvWebpackPlugin({
-        path: './.env',
-        safe: false,
+      new webpack.DefinePlugin({
+        'process.env.REACT_APP_APIKEY': JSON.stringify(
+          'AIzaSyAHFz7EWTsukfWQxBxmoilBfbfbHgJgbSw'
+        ),
+        'process.env.REACT_APP_AUTHDOMAIN': JSON.stringify(
+          'booking-calendar-d63cb.firebaseapp.com'
+        ),
+        'process.env.REACT_APP_PROJECTID': JSON.stringify(
+          'booking-calendar-d63cb'
+        ),
+        'process.env.REACT_APP_STORAGE_BUCKET': JSON.stringify(
+          'booking-calendar-d63cb.appspot.com'
+        ),
+        'process.env.REACT_APP_MESSAGING_SENDER_ID':
+          JSON.stringify('463988129681'),
+        'process.env.REACT_APP_APP_ID': JSON.stringify(
+          '1:463988129681:web:821fa9037e9d77e4d9e430'
+        ),
       }),
       // new BundleAnalyzerPlugin({
       //   analyzerMode: 'server',
