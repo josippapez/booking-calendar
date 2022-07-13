@@ -16,6 +16,7 @@ const LoginPage = (props: Props) => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   return (
     <div className='flex justify-center h-screen items-center'>
       <div className='w-full max-w-xs'>
@@ -74,9 +75,6 @@ const LoginPage = (props: Props) => {
             <button
               className={`p-6 mt-4 bg-gray-200 hover:bg-gray-100 rounded focus:outline-none focus:shadow-outline ${style.google}`}
               type='button'
-              style={{
-                backgroundImage: `url(${Images.Google})`,
-              }}
               onClick={() => {
                 signInWithGoogle().then(res => {
                   if (res && res.id && res.email && res.accessToken) {
