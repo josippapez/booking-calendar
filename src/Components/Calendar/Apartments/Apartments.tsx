@@ -15,6 +15,7 @@ import {
   setApartments,
 } from '../../../store/reducers/apartments';
 import { setEvents } from '../../../store/reducers/events';
+import Images from '../../../Styles/Assets/Images/Images';
 
 type Props = {};
 
@@ -32,6 +33,8 @@ const Apartments = (props: Props) => {
     address: '',
     email: '',
   });
+  const emailRegex =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   const getApartmentsForuser = async (id: string) => {
     const apartmentsData = await (
@@ -67,7 +70,13 @@ const Apartments = (props: Props) => {
         <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
           {newApartment.id && (
             <div
-              className='absolute right-0 top-0 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-white'
+              className={`absolute right-0 top-0 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-white`}
+              style={{
+                backgroundImage: `url(${Images.XCircle})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundSize: 'contain',
+              }}
               onClick={() => {
                 setNewApartment({
                   id: '',
@@ -76,9 +85,7 @@ const Apartments = (props: Props) => {
                   email: '',
                 });
               }}
-            >
-              x
-            </div>
+            />
           )}
           <div className='mb-4'>
             <label
@@ -127,7 +134,13 @@ const Apartments = (props: Props) => {
               {t('apartment_email')}
             </label>
             <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
+              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
+                newApartment.email
+                  ? emailRegex.test(newApartment.email)
+                    ? 'border-green-500'
+                    : 'border-red-500'
+                  : ''
+              }`}
               id='appartmentEmail'
               type='text'
               placeholder='Apartment Email'
@@ -142,13 +155,18 @@ const Apartments = (props: Props) => {
           </div>
           <div className='flex items-center justify-between'>
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+              disabled={
+                !newApartment.address ||
+                !newApartment.name ||
+                !emailRegex.test(newApartment.email)
+              }
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400'
               type='button'
               onClick={() => {
                 if (
                   newApartment.address &&
                   newApartment.name &&
-                  newApartment.email
+                  emailRegex.test(newApartment.email)
                 ) {
                   if (newApartment.id) {
                     dispatch(editApartment(newApartment));

@@ -7,7 +7,6 @@ import isMobileView from '../../../checkForMobileView';
 import calculateEachDayOfMonth from '../../../Hooks/calculateEachDayOfMonth';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { setEvents } from '../../../store/reducers/events';
-import { NewReservationTemplate } from '../../../store/sendgridActions/NewReservationTemplate';
 import Images from '../../../Styles/Assets/Images/Images';
 import { Event } from '../../Calendar/CalendarTypes';
 import CreateNewReservation from '../../Calendar/CreateNewReservation/CreateNewReservation';
