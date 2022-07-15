@@ -2,6 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /events/{event} {
+      allow write, update, delete : if request.auth != null;
+      allow read;
       match /data/private {
       	allow read, write, update, delete : if request.auth != null;
       }

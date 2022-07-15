@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import {
   signInEmailAndPassword,
@@ -6,28 +7,29 @@ import {
 } from '../../store/firebaseActions/authActions';
 import { useAppDispatch } from '../../store/hooks';
 import { setUser } from '../../store/reducers/user';
-import Images from '../../Styles/Assets/Images/Images';
 import style from './LoginPage.module.scss';
 
 type Props = {};
 
 const LoginPage = (props: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   return (
     <div className='flex justify-center h-screen items-center'>
       <div className='w-full max-w-xs'>
-        <div className='font-bold text-xl mb-3'>Sign in or Register</div>
+        <div className='font-bold text-xl mb-3'>{t('header')}</div>
         <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'>
           <div className='mb-4'>
             <label
               className='block text-gray-700 text-sm font-bold mb-2'
               htmlFor='email'
             >
-              Email
+              {t('email')}
             </label>
             <input
               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
@@ -40,12 +42,12 @@ const LoginPage = (props: Props) => {
               }}
             />
           </div>
-          <div className='mb-6'>
+          <div className='mb-4'>
             <label
               className='block text-gray-700 text-sm font-bold mb-2'
               htmlFor='password'
             >
-              Password
+              {t('password')}
             </label>
             <input
               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
@@ -58,17 +60,23 @@ const LoginPage = (props: Props) => {
               }}
             />
           </div>
+          <div className='text-red-500 mb-6'>{t(loginError)}</div>
           <div className='flex items-center justify-center'>
             <button
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
               type='button'
               onClick={() => {
-                signInEmailAndPassword(email, password).then(() => {
-                  navigate('/');
+                setLoginError('');
+                signInEmailAndPassword(email, password).then(error => {
+                  if (error) {
+                    setLoginError(error);
+                  } else {
+                    navigate('/apartments');
+                  }
                 });
               }}
             >
-              Sign In
+              {t('sign_in')}
             </button>
           </div>
           <div className='flex items-center justify-evenly'>
@@ -76,6 +84,7 @@ const LoginPage = (props: Props) => {
               className={`p-6 mt-4 bg-gray-200 hover:bg-gray-100 rounded focus:outline-none focus:shadow-outline ${style.google}`}
               type='button'
               onClick={() => {
+                setLoginError('');
                 signInWithGoogle().then(res => {
                   if (res && res.id && res.email && res.accessToken) {
                     dispatch(

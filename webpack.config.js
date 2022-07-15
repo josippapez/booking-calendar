@@ -9,7 +9,6 @@ const {
 } = require('duplicate-dependencies-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const DotenvWebpackPlugin = require('dotenv-webpack');
 
 const devMode = process.env.REACT_APP_NODE_ENV !== 'production';
 

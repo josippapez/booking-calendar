@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Day, Event } from '../CalendarTypes';
@@ -26,6 +27,8 @@ const CreateNewEvent = (props: Props) => {
     showEdit,
     selectedEventToEdit,
   } = props;
+
+  const { t } = useTranslation();
 
   const [newEvent, setNewEvent] = useState<Event>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
@@ -117,7 +120,9 @@ const CreateNewEvent = (props: Props) => {
       >
         <div>
           <div className='p-4 bg-white rounded-t-md'>
-            <h2 className='text-center font-bold mb-4'>Add New Reservation</h2>
+            <h2 className='text-center font-bold mb-4'>
+              {t('add_new_reservation_title')}
+            </h2>
             <div className='flex h-[36px]'>
               <span className='font-bold text-sm'>Booking</span>
               <input
@@ -131,73 +136,76 @@ const CreateNewEvent = (props: Props) => {
               />
             </div>
             <div className='flex flex-col gap-3'>
-              <div className='flex justify-center'>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('title')}</label>
                 <input
                   className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
                   type='text'
-                  placeholder='Title'
                   value={newEvent.title}
                   onChange={e =>
                     setNewEvent({ ...newEvent, title: e.target.value })
                   }
                 />
               </div>
-              <div className='flex justify-center'>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('description')}</label>
                 <input
                   className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
                   type='text'
-                  placeholder='Description'
                   value={newEvent.description}
                   onChange={e =>
                     setNewEvent({ ...newEvent, description: e.target.value })
                   }
                 />
               </div>
-              <div className='flex justify-center'>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('phone')}</label>
                 <input
                   className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
                   type='text'
-                  placeholder='Phone'
                   value={newEvent.phone}
                   onChange={e =>
                     setNewEvent({ ...newEvent, phone: e.target.value })
                   }
                 />
               </div>
-              <div className='flex flex-col justify-center relative'>
-                <input
-                  type={'button'}
-                  placeholder='Color'
-                  className={`${style.dropdownInput} cursor-pointer border-2 border-gray-100 rounded-md p-1 placeholder:text-sm`}
-                  onClick={() => {
-                    setOpennedDropdown(!opennedDropdown);
-                  }}
-                  style={{
-                    backgroundColor: newEvent.color,
-                  }}
-                />
-                {opennedDropdown && (
-                  <div
-                    className={`${style.dropdown} border-2 border-gray-100 rounded-md p-1`}
-                  >
-                    {(newEvent.booking ? Array(bookingColor) : colors).map(
-                      color => (
-                        <div
-                          key={color}
-                          style={{ backgroundColor: color }}
-                          className={`${style.dropdownItem}`}
-                          onClick={() => {
-                            setNewEvent({
-                              ...newEvent,
-                              color: color,
-                            });
-                            setOpennedDropdown(false);
-                          }}
-                        />
-                      )
-                    )}
-                  </div>
-                )}
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('color')}</label>
+                <div className='flex flex-col justify-center relative'>
+                  <input
+                    type={'button'}
+                    placeholder='Color'
+                    className={`${style.dropdownInput} cursor-pointer border-2 border-gray-100 rounded-md p-1 placeholder:text-sm`}
+                    onClick={() => {
+                      setOpennedDropdown(!opennedDropdown);
+                    }}
+                    style={{
+                      backgroundColor: newEvent.color,
+                    }}
+                  />
+                  {opennedDropdown && (
+                    <div
+                      className={`${style.dropdown} border-2 border-gray-100 rounded-md p-1`}
+                    >
+                      {(newEvent.booking ? Array(bookingColor) : colors).map(
+                        color => (
+                          <div
+                            key={color}
+                            style={{ backgroundColor: color }}
+                            className={`${style.dropdownItem}`}
+                            onClick={() => {
+                              setNewEvent({
+                                ...newEvent,
+                                color: color,
+                              });
+                              setOpennedDropdown(false);
+                            }}
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -208,7 +216,7 @@ const CreateNewEvent = (props: Props) => {
                 setShowDateRangePicker(true);
               }}
             >
-              <label className='text-sm font-bold'>Date range</label>
+              <label className='text-sm font-bold'>{t('date_range')}</label>
               <div className='bg-white border-2 border-slate-200 rounded-md p-1 w-full flex'>
                 <div className='font-bold w-[45%]'>
                   {newEvent.start &&

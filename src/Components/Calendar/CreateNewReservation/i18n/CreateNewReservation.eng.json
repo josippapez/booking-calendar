@@ -1,0 +1,8 @@
+{
+  "send": "Send",
+  "add_new_reservation_title": "Add New Reservation",
+  "name_and_surname": "Name and Surname",
+  "phone": "Phone",
+  "date_range": "Date Range",
+  "error_fields_required": "Please fill all fields"
+}

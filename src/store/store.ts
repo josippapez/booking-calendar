@@ -12,6 +12,12 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import firebaseConfig from '../Config/fbConfig';
 import { reducers, RootState } from './reducers/reducer';
+import {
+  getFirestore as GetFirestore,
+  connectFirestoreEmulator,
+} from 'firebase/firestore';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
 
 const persistConfig = {
   key: 'root',
@@ -21,6 +27,13 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, reducers);
 
 firebase.initializeApp(firebaseConfig);
+
+// const db = GetFirestore();
+// connectFirestoreEmulator(db, 'localhost', 8080);
+// const functions = getFunctions(firebase.app());
+// connectFunctionsEmulator(functions, 'localhost', 5001);
+// const auth = getAuth();
+// connectAuthEmulator(auth, 'http://localhost:9099');
 
 const store = configureStore({
   reducer: persistedReducer,
