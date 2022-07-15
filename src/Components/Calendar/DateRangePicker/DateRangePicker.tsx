@@ -1,6 +1,8 @@
-import { DateTime, Interval } from 'luxon';
+import { DateTime, Info, Interval } from 'luxon';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import calculateEachDayOfMonth from '../../../Hooks/calculateEachDayOfMonth';
+import { Events } from '../../../store/reducers/events';
 import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Day, Event } from '../CalendarTypes';
@@ -11,11 +13,21 @@ type Props = {
   setShowDateRangePicker: (state: boolean) => void;
   event: Event;
   setEvent: (event: Event) => void;
+  disableForCurrentReservations?: boolean;
+  currentReservations?: Events;
 };
 
 const DateRangePicker = (props: Props) => {
-  const { showDateRangePicker, setShowDateRangePicker, setEvent, event } =
-    props;
+  const {
+    showDateRangePicker,
+    setShowDateRangePicker,
+    setEvent,
+    event,
+    currentReservations,
+    disableForCurrentReservations,
+  } = props;
+
+  const { t, i18n } = useTranslation();
 
   const [selectedYear, setSelectedYear] = useState<number>(
     DateTime.local().year
@@ -36,6 +48,35 @@ const DateRangePicker = (props: Props) => {
   const [currentDate, setCurrentDate] = useState('');
 
   const displayDateRangeDays = (day: Day, index: number) => {
+    const disabled =
+      disableForCurrentReservations &&
+      currentReservations &&
+      currentReservations[day.date]?.length > 0 &&
+      (currentReservations[day.date]?.length >= 2
+        ? currentReservations[day.date].map(reservation => {
+            const start = DateTime.fromISO(reservation.start);
+            const end = DateTime.fromISO(reservation.end);
+            const interval = Interval.fromDateTimes(start, end);
+            return interval.contains(DateTime.fromISO(day.date));
+          })
+        : currentReservations[day.date][0].end !== day.date &&
+          currentReservations[day.date][0].start !== day.date);
+
+    let selectedDaysContainDisabled: string[] | undefined = [];
+    if (currentDate && currentReservations && event.start && !event.end) {
+      selectedDaysContainDisabled = Interval.fromDateTimes(
+        DateTime.fromISO(event.start),
+        DateTime.fromISO(currentDate)
+      )
+        .splitBy({ days: 1 })
+        .map(day => day.toISODate().split('/'))
+        .find(
+          day =>
+            currentReservations[day[0]]?.length > 0 &&
+            currentReservations[day[1]]?.length > 0
+        );
+    }
+
     return (
       <div
         key={index}
@@ -44,67 +85,75 @@ const DateRangePicker = (props: Props) => {
             setCurrentDate(day.date);
           }
         }}
-        className={`rounded-full
-              border-2 hover:border-blue-400 ${
-                style['dateRange-Day']
-              } font-bold select-none ${
+        className={`rounded-full border-2
+        ${style['dateRange-Day']} font-bold select-none
+        ${
           ['Saturday', 'Sunday'].includes(day.name)
-            ? 'opacity-50'
+            ? 'border-gray-200'
             : day.lastMonth
             ? 'opacity-30 font-normal'
-            : 'opacity-100'
-        } ${
-          event.start && event.end
+            : 'border-gray-400'
+        }
+        ${
+          event.start && event.end && !disabled
             ? Interval.fromDateTimes(
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(event.end).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
               ? 'bg-purple-400 text-white'
               : 'bg-white'
-            : currentDate &&
+            : !disabled &&
+              currentDate &&
               Interval.fromDateTimes(
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(currentDate).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
             ? 'bg-purple-200'
             : 'bg-white'
-        }`}
+        }
+        ${disabled ? 'opacity-10 cursor-not-allowed' : 'hover:border-blue-400'}
+        ${selectedDaysContainDisabled?.length && 'cursor-not-allowed'}`}
         onClick={() => {
-          if (event.start && event.end) {
-            setEvent({
-              ...event,
-              start: day.date,
-              end: '',
-            });
-            return;
-          }
-          if (!event.start) {
-            setEvent({
-              ...event,
-              start: day.date,
-            });
-            return;
-          }
-          if (event.start) {
-            if (event.start === day.date) {
+          if (!disabled) {
+            if (event.start && event.end) {
+              setEvent({
+                ...event,
+                start: day.date,
+                end: '',
+              });
               return;
             }
-            if (
-              DateTime.fromISO(event.start).diff(
-                DateTime.fromISO(day.date),
-                'days'
-              ).days > 0
-            ) {
+            if (!event.start) {
               setEvent({
                 ...event,
                 start: day.date,
               });
               return;
             }
-            setEvent({
-              ...event,
-              end: day.date,
-            });
+            if (event.start) {
+              if (
+                event.start === day.date ||
+                selectedDaysContainDisabled?.length
+              ) {
+                return;
+              }
+              if (
+                DateTime.fromISO(event.start).diff(
+                  DateTime.fromISO(day.date),
+                  'days'
+                ).days > 0
+              ) {
+                setEvent({
+                  ...event,
+                  start: day.date,
+                });
+                return;
+              }
+              setEvent({
+                ...event,
+                end: day.date,
+              });
+            }
           }
         }}
       >
@@ -116,13 +165,16 @@ const DateRangePicker = (props: Props) => {
   const daysHeader = () => {
     return (
       <div className={style.calendarGridHeader}>
-        <div className={`${style.dayName} select-none font-bold`}>Mon</div>
-        <div className={`${style.dayName} select-none font-bold`}>Tue</div>
-        <div className={`${style.dayName} select-none font-bold`}>Wed</div>
-        <div className={`${style.dayName} select-none font-bold`}>Thu</div>
-        <div className={`${style.dayName} select-none font-bold`}>Fri</div>
-        <div className={`${style.dayName} select-none font-bold`}>Sat</div>
-        <div className={`${style.dayName} select-none font-bold`}>Sun</div>
+        {Info.weekdaysFormat('short', { locale: i18n.languages[0] }).map(
+          (day, index) => (
+            <div
+              key={index}
+              className={`${style.dayName} select-none font-bold`}
+            >
+              {day}
+            </div>
+          )
+        )}
       </div>
     );
   };
@@ -226,9 +278,12 @@ const DateRangePicker = (props: Props) => {
         <div className='flex justify-end'>
           <button
             className='hover:bg-slate-200 font-bold py-2 px-4 rounded'
-            onClick={() => setShowDateRangePicker(false)}
+            onClick={() => {
+              setShowDateRangePicker(false);
+              setEvent({ ...event, start: '', end: '' });
+            }}
           >
-            Cancel
+            {t('cancel')}
           </button>
           <button
             className='hover:bg-slate-200 font-bold py-2 px-4 rounded'
@@ -240,7 +295,7 @@ const DateRangePicker = (props: Props) => {
               });
             }}
           >
-            Clear
+            {t('clear')}
           </button>
           <button
             className='hover:bg-slate-200 font-bold py-2 px-4 rounded'
@@ -253,7 +308,7 @@ const DateRangePicker = (props: Props) => {
               });
             }}
           >
-            Done
+            {t('done')}
           </button>
         </div>
       </div>

@@ -14,6 +14,20 @@ export const ProtectedRoutes = () => {
   const navigate = useNavigate();
   const user = useAppSelector(state => state.user.user);
 
+  const routes =
+    user && user.accessToken ? (
+      <Routes>
+        <Route path='/apartments' element={<ApartmentsPage />} />
+        <Route path='/apartments/:id' element={<CalendarPage />} />
+        <Route path='/:id' element={<LandingPage />} />
+      </Routes>
+    ) : (
+      <Routes>
+        <Route path='/:id' element={<LandingPage />} />
+        <Route path='/' element={<LoginPage />} />
+      </Routes>
+    );
+
   useEffect(() => {
     if (user && user.accessToken) {
       if (window.location.pathname === '/') {
@@ -30,28 +44,17 @@ export const ProtectedRoutes = () => {
       element.style.maxHeight = window.innerHeight + 'px';
       element.style.height = window.innerHeight + 'px';
     }
-  }, []);
+  }, [user, navigate]);
 
   return (
     <Suspense fallback={<PageLoader />}>
-      {user.accessToken && <Navbar />}
+      <Navbar userAuthenticated={!!user.accessToken} />
       <div
         className={`${
           user.accessToken ? 'min-h-[calc(100%_-_60px)]' : 'min-h-full'
         } min-w-screen w-full bg-gray-100`}
       >
-        {user && user.accessToken ? (
-          <Routes>
-            <Route path='/:id' element={<LandingPage />} />
-            <Route path='/apartments' element={<ApartmentsPage />} />
-            <Route path='/apartments/:id' element={<CalendarPage />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path='/:id' element={<LandingPage />} />
-            <Route path='/' element={<LoginPage />} />
-          </Routes>
-        )}
+        {routes}
       </div>
     </Suspense>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Event } from '../CalendarTypes';
@@ -25,6 +26,8 @@ const DayDetails = (props: Props) => {
     setSelectedEventToEdit,
     setSelectedDay,
   } = props;
+
+  const { t } = useTranslation();
 
   const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
 
@@ -122,10 +125,18 @@ const DayDetails = (props: Props) => {
               </div>
               {selectedEvent && selectedEvent.id === event.id && (
                 <div className='flex flex-col w-full p-2'>
-                  <div className='flex-1'>Title: {event.title}</div>
-                  <div className='flex-1'>Description: {event.description}</div>
-                  <div className='flex-1'>Phone: {event.phone}</div>
-                  <div className='flex-1'>Price: {event.price}</div>
+                  <div className='flex-1'>
+                    {t('title')}: {event.title}
+                  </div>
+                  <div className='flex-1'>
+                    {t('description')}: {event.description}
+                  </div>
+                  <div className='flex-1'>
+                    {t('phone')}: {event.phone}
+                  </div>
+                  <div className='flex-1'>
+                    {t('price')}: {event.price}
+                  </div>
                 </div>
               )}
             </div>

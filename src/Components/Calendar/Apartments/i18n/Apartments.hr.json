@@ -1,0 +1,14 @@
+{
+  "apartments": "Apartmani",
+  "apartment_name": "Naziv apartmana",
+  "apartment_address": "Adresa apartmana",
+  "apartment_email": "Email apartmana (koristi se za primanje emailova za rezervaciju)",
+  "add_apartment": "Dodaj apartman",
+  "edit_apartment": "Uredi apartman",
+  "edit": "Uredi",
+  "remove": "Obriši",
+  "select": "Odaberi",
+  "name": "Naziv",
+  "address": "Adresa",
+  "email": "Email"
+}

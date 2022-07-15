@@ -1,0 +1,14 @@
+{
+  "apartments": "Aparments",
+  "apartment_name": "Apartment Name",
+  "apartment_address": "Apartment Address",
+  "apartment_email": "Apartment Email (used for receiving new reservation emails)",
+  "add_apartment": "Add Apartment",
+  "edit_apartment": "Edit Apartment",
+  "edit": "Edit",
+  "remove": "Remove",
+  "select": "Select",
+  "name": "Name",
+  "address": "Address",
+  "email": "Email"
+}

@@ -1,8 +1,8 @@
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   getAuth,
   GoogleAuthProvider,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
@@ -15,10 +15,10 @@ import {
   where,
 } from 'firebase/firestore';
 
-import firebase from 'firebase/compat/app';
-import { store } from '../store';
-import { setUser } from '../reducers/user';
 import { FirebaseError } from 'firebase/app';
+import firebase from 'firebase/compat/app';
+import { setUser } from '../reducers/user';
+import { store } from '../store';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -75,7 +75,15 @@ export const registerWithEmailAndPassword = async (
     };
     store.dispatch(setUser(serializedUser));
   } catch (err) {
-    console.error(err);
+    if (err instanceof FirebaseError) {
+      if (
+        err.code === 'auth/weak-password' ||
+        err.code === 'auth/too-many-requests'
+      ) {
+        return `auth.${err.code.split('/')[1]}`;
+      }
+      console.error(err);
+    }
   }
 };
 
@@ -103,6 +111,12 @@ export const signInEmailAndPassword = async (
     }
   } catch (err) {
     if (err instanceof FirebaseError) {
+      if (
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/too-many-requests'
+      ) {
+        return `auth.${err.code.split('/')[1]}`;
+      }
       if (err.code === 'auth/user-not-found') {
         registerWithEmailAndPassword(email, password);
       }

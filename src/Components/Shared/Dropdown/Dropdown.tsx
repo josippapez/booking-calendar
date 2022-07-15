@@ -74,7 +74,7 @@ function Dropdown(props: Props) {
               <div
                 key={item.id}
                 className={`${style.dropdownItem}
-                text-gray-700
+                text-gray-700 hover:bg-slate-200 rounded-md
                 ${selected === item.id && 'text-blue-600'}`}
                 onClick={() => {
                   setData(item.id.toString());

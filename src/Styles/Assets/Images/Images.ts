@@ -1,4 +1,6 @@
 import Check from './check.svg';
+import CheckGreen from './checkGreen.svg';
+import XCircle from './xCircle.svg';
 import LeftArrow from './left-arrow.svg';
 import RightArrow from './right-arrow.svg';
 import DownArrow from './down-arrow.svg';
@@ -11,6 +13,8 @@ const Images = {
   LeftArrow,
   RightArrow,
   Check,
+  CheckGreen,
+  XCircle,
   Google,
   Bin,
   Edit,

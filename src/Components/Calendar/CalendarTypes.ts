@@ -22,10 +22,16 @@ export type Event = {
   title: string;
   start: string;
   end: string;
-  description: string;
-  color: string;
+  description?: string;
+  color?: string;
   phone: string;
-  booking: boolean;
+  booking?: boolean;
   price?: string;
-  weekNumber: number;
+  weekNumber?: number;
+};
+
+export type PublicEvent = {
+  id: string;
+  start: string;
+  end: string;
 };

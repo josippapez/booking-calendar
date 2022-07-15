@@ -7,6 +7,7 @@ export const saveApartment = (apartment: {
   id: string;
   name: string;
   address: string;
+  email: string;
 }) => {
   return (dispatch: AppDispatch, getState: AppState) => {
     const tempApartments = {
@@ -19,6 +20,10 @@ export const saveApartment = (apartment: {
       doc(getFirestore(firebase.app()), 'apartments', getState().user.user.id),
       tempApartments
     );
+
+    setDoc(doc(getFirestore(firebase.app()), 'events', apartment.id), {
+      userId: getState().user.user.id,
+    });
   };
 };
 
@@ -26,6 +31,7 @@ export const editApartment = (apartment: {
   id: string;
   name: string;
   address: string;
+  email: string;
 }) => {
   return (dispatch: AppDispatch, getState: AppState) => {
     const tempApartments = {
@@ -38,6 +44,10 @@ export const editApartment = (apartment: {
       doc(getFirestore(firebase.app()), 'apartments', getState().user.user.id),
       tempApartments
     );
+
+    setDoc(doc(getFirestore(firebase.app()), 'events', apartment.id), {
+      userId: getState().user.user.id,
+    });
   };
 };
 

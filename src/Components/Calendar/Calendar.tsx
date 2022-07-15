@@ -1,5 +1,6 @@
-import { DateTime } from 'luxon';
+import { DateTime, Info } from 'luxon';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFirestore } from 'react-redux-firebase';
 import { useNavigate, useParams } from 'react-router';
 import isMobileView from '../../checkForMobileView';
@@ -21,6 +22,7 @@ import DayDetails from './DayDetails/DayDetails';
 type Props = {};
 
 const Calendar = (props: Props) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const naviagtionParams = useParams();
   const navigate = useNavigate();
@@ -111,17 +113,13 @@ const Calendar = (props: Props) => {
   }, [eventsData, eachDayOfMonth]);
 
   return (
-    <div
-      className={`${isMobileView() ? 'py-10 px-2.5' : 'page-container p-10'}`}
-    >
+    <div className={`${mobileView ? 'py-10 px-2.5' : 'page-container p-10'}`}>
       <div
         className={`flex justify-between ${
           mobileView ? 'flex-col' : 'flex-row'
         }`}
       >
-        <div
-          className={`font-bold text-xl flex gap-3 ${isMobileView() && 'mb-3'}`}
-        >
+        <div className={`font-bold text-xl flex gap-3 ${mobileView && 'mb-3'}`}>
           <Dropdown
             placeholder='Select apartment'
             data={Object.keys(apartments?.apartments).map(key => {
@@ -143,11 +141,15 @@ const Calendar = (props: Props) => {
             className='rounded-md h-10 border-2 px-3 bg-white hover:bg-neutral-300'
             onClick={() => navigate(`/${naviagtionParams.id}`)}
           >
-            Public View
+            {t('public_view')}
           </button>
         </div>
         <div className={`${style.dateNavigation} flex select-none gap-3`}>
-          <div className='flex items-center border-t-2 border-b-2 w-36 rounded-md h-10'>
+          <div
+            className={`flex items-center border-t-2 border-b-2 ${
+              isMobileView() ? 'w-[165px]' : 'w-36'
+            } rounded-md h-10`}
+          >
             <button
               onClick={() => {
                 if (selectedMonth === 1) {
@@ -219,13 +221,16 @@ const Calendar = (props: Props) => {
       </div>
       <div className={style.calendar}>
         <div className={style.calendarGridHeader}>
-          <div className={`${style.dayName} select-none font-bold`}>Mon</div>
-          <div className={`${style.dayName} select-none font-bold`}>Tue</div>
-          <div className={`${style.dayName} select-none font-bold`}>Wed</div>
-          <div className={`${style.dayName} select-none font-bold`}>Thu</div>
-          <div className={`${style.dayName} select-none font-bold`}>Fri</div>
-          <div className={`${style.dayName} select-none font-bold`}>Sat</div>
-          <div className={`${style.dayName} select-none font-bold`}>Sun</div>
+          {Info.weekdaysFormat('short', { locale: i18n.languages[0] }).map(
+            (day, index) => (
+              <div
+                key={index}
+                className={`${style.dayName} select-none font-bold`}
+              >
+                {day}
+              </div>
+            )
+          )}
         </div>
         <div className={style.calendarGrid}>
           {eachDayOfMonth.map((day, index) => {

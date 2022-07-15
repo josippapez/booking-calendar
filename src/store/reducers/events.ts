@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PURGE } from 'redux-persist';
 import { Event } from '../../Components/Calendar/CalendarTypes';
 
-type Events = {
+export type Events = {
   [key: string]: Event[];
 };
 export interface EventsData {

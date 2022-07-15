@@ -1,5 +1,6 @@
 import isEqual from 'lodash/fp/isEqual';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFirestore } from 'react-redux-firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import isMobileView from '../../../checkForMobileView';
@@ -18,6 +19,7 @@ import { setEvents } from '../../../store/reducers/events';
 type Props = {};
 
 const Apartments = (props: Props) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const firestore = useFirestore();
   const mobileView = isMobileView();
@@ -28,6 +30,7 @@ const Apartments = (props: Props) => {
     id: '',
     name: '',
     address: '',
+    email: '',
   });
 
   const getApartmentsForuser = async (id: string) => {
@@ -43,6 +46,7 @@ const Apartments = (props: Props) => {
               id: string;
               name: string;
               address: string;
+              email: string;
             };
           }
         )
@@ -57,7 +61,7 @@ const Apartments = (props: Props) => {
   return (
     <div className={`${isMobileView() ? 'py-10 px-4' : 'page-container p-10'}`}>
       <div className='flex justify-between'>
-        <div className='font-bold text-xl'>Apartments</div>
+        <div className='font-bold text-xl'>{t('apartments')}</div>
       </div>
       <div className='w-full max-w-xs'>
         <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
@@ -69,6 +73,7 @@ const Apartments = (props: Props) => {
                   id: '',
                   name: '',
                   address: '',
+                  email: '',
                 });
               }}
             >
@@ -80,7 +85,7 @@ const Apartments = (props: Props) => {
               className='block text-gray-700 text-sm font-bold mb-2'
               htmlFor='apartmentName'
             >
-              Apartment Name
+              {t('apartment_name')}
             </label>
             <input
               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
@@ -93,12 +98,12 @@ const Apartments = (props: Props) => {
               }}
             />
           </div>
-          <div className='mb-6'>
+          <div className='mb-4'>
             <label
               className='block text-gray-700 text-sm font-bold mb-2'
               htmlFor='apartmentAddress'
             >
-              Apartment Address
+              {t('apartment_address')}
             </label>
             <input
               className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
@@ -114,18 +119,44 @@ const Apartments = (props: Props) => {
               }}
             />
           </div>
+          <div className='mb-6'>
+            <label
+              className='block text-gray-700 text-sm font-bold mb-2'
+              htmlFor='appartmentEmail'
+            >
+              {t('apartment_email')}
+            </label>
+            <input
+              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
+              id='appartmentEmail'
+              type='text'
+              placeholder='Apartment Email'
+              value={newApartment.email}
+              onChange={e => {
+                setNewApartment({
+                  ...newApartment,
+                  email: e.target.value,
+                });
+              }}
+            />
+          </div>
           <div className='flex items-center justify-between'>
             <button
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
               type='button'
               onClick={() => {
-                if (newApartment.address && newApartment.name) {
+                if (
+                  newApartment.address &&
+                  newApartment.name &&
+                  newApartment.email
+                ) {
                   if (newApartment.id) {
                     dispatch(editApartment(newApartment));
                     setNewApartment({
                       id: '',
                       name: '',
                       address: '',
+                      email: '',
                     });
                     return;
                   }
@@ -139,13 +170,14 @@ const Apartments = (props: Props) => {
                     id: '',
                     name: '',
                     address: '',
+                    email: '',
                   });
                 }
               }}
             >
               {newApartment && newApartment.id
-                ? 'Edit Apartment'
-                : 'Add Apartment'}
+                ? t('edit_apartment')
+                : t('add_apartment')}
             </button>
           </div>
         </form>
@@ -155,14 +187,17 @@ const Apartments = (props: Props) => {
           <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
             <tr>
               <th scope='col' className='px-6 py-3 text-md'>
-                Name
+                {t('name')}
               </th>
               <th scope='col' className='px-6 py-3 text-md'>
-                Address
+                {t('address')}
+              </th>
+              <th scope='col' className='px-6 py-3 text-md'>
+                {t('email')}
               </th>
               <th scope='col' className='px-6 py-3'>
-                <span className='sr-only'>Edit</span>
-                <span className='sr-only'>Remove</span>
+                <span className='sr-only'>{t('edit')}</span>
+                <span className='sr-only'>{t('remove')}</span>
               </th>
             </tr>
           </thead>
@@ -195,6 +230,9 @@ const Apartments = (props: Props) => {
                   <td className='font-bold px-6 py-4'>
                     {apartments.apartments[apartment].address}
                   </td>
+                  <td className='font-bold px-6 py-4'>
+                    {apartments.apartments[apartment].email}
+                  </td>
                   <td
                     className={`px-6 py-4 text-right ${
                       mobileView ? 'flex' : ''
@@ -209,7 +247,7 @@ const Apartments = (props: Props) => {
                         );
                       }}
                     >
-                      Remove
+                      {t('remove')}
                     </button>
                     <button
                       className='font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4'
@@ -218,7 +256,7 @@ const Apartments = (props: Props) => {
                         setNewApartment(apartments.apartments[apartment]);
                       }}
                     >
-                      Edit
+                      {t('edit')}
                     </button>
                     {!mobileView && (
                       <Link
@@ -237,7 +275,7 @@ const Apartments = (props: Props) => {
                           );
                         }}
                       >
-                        Select
+                        {t('select')}
                       </Link>
                     )}
                   </td>
