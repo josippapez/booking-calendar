@@ -6,9 +6,8 @@ import style from './Modal.module.scss';
 interface Props {
   closeModal(): void;
   position?: 'center' | 'left' | 'right' | 'bottom';
-  children: JSX.Element;
+  children: JSX.Element[] | JSX.Element;
   show: boolean;
-  height?: 'screen' | string;
   width?: 'screen' | string;
   animation?:
     | 'fade'
@@ -18,11 +17,23 @@ interface Props {
     | 'slide-bottom';
 }
 
+let openned = 0;
+
 const Modal = (props: Props): JSX.Element => {
-  const { closeModal, position, children, show, height, width, animation } =
-    props;
+  const { closeModal, position, children, show, width, animation } = props;
+
   useEffect(() => {
-    document.body.style.overflow = show ? 'hidden' : 'auto';
+    if (openned === 0) {
+      document.body.style.overflow = show ? 'hidden' : 'auto';
+    }
+    if (show) {
+      openned++;
+    }
+    return () => {
+      if (show) {
+        openned--;
+      }
+    };
   }, [show]);
 
   return ReactDOM.createPortal(
@@ -41,6 +52,8 @@ const Modal = (props: Props): JSX.Element => {
       id='modal-overlay'
       style={{
         display: !show ? 'none' : 'flex',
+        height: window.innerHeight + 'px',
+        width: window.innerWidth + 'px',
       }}
       aria-hidden='true'
       role='button'
@@ -56,11 +69,15 @@ const Modal = (props: Props): JSX.Element => {
         className={`
           ${style.children}
           ${style[`${animation}`]}
+          lg:scale-125
         `}
         onMouseDown={e => e.stopPropagation()}
         style={{
-          height: height === 'screen' ? '100vh' : height,
-          width: width === 'screen' ? '100vw' : width,
+          width: width === 'screen' ? window.innerWidth + 'px' : width,
+          backfaceVisibility: 'hidden',
+          transform: 'translateZ(0)',
+          WebkitFontSmoothing: 'subpixel-antialiased',
+          willChange: 'transform',
         }}
       >
         {children}
@@ -72,7 +89,6 @@ const Modal = (props: Props): JSX.Element => {
 
 Modal.defaultProps = {
   position: 'center',
-  height: '',
   width: '',
   closeModal: () => {
     return;

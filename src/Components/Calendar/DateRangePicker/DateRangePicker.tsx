@@ -91,14 +91,14 @@ const DateRangePicker = (props: Props) => {
             setCurrentDate(day.date);
           }
         }}
-        className={`rounded-full border-2
+        className={`rounded-full border-2 cursor-pointer
         ${style['dateRange-Day']} font-bold select-none
         ${
           ['Saturday', 'Sunday'].includes(day.name)
-            ? 'border-gray-200'
+            ? 'border-sky-200'
             : day.lastMonth
             ? 'opacity-30 font-normal'
-            : 'border-gray-400'
+            : 'border-sky-400'
         }
         ${
           event.start && event.end && !disabled
@@ -106,7 +106,7 @@ const DateRangePicker = (props: Props) => {
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(event.end).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-              ? 'bg-purple-400 text-white'
+              ? 'bg-sky-400 text-white'
               : 'bg-white'
             : !disabled &&
               currentDate &&
@@ -114,10 +114,10 @@ const DateRangePicker = (props: Props) => {
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(currentDate).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-            ? 'bg-purple-200'
+            ? 'bg-sky-200'
             : 'bg-white'
         }
-        ${disabled ? 'opacity-10 cursor-not-allowed' : 'hover:border-blue-400'}
+        ${disabled ? 'opacity-10 cursor-not-allowed' : 'hover:border-sky-400'}
         ${selectedDaysContainDisabled?.length && 'cursor-not-allowed'}`}
         onMouseUp={() => {
           if (!disabled) {
@@ -263,7 +263,7 @@ const DateRangePicker = (props: Props) => {
             />
           </div>
         </div>
-        <div className={`${style.dateRangeGrid} my-4`}>
+        <div className={`${style.dateRangeGrid} my-4 drop-shadow-md`}>
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>

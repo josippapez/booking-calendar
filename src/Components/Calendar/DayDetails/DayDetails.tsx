@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Images from '../../../Styles/Assets/Images/Images';
 import Modal from '../../Shared/Modal/Modal';
 import { Event } from '../CalendarTypes';
+import style from './DayDetails.module.scss';
 
 type Props = {
   show: boolean;
@@ -42,8 +42,8 @@ const DayDetails = (props: Props) => {
 
   return (
     <Modal
-      animation='fade'
-      position='center'
+      animation={isMobileView ? 'fade' : 'slide-bottom'}
+      position={isMobileView ? 'center' : 'bottom'}
       show={show}
       closeModal={() => setShow(false)}
     >
@@ -91,15 +91,7 @@ const DayDetails = (props: Props) => {
                 </div>
                 <div className='flex items-center gap-3'>
                   <button
-                    className='hover:bg-slate-500 py-2 px-4 rounded-md'
-                    style={{
-                      backgroundImage: `url(${Images.Edit})`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                      backgroundSize: 'contain',
-                      height: '100%',
-                      width: 'auto',
-                    }}
+                    className={`hover:bg-neutral-200 py-2 px-4 rounded-md ${style.editbutton}`}
                     onClick={e => {
                       e.stopPropagation();
                       setSelectedEventToEdit(event);
@@ -107,15 +99,7 @@ const DayDetails = (props: Props) => {
                     }}
                   />
                   <button
-                    className='hover:bg-slate-500 py-2 px-4 rounded-md'
-                    style={{
-                      backgroundImage: `url(${Images.Bin})`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                      backgroundSize: 'contain',
-                      height: '100%',
-                      width: 'auto',
-                    }}
+                    className={`hover:bg-neutral-200 py-2 px-4 rounded-md ${style.removeButton}`}
                     onClick={e => {
                       e.stopPropagation();
                       removeEvent(event.id);

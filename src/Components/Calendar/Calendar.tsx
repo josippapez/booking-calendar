@@ -143,7 +143,7 @@ const Calendar = (props: Props) => {
             }}
           />
           <button
-            className='bg-blue-500 hover:bg-blue-400 rounded-md h-10 px-3 text-white'
+            className='bg-blue-500 hover:bg-blue-400 rounded-md h-10 px-3 text-white drop-shadow-md'
             onClick={() => navigate(`/${naviagtionParams.id}`)}
           >
             {t('public_view')}
