@@ -23,6 +23,7 @@ export const saveApartment = (apartment: {
 
     setDoc(doc(getFirestore(firebase.app()), 'events', apartment.id), {
       userId: getState().user.user.id,
+      apartmentName: apartment.name,
     });
   };
 };
@@ -47,6 +48,7 @@ export const editApartment = (apartment: {
 
     setDoc(doc(getFirestore(firebase.app()), 'events', apartment.id), {
       userId: getState().user.user.id,
+      apartmentName: apartment.name,
     });
   };
 };

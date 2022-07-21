@@ -52,7 +52,7 @@ export const ProtectedRoutes = () => {
       <div
         className={`${
           user.accessToken ? 'min-h-[calc(100%_-_60px)]' : 'min-h-full'
-        } min-w-screen w-full bg-gray-100`}
+        } min-w-screen w-full overflow-x-hidden`}
       >
         {routes}
       </div>

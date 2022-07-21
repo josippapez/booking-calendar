@@ -49,18 +49,19 @@ const DateRangePicker = (props: Props) => {
 
   const displayDateRangeDays = (day: Day, index: number) => {
     const disabled =
-      disableForCurrentReservations &&
-      currentReservations &&
-      currentReservations[day.date]?.length > 0 &&
-      (currentReservations[day.date]?.length >= 2
-        ? currentReservations[day.date].map(reservation => {
-            const start = DateTime.fromISO(reservation.start);
-            const end = DateTime.fromISO(reservation.end);
-            const interval = Interval.fromDateTimes(start, end);
-            return interval.contains(DateTime.fromISO(day.date));
-          })
-        : currentReservations[day.date][0].end !== day.date &&
-          currentReservations[day.date][0].start !== day.date);
+      DateTime.fromISO(day.date).diffNow('day').days < -1 ||
+      (disableForCurrentReservations &&
+        currentReservations &&
+        currentReservations[day.date]?.length > 0 &&
+        (currentReservations[day.date]?.length >= 2
+          ? currentReservations[day.date].map(reservation => {
+              const start = DateTime.fromISO(reservation.start);
+              const end = DateTime.fromISO(reservation.end);
+              const interval = Interval.fromDateTimes(start, end);
+              return interval.contains(DateTime.fromISO(day.date));
+            })
+          : currentReservations[day.date][0].end !== day.date &&
+            currentReservations[day.date][0].start !== day.date));
 
     let selectedDaysContainDisabled: string[] | undefined = [];
     if (currentDate && currentReservations && event.start && !event.end) {
@@ -81,6 +82,11 @@ const DateRangePicker = (props: Props) => {
       <div
         key={index}
         onMouseOver={() => {
+          if (event.start) {
+            setCurrentDate(day.date);
+          }
+        }}
+        onTouchStart={() => {
           if (event.start) {
             setCurrentDate(day.date);
           }
@@ -113,7 +119,7 @@ const DateRangePicker = (props: Props) => {
         }
         ${disabled ? 'opacity-10 cursor-not-allowed' : 'hover:border-blue-400'}
         ${selectedDaysContainDisabled?.length && 'cursor-not-allowed'}`}
-        onClick={() => {
+        onMouseUp={() => {
           if (!disabled) {
             if (event.start && event.end) {
               setEvent({
@@ -186,8 +192,8 @@ const DateRangePicker = (props: Props) => {
       closeModal={() => setShowDateRangePicker(false)}
     >
       <div className='p-4 bg-white rounded-md relative'>
-        <div className='flex justify-center select-none gap-3'>
-          <div className='flex items-center border-t-2 border-b-2 w-36 rounded-md h-10'>
+        <div className='flex justify-center select-none gap-3 drop-shadow-md'>
+          <div className='flex items-center w-36 rounded-md h-10'>
             <button
               onClick={() => {
                 if (selectedMonth === 1) {
@@ -203,7 +209,7 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5'
             />
             <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedMonth}
@@ -223,10 +229,10 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5'
             />
           </div>
-          <div className='flex items-center border-t-2 border-b-2 w-[165px] rounded-md h-10'>
+          <div className='flex items-center w-[165px] rounded-md h-10'>
             <button
               onClick={() => {
                 setSelectedYear(selectedYear - 1);
@@ -237,7 +243,7 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5'
             />
 
             <h2 className='w-full text-center px-5 select-none font-bold'>
@@ -253,7 +259,7 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5'
             />
           </div>
         </div>

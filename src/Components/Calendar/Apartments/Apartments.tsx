@@ -66,8 +66,8 @@ const Apartments = (props: Props) => {
       <div className='flex justify-between'>
         <div className='font-bold text-xl'>{t('apartments')}</div>
       </div>
-      <div className='w-full max-w-xs'>
-        <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 relative'>
+      <div className='w-full max-w-xs drop-shadow-md'>
+        <form className='bg-white rounded-md px-8 pt-6 pb-8 mb-4 relative border'>
           {newApartment.id && (
             <div
               className={`absolute right-0 top-0 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-white`}
@@ -89,13 +89,13 @@ const Apartments = (props: Props) => {
           )}
           <div className='mb-4'>
             <label
-              className='block text-gray-700 text-sm font-bold mb-2'
+              className='block text-gray-700 text-sm font-bold'
               htmlFor='apartmentName'
             >
               {t('apartment_name')}
             </label>
             <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+              className='shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-md'
               id='apartmentName'
               type='text'
               placeholder='Apartment Name'
@@ -107,13 +107,13 @@ const Apartments = (props: Props) => {
           </div>
           <div className='mb-4'>
             <label
-              className='block text-gray-700 text-sm font-bold mb-2'
+              className='block text-gray-700 text-sm font-bold'
               htmlFor='apartmentAddress'
             >
               {t('apartment_address')}
             </label>
             <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
+              className='shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:shadow-md'
               id='apartmentAddress'
               type='text'
               placeholder='Apartment Address'
@@ -128,13 +128,13 @@ const Apartments = (props: Props) => {
           </div>
           <div className='mb-6'>
             <label
-              className='block text-gray-700 text-sm font-bold mb-2'
+              className='block text-gray-700 text-sm font-bold'
               htmlFor='appartmentEmail'
             >
               {t('apartment_email')}
             </label>
             <input
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
+              className={`shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:shadow-md ${
                 newApartment.email
                   ? emailRegex.test(newApartment.email)
                     ? 'border-green-500'
@@ -160,7 +160,7 @@ const Apartments = (props: Props) => {
                 !newApartment.name ||
                 !emailRegex.test(newApartment.email)
               }
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400'
+              className='bg-blue-500 hover:bg-blue-700 text-white shadow-md font-bold py-2 px-4 rounded disabled:bg-gray-400'
               type='button'
               onClick={() => {
                 if (
@@ -200,9 +200,9 @@ const Apartments = (props: Props) => {
           </div>
         </form>
       </div>
-      <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
+      <div className='relative overflow-x-auto drop-shadow-md rounded-lg border'>
         <table className='w-full text-left text-gray-500 dark:text-gray-400 text-base'>
-          <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+          <thead className='text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400'>
             <tr>
               <th scope='col' className='px-6 py-3 text-md'>
                 {t('name')}
@@ -224,7 +224,7 @@ const Apartments = (props: Props) => {
               apartments?.apartments &&
               Object.keys(apartments.apartments).map(apartment => (
                 <tr
-                  className='bg-white border-b cursor-pointer hover:bg-gray-100 hover:transition-colors duration-150'
+                  className='bg-white border-b cursor-pointer hover:bg-blue-50 hover:transition-colors duration-150'
                   key={apartments.apartments[apartment].id}
                   onClick={() => {
                     if (
