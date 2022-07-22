@@ -1,17 +1,15 @@
 .calendarGrid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-columns: repeat(7, min(3rem, calc((100vw - 4rem) / 7)));
+  grid-template-rows: repeat(6, min(3rem, calc((100vw - 4rem) / 7)));
+  row-gap: 1rem;
   justify-content: center;
 
   .dateRange-Day {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    min-width: 2.65rem;
     min-height: fit-content;
-    height: 2.65rem;
     font-size: medium;
   }
 }

@@ -39,12 +39,15 @@ function Dropdown(props: Props) {
   }, [component]);
 
   return (
-    <div className='flex flex-col justify-center relative' ref={component}>
+    <div
+      className='flex flex-col justify-center relative flex-grow'
+      ref={component}
+    >
       <div
         className={`${style.dropdownInput}
-        bg-white cursor-pointer border-2
-        border-gray-300 rounded-md p-1 flex overflow-hidden
-        justify-between relative`}
+        cursor-pointer bg-neutral-50 hover:bg-neutral-300
+        rounded-md p-1 flex overflow-hidden
+        justify-between relative drop-shadow-md`}
         onClick={() => {
           setOpennedDropdown(!opennedDropdown);
         }}

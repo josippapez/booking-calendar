@@ -107,7 +107,7 @@ export const signInEmailAndPassword = async (
       };
       store.dispatch(setUser(serializedUser));
     } else {
-      registerWithEmailAndPassword(email, password);
+      return registerWithEmailAndPassword(email, password);
     }
   } catch (err) {
     if (err instanceof FirebaseError) {
@@ -118,7 +118,7 @@ export const signInEmailAndPassword = async (
         return `auth.${err.code.split('/')[1]}`;
       }
       if (err.code === 'auth/user-not-found') {
-        registerWithEmailAndPassword(email, password);
+        return registerWithEmailAndPassword(email, password);
       }
     }
   }

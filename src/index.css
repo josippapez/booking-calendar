@@ -9,6 +9,9 @@
   margin: 0;
   padding: 0;
   line-height: calc(1em + 0.5rem);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
 html,
@@ -18,10 +21,12 @@ body {
 
 body {
   margin: 0;
-  font-family: 'Inter-variable', sans-serif;
+  font-family: 'Inter-variable', 'Nunito-variable', sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @apply bg-zinc-50;
+  scroll-behavior: smooth;
 }
 
 code {
@@ -32,18 +37,33 @@ code {
 input,
 textarea {
   outline: none !important;
+  padding: 0.25rem 0.75rem;
+  height: 40px;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }
 
@@ -54,12 +74,22 @@ p, h1, h2, h3, h4, h5, h6 {
 
 @font-face {
   font-family: 'Inter-variable';
-  src: url('./Styles/Assets/Fonts/Inter-VariableFont.ttf');
+  src: url('./Styles/Assets/Fonts/Inter-VariableFont.ttf') format('truetype');
+  font-style: italic normal oblique;
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: 'Nunito-variable';
+  src: url('./Styles/Assets/Fonts/Nunito-VariableFont_wght.ttf')
+    format('truetype');
+  font-style: italic normal oblique;
+  font-weight: 100 900;
 }
 
 .page-container {
   display: grid;
-  grid-template-columns: 1fr min(130ch, calc(100% - 64px)) 1fr;
+  grid-template-columns: 1fr min(120em, calc(100% - 64px)) 1fr;
   grid-column-gap: 32px;
 }
 

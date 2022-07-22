@@ -59,11 +59,10 @@ function Navbar(props: Props) {
       {userAuthenticated && (
         <nav
           ref={component}
-          className={`page-container bg-white border-gray-200 ${
-            isMobileView() ? 'px-4 py-2.5' : 'px-10 py-2.5'
-          } rounded dark:bg-gray-800 relative`}
+          className={`page-container select-none ${
+            isMobileView() ? 'px-4 py-2.5' : 'px-[5%] py-2.5'
+          } border-b dark:bg-gray-800 relative`}
         >
-          <div></div>
           <div className='flex flex-wrap justify-between items-center'>
             <div className='flex gap-[20px]'>
               <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
@@ -129,9 +128,8 @@ function Navbar(props: Props) {
               </button>
             </div>
           </div>
-          <div></div>
           <div
-            className='hidden md:hidden justify-between items-center w-full md:w-auto md:order-1 absolute px-4 py-2.5 bg-white z-10 left-0 top-[60px] shadow-lg'
+            className='hidden md:hidden justify-between items-center w-full md:w-auto md:order-1 absolute px-4 py-2.5 bg-white z-10 left-0 top-[60px] drop-shadow-lg'
             id='mobile-menu-2'
           >
             <ul className='flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium gap-[10px]'>
@@ -162,39 +160,30 @@ function Navbar(props: Props) {
           </div>
         </nav>
       )}
-      <div className='sticky float-right right-2 top-2 w-fit transition-colors h-0 z-40 select-none'>
-        <div className='relative flex-col'>
+      <div className='fixed left-3 bottom-3 w-fit transition-colors h-auto z-40 select-none drop-shadow-md'>
+        <div ref={languageComponent} className='relative flex-row-reverse flex'>
           <div
-            ref={languageComponent}
-            className='relative flex-row-reverse flex'
-          >
-            <div
-              className={`${style.translateButton} ${
-                darkmode.enabled !== 'enabled'
-                  ? style.lightMode
-                  : style.darkMode
-              } mt-3 rounded-full shadow-md relative`}
-              onClick={() =>
-                setDisplayLanguageDropdown(!displayLanguageDropdown)
-              }
-            />
-            <div className='relative' hidden={!displayLanguageDropdown}>
-              <div className='w-fit p-3 rounded-md shadow-md bg-white dark:bg-slate-800 text-zinc-900 dark:text-zinc-100 absolute top-3 right-2'>
-                {languages.map(language => (
-                  <div
-                    key={language.value}
-                    className={`cursor-pointer px-1 py-[2px] rounded-md hover:dark:bg-slate-600 hover:bg-gray-200 ${
-                      i18n.languages[0] === language.value &&
-                      'bg-blue-500 text-white hover:bg-blue-500 hover:opacity-70'
-                    }`}
-                    onClick={() => {
-                      i18n.changeLanguage(language.value);
-                    }}
-                  >
-                    {t(language.title)}
-                  </div>
-                ))}
-              </div>
+            className={`${style.translateButton} ${
+              darkmode.enabled !== 'enabled' ? style.lightMode : style.darkMode
+            } mt-3 rounded-full bg-neutral-200 relative`}
+            onClick={() => setDisplayLanguageDropdown(!displayLanguageDropdown)}
+          />
+          <div className='relative' hidden={!displayLanguageDropdown}>
+            <div className='w-fit p-3 rounded-md bg-white dark:bg-slate-800 text-zinc-900 dark:text-zinc-100 absolute bottom-0 left-11'>
+              {languages.map(language => (
+                <div
+                  key={language.value}
+                  className={`cursor-pointer px-1 py-[2px] rounded-md hover:dark:bg-slate-600 hover:bg-gray-200 ${
+                    i18n.languages[0] === language.value &&
+                    'bg-blue-500 text-white hover:bg-blue-500 hover:opacity-70'
+                  }`}
+                  onClick={() => {
+                    i18n.changeLanguage(language.value);
+                  }}
+                >
+                  {t(language.title)}
+                </div>
+              ))}
             </div>
           </div>
         </div>

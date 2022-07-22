@@ -50,17 +50,18 @@ const DateRangePicker = (props: Props) => {
   const displayDateRangeDays = (day: Day, index: number) => {
     const disabled =
       disableForCurrentReservations &&
-      currentReservations &&
-      currentReservations[day.date]?.length > 0 &&
-      (currentReservations[day.date]?.length >= 2
-        ? currentReservations[day.date].map(reservation => {
-            const start = DateTime.fromISO(reservation.start);
-            const end = DateTime.fromISO(reservation.end);
-            const interval = Interval.fromDateTimes(start, end);
-            return interval.contains(DateTime.fromISO(day.date));
-          })
-        : currentReservations[day.date][0].end !== day.date &&
-          currentReservations[day.date][0].start !== day.date);
+      (DateTime.fromISO(day.date).diffNow('day').days < -1 ||
+        (currentReservations &&
+          currentReservations[day.date]?.length > 0 &&
+          (currentReservations[day.date]?.length >= 2
+            ? currentReservations[day.date].map(reservation => {
+                const start = DateTime.fromISO(reservation.start);
+                const end = DateTime.fromISO(reservation.end);
+                const interval = Interval.fromDateTimes(start, end);
+                return interval.contains(DateTime.fromISO(day.date));
+              })
+            : currentReservations[day.date][0].end !== day.date &&
+              currentReservations[day.date][0].start !== day.date)));
 
     let selectedDaysContainDisabled: string[] | undefined = [];
     if (currentDate && currentReservations && event.start && !event.end) {
@@ -85,22 +86,29 @@ const DateRangePicker = (props: Props) => {
             setCurrentDate(day.date);
           }
         }}
-        className={`rounded-full border-2
+        onTouchStart={() => {
+          if (event.start) {
+            setCurrentDate(day.date);
+          }
+        }}
+        className={`cursor-pointer
         ${style['dateRange-Day']} font-bold select-none
         ${
           ['Saturday', 'Sunday'].includes(day.name)
-            ? 'border-gray-200'
+            ? 'bg-opacity-60 text-neutral-500'
             : day.lastMonth
             ? 'opacity-30 font-normal'
-            : 'border-gray-400'
+            : ''
         }
+        ${event.start === day.date && '!bg-sky-600 text-white rounded-l-full'}
+        ${event.end === day.date && '!bg-sky-600 text-white rounded-r-full'}
         ${
           event.start && event.end && !disabled
             ? Interval.fromDateTimes(
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(event.end).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-              ? 'bg-purple-400 text-white'
+              ? 'bg-sky-300 !text-white'
               : 'bg-white'
             : !disabled &&
               currentDate &&
@@ -108,12 +116,16 @@ const DateRangePicker = (props: Props) => {
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(currentDate).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-            ? 'bg-purple-200'
+            ? 'bg-sky-200'
             : 'bg-white'
         }
-        ${disabled ? 'opacity-10 cursor-not-allowed' : 'hover:border-blue-400'}
+        ${
+          disabled
+            ? 'opacity-10 cursor-not-allowed'
+            : 'hover:bg-sky-300 hover:text-white'
+        }
         ${selectedDaysContainDisabled?.length && 'cursor-not-allowed'}`}
-        onClick={() => {
+        onMouseUp={() => {
           if (!disabled) {
             if (event.start && event.end) {
               setEvent({
@@ -186,8 +198,8 @@ const DateRangePicker = (props: Props) => {
       closeModal={() => setShowDateRangePicker(false)}
     >
       <div className='p-4 bg-white rounded-md relative'>
-        <div className='flex justify-center select-none gap-3'>
-          <div className='flex items-center border-t-2 border-b-2 w-36 rounded-md h-10'>
+        <div className='flex justify-center select-none gap-3 drop-shadow-md'>
+          <div className='flex items-center w-36 rounded-md h-10'>
             <button
               onClick={() => {
                 if (selectedMonth === 1) {
@@ -203,7 +215,7 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5'
             />
             <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedMonth}
@@ -223,10 +235,10 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5'
             />
           </div>
-          <div className='flex items-center border-t-2 border-b-2 w-[165px] rounded-md h-10'>
+          <div className='flex items-center w-[165px] rounded-md h-10'>
             <button
               onClick={() => {
                 setSelectedYear(selectedYear - 1);
@@ -237,9 +249,8 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-l-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5'
             />
-
             <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedYear}
             </h2>
@@ -253,7 +264,7 @@ const DateRangePicker = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className='bg-gray-200 hover:bg-gray-300 p-5 rounded-r-md'
+              className='bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5'
             />
           </div>
         </div>

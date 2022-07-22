@@ -1,16 +1,15 @@
 .dropdownInput {
-  width: 200px;
-  max-width: 200px;
-  height: 36px;
+  min-width: 200px;
+  height: 40px;
 }
 .dropdown {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   background-color: white;
-  width: 200px;
+  width: 100%;
   position: absolute;
-  top: 36px;
+  top: 40px;
   z-index: 10;
   padding: 10px;
 }

@@ -5,10 +5,9 @@ import style from './Modal.module.scss';
 
 interface Props {
   closeModal(): void;
-  position?: 'center' | 'left' | 'right' | 'bottom';
+  position?: 'center' | 'left' | 'right' | 'bottom' | 'top';
   children: JSX.Element;
   show: boolean;
-  height?: 'screen' | string;
   width?: 'screen' | string;
   animation?:
     | 'fade'
@@ -16,13 +15,35 @@ interface Props {
     | 'slide-right'
     | 'slide-top'
     | 'slide-bottom';
+  ratio?:
+    | '1 / 1'
+    | '4 / 3'
+    | '16 / 9'
+    | '16 / 10'
+    | '21 / 9'
+    | '9 / 16'
+    | '3 / 4'
+    | string;
 }
 
+let openned = 0;
+
 const Modal = (props: Props): JSX.Element => {
-  const { closeModal, position, children, show, height, width, animation } =
+  const { closeModal, position, children, show, width, animation, ratio } =
     props;
+
   useEffect(() => {
-    document.body.style.overflow = show ? 'hidden' : 'auto';
+    if (openned === 0) {
+      document.body.style.overflow = show ? 'hidden' : 'auto';
+    }
+    if (show) {
+      openned++;
+    }
+    return () => {
+      if (show) {
+        openned--;
+      }
+    };
   }, [show]);
 
   return ReactDOM.createPortal(
@@ -47,20 +68,24 @@ const Modal = (props: Props): JSX.Element => {
       className={`
         ${style.overlay}
         ${style[`${position}`]}
-        ${style['fade']}
+        ${style['fadeOverlay']}
       `}
       onMouseDown={() => closeModal()}
     >
       <div
+        id='modal-children'
         aria-hidden='true'
         className={`
           ${style.children}
           ${style[`${animation}`]}
+          subpixel-antialiased
+          flex flex-col
         `}
         onMouseDown={e => e.stopPropagation()}
         style={{
-          height: height === 'screen' ? '100vh' : height,
-          width: width === 'screen' ? '100vw' : width,
+          width: width === 'screen' ? window.innerWidth + 'px' : width,
+          maxHeight: window.innerHeight + 'px',
+          aspectRatio: ratio,
         }}
       >
         {children}
@@ -72,8 +97,8 @@ const Modal = (props: Props): JSX.Element => {
 
 Modal.defaultProps = {
   position: 'center',
-  height: '',
   width: '',
+  ratio: '',
   closeModal: () => {
     return;
   },
