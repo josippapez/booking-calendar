@@ -13,7 +13,7 @@
     --scale-x-rem-negative: -1.1rem;
     --scale-x-rem-positive: 1.1rem;
   }
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1921px) {
     --scale-x: 1.25;
     --scale-y: 1.25;
     --scale-y-rem-negative: -1.8rem;
@@ -31,7 +31,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.87);
+  background: rgba(17, 21, 24, 0.45);
   cursor: default;
   z-index: 1;
   align-items: center;
@@ -64,6 +64,10 @@
   }
 }
 
+.fadeOverlay {
+  animation: fadeInOverlay 0.1s ease-in-out;
+}
+
 .fade {
   animation: fadeIn 0.2s ease-in-out;
 }
@@ -84,12 +88,23 @@
   animation: slide-bottom 0.2s ease-in-out;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInOverlay {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(calc(var(--scale-x) - 0.05), calc(var(--scale-y) - 0.05));
+  }
+  to {
+    opacity: 1;
+    transform: scale(var(--scale-x), var(--scale-y));
   }
 }
 
@@ -116,8 +131,7 @@
     transform: scale(var(--scale-x), var(--scale-y)) translate(0, -100vh);
   }
   to {
-    transform: scale(var(--scale-x), var(--scale-y))
-      translate(0, 0);
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
   }
 }
 
@@ -126,7 +140,6 @@
     transform: scale(var(--scale-x), var(--scale-y)) translate(0, 100vh);
   }
   to {
-    transform: scale(var(--scale-x), var(--scale-y))
-      translate(0, 0);
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
   }
 }

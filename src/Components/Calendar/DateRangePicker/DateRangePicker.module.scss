@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: repeat(7, min(3rem, calc((100vw - 4rem) / 7)));
   grid-template-rows: repeat(6, min(3rem, calc((100vw - 4rem) / 7)));
+  row-gap: 1rem;
   justify-content: center;
 
   .dateRange-Day {

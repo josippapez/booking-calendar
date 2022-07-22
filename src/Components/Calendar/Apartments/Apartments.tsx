@@ -62,11 +62,11 @@ const Apartments = (props: Props) => {
   }, []);
 
   return (
-    <div className={`${isMobileView() ? 'py-10 px-4' : 'page-container p-10'}`}>
+    <div>
       <div className='flex justify-between'>
         <div className='font-bold text-xl'>{t('apartments')}</div>
       </div>
-      <div className='w-full max-w-xs drop-shadow-md'>
+      <div className='w-full max-w-xs'>
         <form className='bg-white rounded-md px-8 pt-6 pb-8 mb-4 relative border'>
           {newApartment.id && (
             <div
@@ -95,7 +95,7 @@ const Apartments = (props: Props) => {
               {t('apartment_name')}
             </label>
             <input
-              className='shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-md'
+              className='appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500'
               id='apartmentName'
               type='text'
               placeholder='Apartment Name'
@@ -113,7 +113,7 @@ const Apartments = (props: Props) => {
               {t('apartment_address')}
             </label>
             <input
-              className='shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:shadow-md'
+              className='appearance-none border rounded-md w-full text-gray-700 mb-3 leading-tight focus:border-blue-500'
               id='apartmentAddress'
               type='text'
               placeholder='Apartment Address'
@@ -134,7 +134,7 @@ const Apartments = (props: Props) => {
               {t('apartment_email')}
             </label>
             <input
-              className={`shadow appearance-none border rounded-md w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:shadow-md ${
+              className={`appearance-none border rounded-md w-full text-gray-700 mb-3 leading-tight focus:border-blue-500 ${
                 newApartment.email
                   ? emailRegex.test(newApartment.email)
                     ? 'border-green-500'

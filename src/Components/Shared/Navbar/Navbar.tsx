@@ -59,9 +59,9 @@ function Navbar(props: Props) {
       {userAuthenticated && (
         <nav
           ref={component}
-          className={`page-container bg-neutral-100 border-gray-200 border-b-2 shadow-sm select-none ${
-            isMobileView() ? 'px-4 py-2.5' : 'px-10 py-2.5'
-          } rounded-b-md dark:bg-gray-800 relative`}
+          className={`page-container select-none ${
+            isMobileView() ? 'px-4 py-2.5' : 'px-[5%] py-2.5'
+          } border-b dark:bg-gray-800 relative`}
         >
           <div className='flex flex-wrap justify-between items-center'>
             <div className='flex gap-[20px]'>
@@ -85,7 +85,7 @@ function Navbar(props: Props) {
                 </ul>
               </div>
             </div>
-            <div className='flex items-center md:order-2 drop-shadow-md'>
+            <div className='flex items-center md:order-2'>
               <button
                 className='hidden md:block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-fit self-end'
                 type='button'

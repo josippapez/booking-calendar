@@ -98,7 +98,7 @@ const DateRangePicker = (props: Props) => {
             ? 'bg-opacity-60 text-neutral-500'
             : day.lastMonth
             ? 'opacity-30 font-normal'
-            : 'border-sky-400'
+            : ''
         }
         ${event.start === day.date && '!bg-sky-600 text-white rounded-l-full'}
         ${event.end === day.date && '!bg-sky-600 text-white rounded-r-full'}
@@ -108,7 +108,7 @@ const DateRangePicker = (props: Props) => {
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(event.end).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-              ? 'bg-sky-400 !text-white'
+              ? 'bg-sky-300 !text-white'
               : 'bg-white'
             : !disabled &&
               currentDate &&

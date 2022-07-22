@@ -12,7 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectApartment } from '../../store/reducers/apartments';
 import { setEvents } from '../../store/reducers/events';
-import Images from '../../Styles/Assets/Images/Images';
+import DateNavigation from '../Shared/DateNavigation/DateNavigation';
 import Dropdown from '../Shared/Dropdown/Dropdown';
 import style from './Calendar.module.scss';
 import { Event } from './CalendarTypes';
@@ -118,7 +118,7 @@ const Calendar = (props: Props) => {
   }, [eventsData, eachDayOfMonth]);
 
   return (
-    <div className={`${mobileView ? 'py-10 px-2.5' : 'page-container p-10'}`}>
+    <div>
       <div
         className={`flex justify-between ${
           mobileView ? 'flex-col' : 'flex-row'
@@ -149,82 +149,13 @@ const Calendar = (props: Props) => {
             {t('public_view')}
           </button>
         </div>
-        <div
-          className={`${style.dateNavigation} flex select-none gap-3 drop-shadow-md`}
-        >
-          <div
-            className={`flex items-center ${
-              isMobileView() ? 'w-[165px]' : 'w-36'
-            } rounded-md h-10`}
-          >
-            <button
-              onClick={() => {
-                if (selectedMonth === 1) {
-                  setSelectedMonth(12);
-                  setSelectedYear(selectedYear - 1);
-                  return;
-                }
-                setSelectedMonth(selectedMonth - 1);
-              }}
-              style={{
-                backgroundImage: `url(${Images.LeftArrow})`,
-                backgroundSize: '75%',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-              }}
-              className='bg-neutral-50 hover:bg-neutral-100 p-5 rounded-l-md'
-            />
-            <h2 className='w-full text-center px-5 select-none font-bold'>
-              {selectedMonth}
-            </h2>
-            <button
-              onClick={() => {
-                if (selectedMonth === 12) {
-                  setSelectedMonth(1);
-                  setSelectedYear(selectedYear + 1);
-                  return;
-                }
-                setSelectedMonth(selectedMonth + 1);
-              }}
-              style={{
-                backgroundImage: `url(${Images.RightArrow})`,
-                backgroundSize: '75%',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-              }}
-              className='bg-neutral-50 hover:bg-neutral-100 p-5 rounded-r-md'
-            />
-          </div>
-          <div className='flex items-center w-[165px] rounded-md h-10'>
-            <button
-              onClick={() => {
-                setSelectedYear(selectedYear - 1);
-              }}
-              style={{
-                backgroundImage: `url(${Images.LeftArrow})`,
-                backgroundSize: '75%',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-              }}
-              className='bg-neutral-50 hover:bg-neutral-100 p-5 rounded-l-md'
-            />
-            <h2 className='w-full text-center px-5 select-none font-bold'>
-              {selectedYear}
-            </h2>
-            <button
-              onClick={() => {
-                setSelectedYear(selectedYear + 1);
-              }}
-              style={{
-                backgroundImage: `url(${Images.RightArrow})`,
-                backgroundSize: '75%',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-              }}
-              className='bg-neutral-50 hover:bg-neutral-100 p-5 rounded-r-md'
-            />
-          </div>
-        </div>
+        <DateNavigation
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          setSelectedMonth={setSelectedMonth}
+          setSelectedYear={setSelectedYear}
+          className={style.dateNavigation}
+        />
       </div>
       <div
         ref={calendarGrid}

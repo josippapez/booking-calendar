@@ -68,7 +68,7 @@ const Modal = (props: Props): JSX.Element => {
       className={`
         ${style.overlay}
         ${style[`${position}`]}
-        ${style['fade']}
+        ${style['fadeOverlay']}
       `}
       onMouseDown={() => closeModal()}
     >
@@ -84,6 +84,7 @@ const Modal = (props: Props): JSX.Element => {
         onMouseDown={e => e.stopPropagation()}
         style={{
           width: width === 'screen' ? window.innerWidth + 'px' : width,
+          maxHeight: window.innerHeight + 'px',
           aspectRatio: ratio,
         }}
       >

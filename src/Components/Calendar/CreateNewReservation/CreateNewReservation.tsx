@@ -55,7 +55,7 @@ const CreateNewReservation = (props: Props) => {
         }}
       >
         <div>
-          <div className='modal-header bg-gray-200 p-4 rounded-t-md'>
+          <div className='modal-header bg-gray-200 p-4 rounded-t-xl'>
             <h2 className='text-center font-bold'>
               {t('add_new_reservation_title')}
             </h2>
@@ -66,7 +66,7 @@ const CreateNewReservation = (props: Props) => {
                 {t('name_and_surname')}
               </label>
               <input
-                className='bg-white border-2 border-gray-200 rounded-md py-1 px-2 placeholder:text-sm'
+                className='bg-white border focus:border-blue-500 rounded-md placeholder:text-sm'
                 type='text'
                 value={newReservation.title}
                 onChange={event => {
@@ -80,7 +80,7 @@ const CreateNewReservation = (props: Props) => {
             <div className='flex flex-col'>
               <label className='text-sm font-bold'>{t('phone')}</label>
               <input
-                className='bg-white border-2 border-gray-200 rounded-md py-1 px-2 placeholder:text-sm'
+                className='bg-white border focus:border-blue-500 rounded-md placeholder:text-sm'
                 type='text'
                 value={newReservation.phone}
                 onChange={event => {
@@ -98,7 +98,7 @@ const CreateNewReservation = (props: Props) => {
               }}
             >
               <label className='text-sm font-bold'>{t('date_range')}</label>
-              <div className='bg-white border-2 border-slate-200 rounded-md p-1 w-full flex'>
+              <div className='bg-white border rounded-md p-1 w-full flex'>
                 <div className='font-bold w-[45%]'>
                   {newReservation.start &&
                     DateTime.fromISO(newReservation.start).toFormat(
@@ -120,7 +120,7 @@ const CreateNewReservation = (props: Props) => {
               </div>
             )}
           </div>
-          <div className='modal-footer bg-gray-200 p-4 rounded-b-md'>
+          <div className='modal-footer bg-gray-200 p-4 rounded-b-xl'>
             <div className='flex justify-center'>
               <button
                 className={`${

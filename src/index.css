@@ -9,6 +9,9 @@
   margin: 0;
   padding: 0;
   line-height: calc(1em + 0.5rem);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
 html,
@@ -23,6 +26,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @apply bg-zinc-50;
+  scroll-behavior: smooth;
 }
 
 code {
@@ -33,6 +37,8 @@ code {
 input,
 textarea {
   outline: none !important;
+  padding: 0.25rem 0.75rem;
+  height: 40px;
 }
 
 input,

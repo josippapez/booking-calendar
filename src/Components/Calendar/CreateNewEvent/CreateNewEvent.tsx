@@ -119,11 +119,13 @@ const CreateNewEvent = (props: Props) => {
           setShowEdit(false);
         }}
       >
-        <div>
-          <div className='p-4 bg-white rounded-t-md'>
-            <h2 className='text-center font-bold mb-4'>
+        <>
+          <div className='modal-header rounded-t-xl bg-gray-200 py-4'>
+            <h2 className='text-center font-bold'>
               {t('add_new_reservation_title')}
             </h2>
+          </div>
+          <div className='p-4 bg-white modal-body'>
             <div className='flex h-[36px]'>
               <span className='font-bold text-sm'>Booking</span>
               <input
@@ -140,7 +142,7 @@ const CreateNewEvent = (props: Props) => {
               <div className='flex flex-col justify-center'>
                 <label className='text-sm font-bold'>{t('title')}</label>
                 <input
-                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  className='bg-white border focus:border-blue-500 rounded-md placeholder:text-sm'
                   type='text'
                   value={newEvent.title}
                   onChange={e =>
@@ -151,7 +153,7 @@ const CreateNewEvent = (props: Props) => {
               <div className='flex flex-col justify-center'>
                 <label className='text-sm font-bold'>{t('description')}</label>
                 <input
-                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  className='bg-white border focus:border-blue-500 rounded-md placeholder:text-sm'
                   type='text'
                   value={newEvent.description}
                   onChange={e =>
@@ -162,7 +164,7 @@ const CreateNewEvent = (props: Props) => {
               <div className='flex flex-col justify-center'>
                 <label className='text-sm font-bold'>{t('phone')}</label>
                 <input
-                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  className='bg-white border focus:border-blue-500 rounded-md placeholder:text-sm'
                   type='text'
                   value={newEvent.phone}
                   onChange={e =>
@@ -176,7 +178,7 @@ const CreateNewEvent = (props: Props) => {
                   <input
                     type={'button'}
                     placeholder='Color'
-                    className={`${style.dropdownInput} cursor-pointer border-2 border-gray-100 rounded-md p-1 placeholder:text-sm`}
+                    className={`${style.dropdownInput} cursor-pointer border focus:border-blue-500 rounded-md placeholder:text-sm`}
                     onClick={() => {
                       setOpennedDropdown(!opennedDropdown);
                     }}
@@ -186,7 +188,7 @@ const CreateNewEvent = (props: Props) => {
                   />
                   {opennedDropdown && (
                     <div
-                      className={`${style.dropdown} border-2 border-gray-100 rounded-md p-1`}
+                      className={`${style.dropdown} border focus:border-blue-500 rounded-md p-1`}
                     >
                       {(newEvent.booking ? Array(bookingColor) : colors).map(
                         color => (
@@ -210,7 +212,7 @@ const CreateNewEvent = (props: Props) => {
               </div>
             </div>
           </div>
-          <div className='bg-gray-200 p-4 border-t-2 rounded-b-md'>
+          <div className='bg-gray-200 p-4 border-t-2 rounded-b-xl'>
             <div
               className='flex flex-col justify-center text-center'
               onClick={() => {
@@ -287,7 +289,7 @@ const CreateNewEvent = (props: Props) => {
               />
             </div>
           </div>
-        </div>
+        </>
       </Modal>
       <DateRangePicker
         event={newEvent}
