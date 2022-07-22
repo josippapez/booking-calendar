@@ -112,176 +112,180 @@ const CreateNewEvent = (props: Props) => {
     <>
       <Modal
         animation='fade'
+        width='20rem'
         show={show || showEdit}
         closeModal={() => {
           setShow(false);
           setShowEdit(false);
         }}
       >
-        <div className='p-4 bg-white rounded-t-md'>
-          <h2 className='text-center font-bold mb-4'>
-            {t('add_new_reservation_title')}
-          </h2>
-          <div className='flex h-[36px]'>
-            <span className='font-bold text-sm'>Booking</span>
-            <input
-              className='bg-white rounded-full w-4 h-4 ml-2'
-              type='checkbox'
-              checked={newEvent.booking}
-              onClick={() => setNewEvent({ ...newEvent, color: '' })}
-              onChange={() => {
-                setNewEvent({ ...newEvent, booking: !newEvent.booking });
-              }}
-            />
-          </div>
-          <div className='flex flex-col gap-3'>
-            <div className='flex flex-col justify-center'>
-              <label className='text-sm font-bold'>{t('title')}</label>
+        <div>
+          <div className='p-4 bg-white rounded-t-md'>
+            <h2 className='text-center font-bold mb-4'>
+              {t('add_new_reservation_title')}
+            </h2>
+            <div className='flex h-[36px]'>
+              <span className='font-bold text-sm'>Booking</span>
               <input
-                className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
-                type='text'
-                value={newEvent.title}
-                onChange={e =>
-                  setNewEvent({ ...newEvent, title: e.target.value })
-                }
+                className='bg-white rounded-full w-4 h-4 ml-2'
+                type='checkbox'
+                checked={newEvent.booking}
+                onClick={() => setNewEvent({ ...newEvent, color: '' })}
+                onChange={() => {
+                  setNewEvent({ ...newEvent, booking: !newEvent.booking });
+                }}
               />
             </div>
-            <div className='flex flex-col justify-center'>
-              <label className='text-sm font-bold'>{t('description')}</label>
-              <input
-                className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
-                type='text'
-                value={newEvent.description}
-                onChange={e =>
-                  setNewEvent({ ...newEvent, description: e.target.value })
-                }
-              />
-            </div>
-            <div className='flex flex-col justify-center'>
-              <label className='text-sm font-bold'>{t('phone')}</label>
-              <input
-                className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
-                type='text'
-                value={newEvent.phone}
-                onChange={e =>
-                  setNewEvent({ ...newEvent, phone: e.target.value })
-                }
-              />
-            </div>
-            <div className='flex flex-col justify-center'>
-              <label className='text-sm font-bold'>{t('color')}</label>
-              <div className='flex flex-col justify-center relative'>
+            <div className='flex flex-col gap-3'>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('title')}</label>
                 <input
-                  type={'button'}
-                  placeholder='Color'
-                  className={`${style.dropdownInput} cursor-pointer border-2 border-gray-100 rounded-md p-1 placeholder:text-sm`}
-                  onClick={() => {
-                    setOpennedDropdown(!opennedDropdown);
-                  }}
-                  style={{
-                    backgroundColor: newEvent.color,
-                  }}
-                />
-                {opennedDropdown && (
-                  <div
-                    className={`${style.dropdown} border-2 border-gray-100 rounded-md p-1`}
-                  >
-                    {(newEvent.booking ? Array(bookingColor) : colors).map(
-                      color => (
-                        <div
-                          key={color}
-                          style={{ backgroundColor: color }}
-                          className={`${style.dropdownItem}`}
-                          onClick={() => {
-                            setNewEvent({
-                              ...newEvent,
-                              color: color,
-                            });
-                            setOpennedDropdown(false);
-                          }}
-                        />
-                      )
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='bg-gray-200 p-4 border-t-2 rounded-b-md'>
-          <div
-            className='flex flex-col justify-center text-center'
-            onClick={() => {
-              setShowDateRangePicker(true);
-            }}
-          >
-            <label className='text-sm font-bold'>{t('date_range')}</label>
-            <div className='bg-white border-2 border-slate-200 rounded-md p-1 w-full flex'>
-              <div className='font-bold w-[45%]'>
-                {newEvent.start &&
-                  DateTime.fromISO(newEvent.start).toFormat('dd. MM. yyyy.')}
-              </div>
-              <div className='px-2 w-[10%]'>-</div>
-              <div className='font-bold w-[45%]'>
-                {newEvent.end &&
-                  DateTime.fromISO(newEvent.end).toFormat('dd. MM. yyyy.')}
-              </div>
-            </div>
-          </div>
-          <div className='flex justify-center mt-3'>
-            <button
-              className='font-bold'
-              onClick={() => {
-                if (newEvent.start && newEvent.end && newEvent.color) {
-                  let editedEvents = { ...events };
-                  if (showEdit && selectedEventToEdit) {
-                    const datesToEdit = eachDayOfRange(
-                      selectedEventToEdit.start,
-                      selectedEventToEdit.end
-                    );
-                    datesToEdit.map(date => {
-                      if (editedEvents[date.date]) {
-                        const eventForDayIndex = editedEvents[
-                          date.date
-                        ].findIndex(event => event.id === newEvent.id);
-
-                        if (eventForDayIndex !== -1) {
-                          editedEvents = {
-                            ...editedEvents,
-                            [date.date]: [
-                              ...editedEvents[date.date].filter(
-                                event => event.id !== newEvent.id
-                              ),
-                            ],
-                          };
-                        }
-                      }
-                    });
+                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  type='text'
+                  value={newEvent.title}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, title: e.target.value })
                   }
-                  const dates = eachDayOfRange(newEvent.start, newEvent.end);
-                  setEvents({
-                    ...editedEvents,
-                    ...dates.reduce(
-                      (acc, date) => ({
-                        ...acc,
-                        [date.date]: [
-                          ...((editedEvents && editedEvents[date.date]) || []),
-                          { ...newEvent, weekNumber: date.weekNumber },
-                        ],
-                      }),
-                      {}
-                    ),
-                  });
-                  setShow(false);
-                  setShowEdit(false);
-                }
+                />
+              </div>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('description')}</label>
+                <input
+                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  type='text'
+                  value={newEvent.description}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, description: e.target.value })
+                  }
+                />
+              </div>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('phone')}</label>
+                <input
+                  className='bg-white border-2 border-gray-100 rounded-md p-1 placeholder:text-sm'
+                  type='text'
+                  value={newEvent.phone}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('color')}</label>
+                <div className='flex flex-col justify-center relative'>
+                  <input
+                    type={'button'}
+                    placeholder='Color'
+                    className={`${style.dropdownInput} cursor-pointer border-2 border-gray-100 rounded-md p-1 placeholder:text-sm`}
+                    onClick={() => {
+                      setOpennedDropdown(!opennedDropdown);
+                    }}
+                    style={{
+                      backgroundColor: newEvent.color,
+                    }}
+                  />
+                  {opennedDropdown && (
+                    <div
+                      className={`${style.dropdown} border-2 border-gray-100 rounded-md p-1`}
+                    >
+                      {(newEvent.booking ? Array(bookingColor) : colors).map(
+                        color => (
+                          <div
+                            key={color}
+                            style={{ backgroundColor: color }}
+                            className={`${style.dropdownItem}`}
+                            onClick={() => {
+                              setNewEvent({
+                                ...newEvent,
+                                color: color,
+                              });
+                              setOpennedDropdown(false);
+                            }}
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='bg-gray-200 p-4 border-t-2 rounded-b-md'>
+            <div
+              className='flex flex-col justify-center text-center'
+              onClick={() => {
+                setShowDateRangePicker(true);
               }}
-              style={{
-                backgroundImage: `url(${Images.Check})`,
-                height: '35px',
-                width: '35px',
-              }}
-            />
+            >
+              <label className='text-sm font-bold'>{t('date_range')}</label>
+              <div className='bg-white border-2 border-slate-200 rounded-md p-1 w-full flex'>
+                <div className='font-bold w-[45%]'>
+                  {newEvent.start &&
+                    DateTime.fromISO(newEvent.start).toFormat('dd. MM. yyyy.')}
+                </div>
+                <div className='px-2 w-[10%]'>-</div>
+                <div className='font-bold w-[45%]'>
+                  {newEvent.end &&
+                    DateTime.fromISO(newEvent.end).toFormat('dd. MM. yyyy.')}
+                </div>
+              </div>
+            </div>
+            <div className='flex justify-center mt-3'>
+              <button
+                className='font-bold'
+                onClick={() => {
+                  if (newEvent.start && newEvent.end && newEvent.color) {
+                    let editedEvents = { ...events };
+                    if (showEdit && selectedEventToEdit) {
+                      const datesToEdit = eachDayOfRange(
+                        selectedEventToEdit.start,
+                        selectedEventToEdit.end
+                      );
+                      datesToEdit.map(date => {
+                        if (editedEvents[date.date]) {
+                          const eventForDayIndex = editedEvents[
+                            date.date
+                          ].findIndex(event => event.id === newEvent.id);
+
+                          if (eventForDayIndex !== -1) {
+                            editedEvents = {
+                              ...editedEvents,
+                              [date.date]: [
+                                ...editedEvents[date.date].filter(
+                                  event => event.id !== newEvent.id
+                                ),
+                              ],
+                            };
+                          }
+                        }
+                      });
+                    }
+                    const dates = eachDayOfRange(newEvent.start, newEvent.end);
+                    setEvents({
+                      ...editedEvents,
+                      ...dates.reduce(
+                        (acc, date) => ({
+                          ...acc,
+                          [date.date]: [
+                            ...((editedEvents && editedEvents[date.date]) ||
+                              []),
+                            { ...newEvent, weekNumber: date.weekNumber },
+                          ],
+                        }),
+                        {}
+                      ),
+                    });
+                    setShow(false);
+                    setShowEdit(false);
+                  }
+                }}
+                style={{
+                  backgroundImage: `url(${Images.Check})`,
+                  height: '35px',
+                  width: '35px',
+                }}
+              />
+            </div>
           </div>
         </div>
       </Modal>

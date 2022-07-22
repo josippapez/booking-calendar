@@ -401,7 +401,7 @@ const Calendar = (props: Props) => {
       </div>
       <div className='fixed bottom-0 right-0 p-3 w-fit drop-shadow-md'>
         <button
-          className='bg-neutral-200 hover:bg-neutral-400 hover:text-white font-bold py-2 px-4 rounded text-lg'
+          className='bg-blue-500 hover:bg-neutral-400 text-white font-bold py-2 px-4 rounded text-lg'
           onClick={() => setAddNewEvent(true)}
         >
           +

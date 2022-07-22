@@ -1,5 +1,5 @@
 import { DateTime, Info } from 'luxon';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFirestore } from 'react-redux-firebase';
 import { useNavigate, useParams } from 'react-router';
@@ -33,8 +33,8 @@ const PublicCalendar = (props: Props) => {
   const [apartmentEmail, setApartmentEmail] = useState('');
   const [apartmentName, setApartmentName] = useState('');
 
-  const mobileView = isMobileView();
-  1;
+  const mobileView = useMemo(() => isMobileView(), []);
+
   const { dates, nextMonthDates } = calculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
@@ -89,25 +89,19 @@ const PublicCalendar = (props: Props) => {
   }, [navigate]);
 
   return (
-    <div
-      className={`${isMobileView() ? 'py-10 px-2.5' : 'page-container p-10'}`}
-    >
+    <div className={`${mobileView ? 'py-10 px-2.5' : 'page-container p-10'}`}>
       {apartmentName && (
         <div className='mb-5 font-bold text-2xl text-blue-700'>
           {apartmentName}
         </div>
       )}
-      <div
-        className={`flex ${
-          isMobileView() ? 'justify-around' : 'justify-between'
-        }  items-center`}
-      >
+      <div className={`flex justify-between items-center`}>
         <div
           className={`${style.dateNavigation} flex select-none gap-3 drop-shadow-md`}
         >
           <div
             className={`flex items-center ${
-              isMobileView() ? 'w-[165px]' : 'w-36'
+              mobileView ? 'w-[165px]' : 'w-36'
             } rounded-md h-10`}
           >
             <button
@@ -193,10 +187,10 @@ const PublicCalendar = (props: Props) => {
         </div>
         <div
           className={`${
-            isMobileView() ? 'flex flex-col' : 'flex items-center'
+            mobileView ? 'flex flex-col' : 'flex items-center'
           } gap-3 select-none drop-shadow-md`}
         >
-          {!isMobileView() && (
+          {!mobileView && (
             <div className='flex gap-3'>
               <div className='font-semibold'>{t('can_be_reserved')}:</div>
               <div className='flex'>
@@ -227,7 +221,7 @@ const PublicCalendar = (props: Props) => {
           </button>
         </div>
       </div>
-      {isMobileView() && (
+      {mobileView && (
         <div className='flex gap-3 mt-6 items-center justify-center drop-shadow-md'>
           <div className='font-semibold'>{t('can_be_reserved')}:</div>
           <div className='flex'>

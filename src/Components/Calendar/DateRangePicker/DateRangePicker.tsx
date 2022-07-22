@@ -49,19 +49,19 @@ const DateRangePicker = (props: Props) => {
 
   const displayDateRangeDays = (day: Day, index: number) => {
     const disabled =
-      DateTime.fromISO(day.date).diffNow('day').days < -1 ||
-      (disableForCurrentReservations &&
-        currentReservations &&
-        currentReservations[day.date]?.length > 0 &&
-        (currentReservations[day.date]?.length >= 2
-          ? currentReservations[day.date].map(reservation => {
-              const start = DateTime.fromISO(reservation.start);
-              const end = DateTime.fromISO(reservation.end);
-              const interval = Interval.fromDateTimes(start, end);
-              return interval.contains(DateTime.fromISO(day.date));
-            })
-          : currentReservations[day.date][0].end !== day.date &&
-            currentReservations[day.date][0].start !== day.date));
+      disableForCurrentReservations &&
+      (DateTime.fromISO(day.date).diffNow('day').days < -1 ||
+        (currentReservations &&
+          currentReservations[day.date]?.length > 0 &&
+          (currentReservations[day.date]?.length >= 2
+            ? currentReservations[day.date].map(reservation => {
+                const start = DateTime.fromISO(reservation.start);
+                const end = DateTime.fromISO(reservation.end);
+                const interval = Interval.fromDateTimes(start, end);
+                return interval.contains(DateTime.fromISO(day.date));
+              })
+            : currentReservations[day.date][0].end !== day.date &&
+              currentReservations[day.date][0].start !== day.date)));
 
     let selectedDaysContainDisabled: string[] | undefined = [];
     if (currentDate && currentReservations && event.start && !event.end) {
@@ -91,22 +91,24 @@ const DateRangePicker = (props: Props) => {
             setCurrentDate(day.date);
           }
         }}
-        className={`rounded-full border-2 cursor-pointer
+        className={`cursor-pointer
         ${style['dateRange-Day']} font-bold select-none
         ${
           ['Saturday', 'Sunday'].includes(day.name)
-            ? 'border-sky-200'
+            ? 'bg-opacity-60 text-neutral-500'
             : day.lastMonth
             ? 'opacity-30 font-normal'
             : 'border-sky-400'
         }
+        ${event.start === day.date && '!bg-sky-600 text-white rounded-l-full'}
+        ${event.end === day.date && '!bg-sky-600 text-white rounded-r-full'}
         ${
           event.start && event.end && !disabled
             ? Interval.fromDateTimes(
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(event.end).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-              ? 'bg-sky-400 text-white'
+              ? 'bg-sky-400 !text-white'
               : 'bg-white'
             : !disabled &&
               currentDate &&
@@ -117,7 +119,11 @@ const DateRangePicker = (props: Props) => {
             ? 'bg-sky-200'
             : 'bg-white'
         }
-        ${disabled ? 'opacity-10 cursor-not-allowed' : 'hover:border-sky-400'}
+        ${
+          disabled
+            ? 'opacity-10 cursor-not-allowed'
+            : 'hover:bg-sky-300 hover:text-white'
+        }
         ${selectedDaysContainDisabled?.length && 'cursor-not-allowed'}`}
         onMouseUp={() => {
           if (!disabled) {
@@ -245,7 +251,6 @@ const DateRangePicker = (props: Props) => {
               }}
               className='bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5'
             />
-
             <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedYear}
             </h2>
@@ -263,7 +268,7 @@ const DateRangePicker = (props: Props) => {
             />
           </div>
         </div>
-        <div className={`${style.dateRangeGrid} my-4 drop-shadow-md`}>
+        <div className={`${style.dateRangeGrid} my-4`}>
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>

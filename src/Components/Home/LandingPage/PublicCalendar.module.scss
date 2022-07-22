@@ -28,7 +28,7 @@
 
 .dateNavigation {
   flex-direction: row;
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 450px) {
     flex-direction: column;
   }
 }

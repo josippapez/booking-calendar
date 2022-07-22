@@ -5,8 +5,8 @@ import style from './Modal.module.scss';
 
 interface Props {
   closeModal(): void;
-  position?: 'center' | 'left' | 'right' | 'bottom';
-  children: JSX.Element[] | JSX.Element;
+  position?: 'center' | 'left' | 'right' | 'bottom' | 'top';
+  children: JSX.Element;
   show: boolean;
   width?: 'screen' | string;
   animation?:
@@ -15,12 +15,22 @@ interface Props {
     | 'slide-right'
     | 'slide-top'
     | 'slide-bottom';
+  ratio?:
+    | '1 / 1'
+    | '4 / 3'
+    | '16 / 9'
+    | '16 / 10'
+    | '21 / 9'
+    | '9 / 16'
+    | '3 / 4'
+    | string;
 }
 
 let openned = 0;
 
 const Modal = (props: Props): JSX.Element => {
-  const { closeModal, position, children, show, width, animation } = props;
+  const { closeModal, position, children, show, width, animation, ratio } =
+    props;
 
   useEffect(() => {
     if (openned === 0) {
@@ -52,8 +62,6 @@ const Modal = (props: Props): JSX.Element => {
       id='modal-overlay'
       style={{
         display: !show ? 'none' : 'flex',
-        height: window.innerHeight + 'px',
-        width: window.innerWidth + 'px',
       }}
       aria-hidden='true'
       role='button'
@@ -65,19 +73,18 @@ const Modal = (props: Props): JSX.Element => {
       onMouseDown={() => closeModal()}
     >
       <div
+        id='modal-children'
         aria-hidden='true'
         className={`
           ${style.children}
           ${style[`${animation}`]}
-          lg:scale-125
+          subpixel-antialiased
+          flex flex-col
         `}
         onMouseDown={e => e.stopPropagation()}
         style={{
           width: width === 'screen' ? window.innerWidth + 'px' : width,
-          backfaceVisibility: 'hidden',
-          transform: 'translateZ(0)',
-          WebkitFontSmoothing: 'subpixel-antialiased',
-          willChange: 'transform',
+          aspectRatio: ratio,
         }}
       >
         {children}
@@ -90,6 +97,7 @@ const Modal = (props: Props): JSX.Element => {
 Modal.defaultProps = {
   position: 'center',
   width: '',
+  ratio: '',
   closeModal: () => {
     return;
   },
