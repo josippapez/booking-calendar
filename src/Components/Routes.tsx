@@ -51,13 +51,12 @@ export const ProtectedRoutes = () => {
       <Navbar userAuthenticated={!!user.accessToken} />
       <div
         className={`${
-          user.accessToken
-            ? `${
-                isMobileView() ? 'py-10 px-2.5' : 'page-container py-16 px-[5%]'
-              }
-               min-h-[calc(100%_-_60px)]`
-            : 'min-h-full'
-        } min-w-screen w-full overflow-x-hidden`}
+          user.accessToken ? 'min-h-[calc(100%_-_60px)]' : 'min-h-full'
+        } min-w-screen w-full overflow-x-hidden page-container ${
+          isMobileView()
+            ? 'py-10 px-2.5'
+            : window.location.pathname !== '/' && 'py-16 px-[5%]'
+        }`}
       >
         {routes}
       </div>

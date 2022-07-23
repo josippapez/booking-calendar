@@ -71,6 +71,7 @@ const Modal = (props: Props): JSX.Element => {
         ${style['fadeOverlay']}
       `}
       onMouseDown={() => closeModal()}
+      onTouchStart={e => e.stopPropagation()}
     >
       <div
         id='modal-children'
@@ -84,7 +85,7 @@ const Modal = (props: Props): JSX.Element => {
         onMouseDown={e => e.stopPropagation()}
         style={{
           width: width === 'screen' ? window.innerWidth + 'px' : width,
-          maxHeight: window.innerHeight + 'px',
+          maxHeight: `calc(${window.innerHeight}px / var(--scale-y))`,
           aspectRatio: ratio,
         }}
       >
