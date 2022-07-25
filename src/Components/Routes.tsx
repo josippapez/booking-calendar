@@ -56,7 +56,7 @@ export const ProtectedRoutes = () => {
           isMobileView()
             ? 'py-10 px-2.5'
             : window.location.pathname !== '/' && 'py-16 px-[5%]'
-        }`}
+        } select-none`}
       >
         {routes}
       </div>
