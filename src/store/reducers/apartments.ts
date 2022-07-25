@@ -6,6 +6,7 @@ type Apartment = {
   name: string;
   address: string;
   email: string;
+  image: string;
 };
 
 type Apartments = {

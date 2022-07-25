@@ -33,6 +33,7 @@ const PublicCalendar = (props: Props) => {
     useState<boolean>(false);
   const [apartmentEmail, setApartmentEmail] = useState('');
   const [apartmentName, setApartmentName] = useState('');
+  const [apartmentLogo, setApartmentLogo] = useState('');
 
   const mobileView = useMemo(() => isMobileView(), []);
 
@@ -77,6 +78,7 @@ const PublicCalendar = (props: Props) => {
       if (!apartment) {
         return;
       }
+      setApartmentLogo(apartment[id].image);
       setApartmentEmail(apartment[id].email);
       setApartmentName(apartment[id].name);
     }
@@ -92,8 +94,19 @@ const PublicCalendar = (props: Props) => {
   return (
     <div>
       {apartmentName && (
-        <div className='mb-5 font-bold text-2xl text-blue-700'>
-          {apartmentName}
+        <div className='mb-5 flex items-center gap-10'>
+          <div className=' font-bold text-2xl text-blue-700'>
+            {apartmentName}
+          </div>
+          {apartmentLogo && (
+            <div>
+              <img
+                src={apartmentLogo}
+                alt={apartmentName}
+                className='rounded object-contain h-20 w-auto'
+              />
+            </div>
+          )}
         </div>
       )}
       <div className={`flex justify-between items-center`}>
@@ -125,7 +138,7 @@ const PublicCalendar = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className={`bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5 disabled:bg-neutral-300`}
+              className={`hover:bg-neutral-100 p-5 rounded-l-md disabled:bg-neutral-300`}
             />
             <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedMonth}
@@ -145,7 +158,7 @@ const PublicCalendar = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className={`bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5`}
+              className={`hover:bg-neutral-100 p-5 rounded-r-md`}
             />
           </div>
           <div className={`flex items-center rounded-md h-10 w-[165px]`}>
@@ -167,7 +180,7 @@ const PublicCalendar = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className={`bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5 disabled:bg-neutral-300`}
+              className={`hover:bg-neutral-100 p-5 rounded-l-md disabled:bg-neutral-300`}
             />
             <h2 className='w-full text-center px-5 select-none font-bold'>
               {selectedYear}
@@ -182,7 +195,7 @@ const PublicCalendar = (props: Props) => {
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }}
-              className={`bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5`}
+              className={`hover:bg-neutral-100 p-5 rounded-r-md`}
             />
           </div>
         </div>

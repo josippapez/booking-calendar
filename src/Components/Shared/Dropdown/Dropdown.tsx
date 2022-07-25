@@ -46,7 +46,7 @@ function Dropdown(props: Props) {
       <div
         className={`${style.dropdownInput}
         cursor-pointer bg-neutral-50 hover:bg-neutral-300
-        rounded-md p-1 flex overflow-hidden
+        rounded-md flex overflow-hidden
         justify-between relative drop-shadow-md`}
         onClick={() => {
           setOpennedDropdown(!opennedDropdown);
