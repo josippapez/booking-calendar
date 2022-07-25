@@ -97,13 +97,95 @@ const PublicCalendar = (props: Props) => {
         </div>
       )}
       <div className={`flex justify-between items-center`}>
-        <DateNavigation
-          selectedMonth={selectedMonth}
-          selectedYear={selectedYear}
-          setSelectedMonth={setSelectedMonth}
-          setSelectedYear={setSelectedYear}
-          className={style.dateNavigation}
-        />
+        <div
+          className={`${style.dateNavigation} flex select-none gap-3 drop-shadow-md`}
+        >
+          <div
+            className={`flex items-center ${
+              mobileView ? 'w-[165px]' : 'w-36'
+            } rounded-md h-10`}
+          >
+            <button
+              disabled={
+                DateTime.local(selectedYear, selectedMonth)
+                  .diffNow()
+                  .as('months') < 0
+              }
+              onClick={() => {
+                if (selectedMonth === 1) {
+                  setSelectedMonth(12);
+                  setSelectedYear(selectedYear - 1);
+                  return;
+                }
+                setSelectedMonth(selectedMonth - 1);
+              }}
+              style={{
+                backgroundImage: `url(${Images.LeftArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className={`bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5 disabled:bg-neutral-300`}
+            />
+            <h2 className='w-full text-center px-5 select-none font-bold'>
+              {selectedMonth}
+            </h2>
+            <button
+              onClick={() => {
+                if (selectedMonth === 12) {
+                  setSelectedMonth(1);
+                  setSelectedYear(selectedYear + 1);
+                  return;
+                }
+                setSelectedMonth(selectedMonth + 1);
+              }}
+              style={{
+                backgroundImage: `url(${Images.RightArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className={`bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5`}
+            />
+          </div>
+          <div className={`flex items-center rounded-md h-10 w-[165px]`}>
+            <button
+              disabled={DateTime.local(selectedYear).diffNow().as('year') < 0}
+              onClick={() => {
+                setSelectedYear(selectedYear - 1);
+                if (
+                  DateTime.local(selectedYear - 1, selectedMonth)
+                    .diffNow()
+                    .as('year') < 0
+                ) {
+                  setSelectedMonth(DateTime.now().month);
+                }
+              }}
+              style={{
+                backgroundImage: `url(${Images.LeftArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className={`bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5 disabled:bg-neutral-300`}
+            />
+            <h2 className='w-full text-center px-5 select-none font-bold'>
+              {selectedYear}
+            </h2>
+            <button
+              onClick={() => {
+                setSelectedYear(selectedYear + 1);
+              }}
+              style={{
+                backgroundImage: `url(${Images.RightArrow})`,
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}
+              className={`bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5`}
+            />
+          </div>
+        </div>
         <div
           className={`${
             mobileView ? 'flex flex-col' : 'flex items-center'
