@@ -1,11 +1,12 @@
+import { GetServerSidePropsContext } from "next";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { PersistGate } from "redux-persist/integration/react";
-import { ProtectedRoutes } from "../src/components/Routes";
-import { persistor, rrfProps, store } from "../store/store";
-import "../src/i18n";
 import "../public/Styles/globals.css";
+import { ProtectedRoutes } from "../src/components/Routes";
+import "../src/i18n";
+import { persistor, rrfProps, store } from "../store/store";
 
 declare global {
   interface Window {

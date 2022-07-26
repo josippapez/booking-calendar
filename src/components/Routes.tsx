@@ -1,13 +1,11 @@
+import { GetServerSidePropsContext, NextPage } from "next";
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import { Suspense, useEffect, useState } from "react";
-import isMobileView from "../checkForMobileView";
+import { useEffect } from "react";
 import { useAppSelector } from "../../store/hooks";
-import PageLoader from "./Shared/Loader/PageLoader";
+import isMobileView from "../checkForMobileView";
 import Navbar from "./Shared/Navbar/Navbar";
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
-  const route = useRouter();
   const user = useAppSelector(state => state.user.user);
 
   useEffect(() => {
@@ -16,17 +14,17 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
       element.style.maxHeight = window.innerHeight + "px";
       element.style.height = window.innerHeight + "px";
     }
-  }, [route, user]);
+  }, [router, user]);
 
   const checkForAuthentication = () => {
     if (user && user.accessToken) {
       if (window.location.pathname === "/") {
-        route.push("/apartments");
-        return false;
+        router.push("/apartments");
+        return;
       }
     } else {
       if (["apartments"].includes(window.location.pathname.split("/")[1])) {
-        route.push("/");
+        router.push("/");
         return false;
       }
     }
@@ -34,7 +32,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   };
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <>
       <Navbar userAuthenticated={!!user.accessToken} />
       <div
         className={`${
@@ -47,6 +45,6 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
       >
         {checkForAuthentication() ? <Component {...pageProps} /> : null}
       </div>
-    </Suspense>
+    </>
   );
 };
