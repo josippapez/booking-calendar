@@ -9,6 +9,7 @@ import {
   saveEventsForApartment,
 } from "../../../store/firebaseActions/eventActions";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { selectApartment } from "../../../store/reducers/apartments";
 import { setEvents } from "../../../store/reducers/events";
 import isMobileView from "../../checkForMobileView";
 import calculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";

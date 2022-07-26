@@ -1,4 +1,3 @@
-import { GetServerSidePropsContext } from "next";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
