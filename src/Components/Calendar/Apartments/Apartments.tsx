@@ -78,10 +78,15 @@ const Apartments = (props: Props) => {
           <div className='font-bold text-xl'>{t('apartments')}</div>
         </div>
         <div
-          className={`flex ${mobileView && 'flex-col'} gap-10 drop-shadow-sm`}
+          className={`flex ${
+            mobileView ? 'flex-col' : 'gap-10'
+          } drop-shadow-sm`}
         >
-          <div className='w-full max-w-sm'>
-            <form className='rounded-md pt-6 pb-8 relative'>
+          <div
+            className={`w-full ${mobileView ? '100%' : 'max-w-sm'}
+            pt-6 pb-8`}
+          >
+            <form className='rounded-md relative'>
               {newApartment.id && (
                 <div
                   className={`absolute right-0 top-0 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-white`}
