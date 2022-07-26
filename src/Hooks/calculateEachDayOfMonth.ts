@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { Day } from "../../components/Calendar/CalendarTypes";
+import { Day } from "../components/Calendar/CalendarTypes";
 
 type Props = {
   month: number;

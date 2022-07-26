@@ -12,6 +12,7 @@ import { setEvents } from "../store/reducers/events";
 import Images from "../public/Styles/Assets/Images/Images";
 import style from "../src/components/Home/LandingPage/PublicCalendar.module.scss";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { Event } from "../src/components/Calendar/CalendarTypes";
 
 type Props = {};
 

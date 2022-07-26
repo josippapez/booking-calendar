@@ -1,6 +1,6 @@
 import firebase from "firebase/compat/app";
 import { doc, setDoc, getFirestore } from "firebase/firestore";
-import { Event } from "../../Components/Calendar/CalendarTypes";
+import { Event } from "../../src/components/Calendar/CalendarTypes";
 import { setEvents } from "../reducers/events";
 import { AppDispatch, AppState } from "./../store";
 

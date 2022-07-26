@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PURGE } from 'redux-persist';
-import { Event } from '../../Components/Calendar/CalendarTypes';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PURGE } from "redux-persist";
+import { Event } from "../../src/components/Calendar/CalendarTypes";
 
 export type Events = {
   [key: string]: Event[];
@@ -14,7 +14,7 @@ const initialState: EventsData = {
 };
 
 export const events = createSlice({
-  name: 'events',
+  name: "events",
   initialState,
   reducers: {
     setEvents: (state, action: PayloadAction<Events>) => {
