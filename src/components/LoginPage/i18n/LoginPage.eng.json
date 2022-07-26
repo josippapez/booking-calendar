@@ -1,0 +1,11 @@
+{
+  "header": "Sing in or register",
+  "email": "Email",
+  "password": "Password",
+  "sign_in": "Sign in",
+  "auth": {
+    "weak-password": "Weak password",
+    "wrong-password": "Wrong password",
+    "too-many-requests": "Too many requests, try again later"
+  }
+}

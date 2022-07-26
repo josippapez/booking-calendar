@@ -1,0 +1,147 @@
+:root {
+  .overlay {
+    --scale-x: 1;
+    --scale-y: 1;
+    --scale-y-rem-negative: -1rem;
+    --scale-y-rem-positive: 1rem;
+    --scale-x-rem-negative: -1rem;
+    --scale-x-rem-positive: 1rem;
+    @media screen and (min-width: 1024px) {
+      --scale-x: 1.1;
+      --scale-y: 1.1;
+      --scale-y-rem-negative: -1.1rem;
+      --scale-y-rem-positive: 1.1rem;
+      --scale-x-rem-negative: -1.1rem;
+      --scale-x-rem-positive: 1.1rem;
+    }
+    @media screen and (min-width: 1921px) {
+      --scale-x: 1.25;
+      --scale-y: 1.25;
+      --scale-y-rem-negative: -1.8rem;
+      --scale-y-rem-positive: 1.8rem;
+      --scale-x-rem-negative: -2rem;
+      --scale-x-rem-positive: 0rem;
+    }
+  }
+}
+
+.overlay {
+  user-select: none;
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 21, 24, 0.45);
+  cursor: default;
+  z-index: 1;
+  align-items: center;
+
+  &.center {
+    justify-content: center;
+  }
+  &.right {
+    justify-content: center;
+  }
+  &.bottom {
+    align-items: end;
+    justify-content: center;
+  }
+  &.top {
+    align-items: start;
+    justify-content: center;
+  }
+  .children {
+    z-index: 2;
+    cursor: default;
+
+    transform: scaleX(var(--scale-x)) scaleY(var(--scale-y));
+  }
+  .children > * {
+    width: 100%;
+  }
+  .children > * > *[class*="modal-body"] {
+    flex-grow: 1;
+  }
+}
+
+.fadeOverlay {
+  animation: fadeInOverlay 0.1s ease-in-out;
+}
+
+.fade {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.slide-left {
+  animation: slide-left 0.2s ease-in-out;
+}
+
+.slide-right {
+  animation: slide-right 0.2s ease-in-out;
+}
+
+.slide-top {
+  animation: slide-top 0.2s ease-in-out;
+}
+
+.slide-bottom {
+  animation: slide-bottom 0.2s ease-in-out;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(calc(var(--scale-x) - 0.05), calc(var(--scale-y) - 0.05));
+  }
+  to {
+    opacity: 1;
+    transform: scale(var(--scale-x), var(--scale-y));
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(-100%, 0);
+  }
+  to {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(100%, 0);
+  }
+  to {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+  }
+}
+
+@keyframes slide-top {
+  from {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, -100vh);
+  }
+  to {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+  }
+}
+
+@keyframes slide-bottom {
+  from {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 100vh);
+  }
+  to {
+    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+  }
+}
