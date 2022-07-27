@@ -1,5 +1,4 @@
-import Images from "../../../../public/Styles/Assets/Images/Images";
-import isMobileView from "../../../checkForMobileView";
+import useMobileView from "../../../checkForMobileView";
 
 type Props = {
   setSelectedYear: (year: number) => void;
@@ -22,7 +21,7 @@ const DateNavigation = (props: Props) => {
     <div className={`${className} flex select-none gap-3 drop-shadow-md`}>
       <div
         className={`flex items-center ${
-          isMobileView() ? "w-[165px]" : "w-36"
+          useMobileView() ? "w-[165px]" : "w-36"
         } rounded-md h-10`}
       >
         <button

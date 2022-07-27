@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { logout } from "../../../../store/firebaseActions/authActions";
 import { persistor } from "../../../../store/store";
-import isMobileView from "../../../checkForMobileView";
+import useMobileView from "../../../checkForMobileView";
 import useDarkMode from "../../../Hooks/useDarkMode";
 import style from "./Navbar.module.scss";
 
@@ -15,6 +15,7 @@ function Navbar(props: Props) {
   const { t, i18n } = useTranslation();
   const darkmode = useDarkMode();
   const router = useRouter();
+  const mobileView = useMobileView();
 
   const [dropdownOpenned, setDropdownOpenned] = useState(false);
   const [displayLanguageDropdown, setDisplayLanguageDropdown] = useState(false);
@@ -61,7 +62,7 @@ function Navbar(props: Props) {
         <nav
           ref={component}
           className={`page-container select-none ${
-            isMobileView() ? "px-4 py-2.5" : "px-[5%] py-2.5"
+            mobileView ? "px-4 py-2.5" : "px-[5%] py-2.5"
           } border-b dark:bg-gray-800 relative`}
         >
           <div className="flex flex-wrap justify-between items-center">

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Events } from "../../../../store/reducers/events";
 import Images from "../../../../public/Styles/Assets/Images/Images";
-import calculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
+import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
 import Modal from "../../Shared/Modal/Modal";
 import { Day, Event } from "../CalendarTypes";
 import style from "./DateRangePicker.module.scss";
@@ -36,11 +36,11 @@ const DateRangePicker = (props: Props) => {
     DateTime.local().month
   );
 
-  const eachDayOfMonth = calculateEachDayOfMonth({
+  const eachDayOfMonth = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
   }).dates;
-  const eachDayOfNextMonth = calculateEachDayOfMonth({
+  const eachDayOfNextMonth = useCalculateEachDayOfMonth({
     year: selectedMonth + 1 === 13 ? selectedYear + 1 : selectedYear,
     month: selectedMonth + 1 === 13 ? 1 : selectedMonth + 1,
   }).dates;

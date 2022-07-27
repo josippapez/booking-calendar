@@ -17,7 +17,7 @@ import {
   setApartments,
 } from "../../../../store/reducers/apartments";
 import { setEvents } from "../../../../store/reducers/events";
-import isMobileView from "../../../checkForMobileView";
+import useMobileView from "../../../checkForMobileView";
 
 type Props = {};
 
@@ -25,7 +25,7 @@ const Apartments: NextPage = (props: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const firestore = useFirestore();
-  const mobileView = isMobileView();
+  const mobileView = useMobileView();
   const navigate = useRouter();
   const user = useAppSelector(state => state.user.user);
   const apartments = useAppSelector(state => state.apartments);
@@ -86,12 +86,12 @@ const Apartments: NextPage = (props: Props) => {
         >
           <div
             className={`w-full ${mobileView ? "100%" : "max-w-sm"}
-            pt-6 pb-8`}
+            mt-6 mb-8`}
           >
             <form className="rounded-md relative">
               {newApartment.id && (
                 <div
-                  className={`absolute -right-4 -top-4 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-transparent`}
+                  className={`absolute right-0 -top-4 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-transparent`}
                   style={{
                     backgroundImage: `url(/Styles/Assets/Images/xCircle.svg)`,
                     backgroundRepeat: "no-repeat",
@@ -232,7 +232,7 @@ const Apartments: NextPage = (props: Props) => {
               </div>
             </form>
           </div>
-          <div className="w-full max-w-md max-h-[23rem] pt-6 pb-8">
+          <div className={`w-full max-w-md mt-6 mb-8`}>
             {progress ? (
               <div className="flex justify-center bg-gray-200 rounded-md shadow-md w-full">
                 <div
@@ -244,9 +244,13 @@ const Apartments: NextPage = (props: Props) => {
                 />
               </div>
             ) : (
-              <div className="flex flex-col h-full justify-between">
+              <div className="flex flex-col h-full justify-between gap-4">
                 {newApartment.image && newApartment.image !== "" && (
-                  <div className="flex justify-center h-full relative">
+                  <div
+                    className={`flex justify-center relative ${
+                      mobileView ? "h-[17rem]" : "h-full"
+                    }`}
+                  >
                     <Image
                       src={
                         typeof newApartment.image === "string"

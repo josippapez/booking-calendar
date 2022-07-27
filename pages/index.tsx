@@ -15,6 +15,7 @@ type Props = {};
 const LoginPage: NextPage = (props: Props) => {
   return (
     <Suspense fallback={<PageLoader />}>
+      <title>Login</title>
       <DynamicLoginPage />
     </Suspense>
   );

@@ -15,6 +15,7 @@ type Props = {};
 const Apartments: NextPage = (props: Props) => {
   return (
     <Suspense fallback={<PageLoader />}>
+      <title>Apartments</title>
       <DynamicLoginPage />
     </Suspense>
   );

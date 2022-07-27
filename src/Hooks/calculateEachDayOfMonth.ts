@@ -7,7 +7,7 @@ type Props = {
   year: number;
 };
 
-const calculateEachDayOfMonth = (
+const useCalculateEachDayOfMonth = (
   props: Props
 ): {
   month: number;
@@ -89,4 +89,4 @@ const calculateEachDayOfMonth = (
   };
 };
 
-export default calculateEachDayOfMonth;
+export default useCalculateEachDayOfMonth;

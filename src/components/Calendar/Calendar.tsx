@@ -11,8 +11,8 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { selectApartment } from "../../../store/reducers/apartments";
 import { setEvents } from "../../../store/reducers/events";
-import isMobileView from "../../checkForMobileView";
-import calculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
+import useMobileView from "../../checkForMobileView";
+import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
 import DateNavigation from "../Shared/DateNavigation/DateNavigation";
 import Dropdown from "../Shared/Dropdown/Dropdown";
 import style from "./Calendar.module.scss";
@@ -46,9 +46,9 @@ const Calendar: NextPage = (props: Props) => {
     DateTime.local().year
   );
 
-  const mobileView = isMobileView();
+  const mobileView = useMobileView();
 
-  const eachDayOfMonth = calculateEachDayOfMonth({
+  const eachDayOfMonth = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
   }).dates;
@@ -126,6 +126,7 @@ const Calendar: NextPage = (props: Props) => {
 
   return (
     <div>
+      <title>{apartments.selectedApartment?.name}</title>
       <div
         className={`flex justify-between ${
           mobileView ? "flex-col" : "flex-row"

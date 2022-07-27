@@ -8,8 +8,8 @@ import { useFirestore } from "react-redux-firebase";
 import Images from "../../../../public/Styles/Assets/Images/Images";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { setEvents } from "../../../../store/reducers/events";
-import isMobileView from "../../../checkForMobileView";
-import calculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
+import useMobileView from "../../../checkForMobileView";
+import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
 import { Event } from "../../Calendar/CalendarTypes";
 import CreateNewReservation from "../../Calendar/CreateNewReservation/CreateNewReservation";
 import style from "./PublicCalendar.module.scss";
@@ -35,9 +35,9 @@ const PublicCalendar: NextPage = (props: Props) => {
   const [apartmentName, setApartmentName] = useState("");
   const [apartmentLogo, setApartmentLogo] = useState("");
 
-  const mobileView = useMemo(() => isMobileView(), []);
+  const mobileView = useMobileView();
 
-  const { dates, nextMonthDates } = calculateEachDayOfMonth({
+  const { dates, nextMonthDates } = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
   });
@@ -97,6 +97,7 @@ const PublicCalendar: NextPage = (props: Props) => {
 
   return (
     <div>
+      <title>{apartmentName}</title>
       {apartmentName && (
         <div className="mb-5 flex items-center gap-10">
           <div className=" font-bold text-2xl text-blue-700">
