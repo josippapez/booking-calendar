@@ -35,10 +35,14 @@ const DateRangePicker = (props: Props) => {
     DateTime.local().month
   );
 
-  const { dates, nextMonthDates } = useCalculateEachDayOfMonth({
+  const eachDayOfMonth = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
-  });
+  }).dates;
+  const eachDayOfNextMonth = useCalculateEachDayOfMonth({
+    year: selectedMonth + 1 === 13 ? selectedYear + 1 : selectedYear,
+    month: selectedMonth + 1 === 13 ? 1 : selectedMonth + 1,
+  }).dates;
 
   const [currentDate, setCurrentDate] = useState("");
 
@@ -268,13 +272,13 @@ const DateRangePicker = (props: Props) => {
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>
-              {dates.map((day, index) => displayDateRangeDays(day, index))}
+              {eachDayOfMonth.map((day, index) => displayDateRangeDays(day, index))}
             </div>
           </div>
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>
-              {nextMonthDates.map((day, index) =>
+              {eachDayOfNextMonth.map((day, index) =>
                 displayDateRangeDays(day, index)
               )}
             </div>
