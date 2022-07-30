@@ -66,7 +66,7 @@ const DateRangePicker = (props: Props) => {
     let selectedDaysContainDisabled: string[] | undefined = [];
     if (currentDate && currentReservations && event.start && !event.end) {
       selectedDaysContainDisabled = Interval.fromDateTimes(
-        DateTime.fromISO(event.start).plus({ days: 1 }),
+        DateTime.fromISO(event.start),
         DateTime.fromISO(currentDate)
       )
         .splitBy({ days: 1 })
@@ -272,7 +272,9 @@ const DateRangePicker = (props: Props) => {
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>
-              {eachDayOfMonth.map((day, index) => displayDateRangeDays(day, index))}
+              {eachDayOfMonth.map((day, index) =>
+                displayDateRangeDays(day, index)
+              )}
             </div>
           </div>
           <div>
