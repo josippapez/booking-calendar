@@ -52,16 +52,17 @@ const DateRangePicker = (props: Props) => {
       disableForCurrentReservations &&
       (DateTime.fromISO(day.date).diffNow("day").days < -1 ||
         (currentReservations &&
-          currentReservations[day.date]?.length > 0 &&
-          (currentReservations[day.date]?.length >= 2
-            ? currentReservations[day.date].map(reservation => {
+          currentReservations[day.year] &&
+          currentReservations[day.year][day.date]?.length > 0 &&
+          (currentReservations[day.year][day.date]?.length >= 2
+            ? currentReservations[day.year][day.date].map(reservation => {
                 const start = DateTime.fromISO(reservation.start);
                 const end = DateTime.fromISO(reservation.end);
                 const interval = Interval.fromDateTimes(start, end);
                 return interval.contains(DateTime.fromISO(day.date));
               })
-            : currentReservations[day.date][0].end !== day.date &&
-              currentReservations[day.date][0].start !== day.date)));
+            : currentReservations[day.year][day.date][0].end !== day.date &&
+              currentReservations[day.year][day.date][0].start !== day.date)));
 
     let selectedDaysContainDisabled: string[] | undefined = [];
     if (currentDate && currentReservations && event.start && !event.end) {
@@ -73,8 +74,8 @@ const DateRangePicker = (props: Props) => {
         .map(day => day.toISODate().split("/"))
         .find(
           day =>
-            currentReservations[day[0]]?.length > 0 &&
-            currentReservations[day[1]]?.length > 0
+            currentReservations[day[0].split("-")[0]][day[0]]?.length > 0 &&
+            currentReservations[day[0].split("-")[0]][day[1]]?.length > 0
         );
     }
 

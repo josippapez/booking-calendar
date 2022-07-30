@@ -37,7 +37,7 @@ const PublicCalendar: NextPage = (props: Props) => {
 
   const mobileView = useMobileView();
 
-  const { dates, nextMonthDates } = useCalculateEachDayOfMonth({
+  const { lastMonthDates, dates, nextMonthDates } = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
   });
@@ -54,11 +54,7 @@ const PublicCalendar: NextPage = (props: Props) => {
 
     if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
       dispatch(
-        setEvents(
-          event as {
-            [key: string]: Event[];
-          }
-        )
+        setEvents(event as { [key: string]: { [key: string]: Event[] } })
       );
     }
   };
@@ -334,15 +330,26 @@ const PublicCalendar: NextPage = (props: Props) => {
             const startingDay =
               index > 0 &&
               eventsData &&
-              eventsData[day.date]?.length &&
-              !eventsData[dates[index - 1].date]?.length;
+              eventsData[day.year] &&
+              eventsData[day.year][day.date]?.length &&
+              !(index > 0
+                ? eventsData[day.year][dates[index - 1].date]?.length ||
+                  eventsData[Number(day.year) - 1]?.[dates[index - 1].date]
+                    ?.length
+                : eventsData[lastMonthDates[lastMonthDates.length - 1].year][
+                    lastMonthDates[lastMonthDates.length - 1].date
+                  ]?.length);
 
             const endingDay =
               eventsData &&
-              eventsData[day.date]?.length &&
+              eventsData[day.year] &&
+              eventsData[day.year][day.date]?.length &&
               !(index < dates.length - 1
-                ? eventsData[dates[index + 1].date]?.length
-                : eventsData[nextMonthDates[0].date]?.length);
+                ? eventsData[day.year][dates[index + 1].date]?.length ||
+                  eventsData[Number(day.year) + 1]?.[dates[index + 1].date]
+                    ?.length
+                : eventsData[nextMonthDates[0].year][nextMonthDates[0].date]
+                    ?.length);
 
             return DateTime.fromISO(day.date).diffNow("day").days > -1 ? (
               <div
@@ -362,7 +369,8 @@ const PublicCalendar: NextPage = (props: Props) => {
                       : "opacity-100"
                   } ${
                     eventsData &&
-                    eventsData[day.date]?.length > 0 &&
+                    eventsData[day.year] &&
+                    eventsData[day.year][day.date]?.length > 0 &&
                     "text-white"
                   } ${startingDay && "text-black"}`}
                 >
@@ -370,7 +378,8 @@ const PublicCalendar: NextPage = (props: Props) => {
                   <div
                     className={`h-full ${
                       eventsData &&
-                      eventsData[day.date]?.length > 0 &&
+                      eventsData[day.year] &&
+                      eventsData[day.year][day.date]?.length > 0 &&
                       "bg-red-600"
                     }
                     `}

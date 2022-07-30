@@ -72,12 +72,19 @@ const Calendar: NextPage = (props: Props) => {
         const tempDate = DateTime.fromISO(event.start)
           .plus({ days: index })
           .toFormat("yyyy-MM-dd");
-        const newIndex = eventsData[tempDate].findIndex(e => e.id === event.id);
-        if (newIndex > biggestIndex) {
-          biggestIndex = newIndex;
-        }
-        if (newIndex < smallestIndex) {
-          smallestIndex = newIndex;
+        if (
+          eventsData[DateTime.fromISO(event.start).year] &&
+          eventsData[DateTime.fromISO(event.start).year][tempDate]
+        ) {
+          const newIndex = eventsData[DateTime.fromISO(event.start).year][
+            tempDate
+          ].findIndex(e => e.id === event.id);
+          if (newIndex > biggestIndex) {
+            biggestIndex = newIndex;
+          }
+          if (newIndex < smallestIndex) {
+            smallestIndex = newIndex;
+          }
         }
       }
       return { biggestIndex, smallestIndex };
@@ -94,7 +101,7 @@ const Calendar: NextPage = (props: Props) => {
       dispatch(
         setEvents(
           event as {
-            [key: string]: Event[];
+            [key: string]: { [key: string]: Event[] };
           }
         )
       );
@@ -115,7 +122,7 @@ const Calendar: NextPage = (props: Props) => {
   const calculateBiggestIndexByWeekNumber = useCallback(() => {
     let biggestIndex = 0;
     for (const day of eachDayOfMonth) {
-      const eventsForDay = eventsData[day.date];
+      const eventsForDay = eventsData[day.year][day.date];
       if (eventsForDay && eventsForDay.length > biggestIndex) {
         biggestIndex = eventsForDay.length;
       }
@@ -232,7 +239,11 @@ const Calendar: NextPage = (props: Props) => {
         <div className={style.calendarGrid}>
           {eachDayOfMonth.map((day, index) => {
             const objectOfDivs: JSX.Element[] = [];
-            if (eventsData && eventsData[day.date]) {
+            if (
+              eventsData &&
+              eventsData[day.year] &&
+              eventsData[day.year][day.date]
+            ) {
               for (
                 let index = 0;
                 index < calculateBiggestIndexByWeekNumber();
@@ -252,7 +263,11 @@ const Calendar: NextPage = (props: Props) => {
                     mobileView ? style.mobileGridItem : style.gridItem
                   }`}
                 onClick={() => {
-                  if (eventsData && eventsData[day.date]) {
+                  if (
+                    eventsData &&
+                    eventsData[day.year] &&
+                    eventsData[day.year][day.date]
+                  ) {
                     setSelectedDay(day.date);
                     setShowDayDetails(true);
                   }
@@ -269,8 +284,9 @@ const Calendar: NextPage = (props: Props) => {
                 >
                   <div>{day.day}</div>
                   {eventsData &&
-                    eventsData[day.date]?.length > 0 &&
-                    eventsData[day.date].map(event => {
+                    eventsData[day.year] &&
+                    eventsData[day.year][day.date]?.length > 0 &&
+                    eventsData[day.year][day.date].map(event => {
                       const offset = findOffsetOfEvent(event);
                       const tempStartDate = event.start === day.date;
                       const tempEndDate = event.end === day.date;
@@ -324,9 +340,13 @@ const Calendar: NextPage = (props: Props) => {
           setShowEdit={setShowEditEvent}
           setSelectedDay={setSelectedDay}
           setSelectedEventToEdit={setSelectedEventToEdit}
-          events={selectedDay ? eventsData[selectedDay] : []}
+          events={
+            selectedDay
+              ? eventsData[selectedDay.split("-")[0]][selectedDay]
+              : []
+          }
           isMobileView={mobileView}
-          removeEvent={id => dispatch(removeEventForApartment(id))}
+          removeEvent={event => dispatch(removeEventForApartment(event))}
         />
         <CreateNewEvent
           show={addNewEvent}

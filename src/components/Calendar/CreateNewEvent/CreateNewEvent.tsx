@@ -1,3 +1,4 @@
+import { groupBy, uniq } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,8 +14,8 @@ type Props = {
   showEdit: boolean;
   setShowEdit: (state: boolean) => void;
   selectedEventToEdit: Event | null;
-  setEvents: (events: { [key: string]: Event[] }) => void;
-  events: { [key: string]: Event[] };
+  setEvents: (events: { [key: string]: { [key: string]: Event[] } }) => void;
+  events: { [key: string]: { [key: string]: Event[] } };
 };
 
 const CreateNewEvent = (props: Props) => {
@@ -56,6 +57,7 @@ const CreateNewEvent = (props: Props) => {
         day: day.day,
         date: day.toFormat("yyyy-MM-dd"),
         name: day.toFormat("EEEE"),
+        year: day.year.toString(),
         lastMonth: false,
         weekNumber: day.weekNumber,
         startingDay: i === 0,
@@ -244,16 +246,16 @@ const CreateNewEvent = (props: Props) => {
                         selectedEventToEdit.end
                       );
                       datesToEdit.map(date => {
-                        if (editedEvents[date.date]) {
-                          const eventForDayIndex = editedEvents[
+                        if (editedEvents[date.year][date.date]) {
+                          const eventForDayIndex = editedEvents[date.year][
                             date.date
                           ].findIndex(event => event.id === newEvent.id);
 
                           if (eventForDayIndex !== -1) {
-                            editedEvents = {
-                              ...editedEvents,
+                            editedEvents[date.year] = {
+                              ...editedEvents[date.year],
                               [date.date]: [
-                                ...editedEvents[date.date].filter(
+                                ...editedEvents[date.year][date.date].filter(
                                   event => event.id !== newEvent.id
                                 ),
                               ],
@@ -263,20 +265,31 @@ const CreateNewEvent = (props: Props) => {
                       });
                     }
                     const dates = eachDayOfRange(newEvent.start, newEvent.end);
-                    setEvents({
-                      ...editedEvents,
-                      ...dates.reduce(
-                        (acc, date) => ({
-                          ...acc,
+                    const newDates = dates.reduce(
+                      (
+                        acc: { [key: string]: { [key: string]: Event[] } },
+                        date: Day
+                      ) => ({
+                        ...acc,
+                        [date.year]: {
+                          ...acc[date.year],
                           [date.date]: [
-                            ...((editedEvents && editedEvents[date.date]) ||
+                            ...((editedEvents[date.year] &&
+                              editedEvents[date.year][date.date]) ||
                               []),
                             { ...newEvent, weekNumber: date.weekNumber },
                           ],
-                        }),
-                        {}
-                      ),
+                        },
+                      }),
+                      {}
+                    );
+                    Object.keys(newDates).map(year => {
+                      editedEvents[year] = {
+                        ...editedEvents[year],
+                        ...newDates[year],
+                      };
                     });
+                    setEvents(editedEvents);
                     setShow(false);
                     setShowEdit(false);
                   }

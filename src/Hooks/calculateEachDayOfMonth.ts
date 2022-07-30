@@ -21,19 +21,21 @@ const useCalculateEachDayOfMonth = (
   const calculateDates = (
     start: DateTime,
     end: DateTime,
-    monthDates: Day[]
+    monthDates: Day[],
+    lastOrNextMonth: boolean
   ): Day[] => {
     const daysInMonth = end.diff(start, "days");
     for (let i = 0; i <= daysInMonth.days; i++) {
       const day = start.plus({ days: i });
 
-      if (i === 0) {
+      if (i === 0 && !lastOrNextMonth) {
         for (let index = start.get("weekday") - 1; index > 0; index--) {
           const dayOfLastMonth = start.minus({ days: index });
           monthDates.push({
             day: dayOfLastMonth.day,
             date: dayOfLastMonth.toFormat("yyyy-MM-dd"),
             name: dayOfLastMonth.toFormat("EEEE"),
+            year: dayOfLastMonth.toFormat("yyyy"),
             lastMonth: true,
             weekNumber: dayOfLastMonth.weekNumber,
           });
@@ -43,6 +45,7 @@ const useCalculateEachDayOfMonth = (
         day: day.day,
         date: day.toFormat("yyyy-MM-dd"),
         name: day.toFormat("EEEE"),
+        year: day.toFormat("yyyy"),
         lastMonth: false,
         weekNumber: day.weekNumber,
       });
@@ -64,14 +67,14 @@ const useCalculateEachDayOfMonth = (
       const start = DateTime.local(lastMonthYear, lastMonth).startOf("month");
       const end = DateTime.local(lastMonthYear, lastMonth).endOf("month");
 
-      return calculateDates(start, end, monthDates);
+      return calculateDates(start, end, monthDates, true);
     }, [month, year]),
     dates: useMemo(() => {
       const monthDates: Day[] = [];
       const start = DateTime.local(year, month).startOf("month");
       const end = DateTime.local(year, month).endOf("month");
 
-      return calculateDates(start, end, monthDates);
+      return calculateDates(start, end, monthDates, false);
     }, [month, year]),
     nextMonthDates: useMemo(() => {
       let nextMonth = month + 1;
@@ -84,7 +87,7 @@ const useCalculateEachDayOfMonth = (
       const start = DateTime.local(nextMonthYear, nextMonth).startOf("month");
       const end = DateTime.local(nextMonthYear, nextMonth).endOf("month");
 
-      return calculateDates(start, end, monthDates);
+      return calculateDates(start, end, monthDates, true);
     }, [month, year]),
   };
 };

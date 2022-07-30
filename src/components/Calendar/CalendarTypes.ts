@@ -1,17 +1,18 @@
 export enum DayName {
-  Monday = 'Monday',
-  Tuesday = 'Tuesday',
-  Wednesday = 'Wednesday',
-  Thursday = 'Thursday',
-  Friday = 'Friday',
-  Saturday = 'Saturday',
-  Sunday = 'Sunday',
+  Monday = "Monday",
+  Tuesday = "Tuesday",
+  Wednesday = "Wednesday",
+  Thursday = "Thursday",
+  Friday = "Friday",
+  Saturday = "Saturday",
+  Sunday = "Sunday",
 }
 
 export type Day = {
   [key: string]: number | string | boolean;
   day: number;
   date: string;
+  year: string;
   name: string;
   lastMonth: boolean;
   weekNumber: number;

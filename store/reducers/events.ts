@@ -3,7 +3,9 @@ import { PURGE } from "redux-persist";
 import { Event } from "../../src/components/Calendar/CalendarTypes";
 
 export type Events = {
-  [key: string]: Event[];
+  [key: string]: {
+    [key: string]: Event[];
+  };
 };
 export interface EventsData {
   events: Events;
