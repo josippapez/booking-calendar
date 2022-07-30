@@ -1,7 +1,10 @@
-import { NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import PageLoader from "../src/components/Shared/Loader/PageLoader";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import firebase from "firebase/compat/app";
+import { EventsByYear } from "../src/components/Calendar/CalendarTypes";
 
 const DynamicPublicCalendar = dynamic(
   () => import("../src/components/Home/LandingPage/PublicCalendar"),
@@ -15,9 +18,104 @@ type Props = {};
 const PublicCalendar: NextPage = (props: Props) => {
   return (
     <Suspense fallback={<PageLoader />}>
-      <DynamicPublicCalendar />
+      <DynamicPublicCalendar {...props} />
     </Suspense>
   );
+};
+
+const getEventsById = async (id: string): Promise<EventsByYear> => {
+  const document = await getDoc(
+    doc(getFirestore(firebase.app()), "events", `${id}/data/public`)
+  );
+
+  if (!document.exists()) {
+    return {};
+  }
+  const event = document.data();
+
+  return event as EventsByYear;
+};
+
+const getApartmentEmail = async (
+  id: string
+): Promise<
+  | {
+      apartmentLogo: string;
+      apartmentEmail: string;
+      apartmentName: string;
+    }
+  | undefined
+> => {
+  const document = await getDoc(
+    doc(getFirestore(firebase.app()), "events", `${id}`)
+  );
+  if (!document.exists()) {
+    return {
+      apartmentEmail: "",
+      apartmentLogo: "",
+      apartmentName: "",
+    };
+  }
+  const eventsUserId = document.data();
+
+  if (eventsUserId) {
+    const apartmentData = await getDoc(
+      doc(getFirestore(firebase.app()), "apartments", `${eventsUserId.userId}`)
+    );
+    if (!apartmentData.exists()) {
+      return {
+        apartmentLogo: "",
+        apartmentEmail: "",
+        apartmentName: "",
+      };
+    }
+    const apartment = apartmentData.data();
+
+    return {
+      apartmentLogo: apartment[id].image,
+      apartmentEmail: apartment[id].email,
+      apartmentName: apartment[id].name,
+    };
+  }
+};
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const navigate = context.params;
+  if (navigate && navigate.id && typeof navigate.id === "string") {
+    const events = await getEventsById(navigate.id);
+    const apartmentData = await getApartmentEmail(navigate.id);
+
+    if (apartmentData === undefined) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+    return {
+      props: {
+        events,
+        apartmentName: apartmentData.apartmentName,
+        apartmentEmail: apartmentData.apartmentEmail,
+        apartmentLogo: apartmentData.apartmentLogo,
+      },
+    };
+  }
+  return {
+    props: {
+      events: null,
+      apartmentEmail: null,
+      apartmentLogo: null,
+      apartmentName: null,
+    },
+    redirect: {
+      destination: "/",
+      permanent: false,
+    },
+  };
 };
 
 export default PublicCalendar;

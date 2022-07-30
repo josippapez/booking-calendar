@@ -31,6 +31,11 @@ export type Event = {
   weekNumber?: number;
 };
 
+export type PublicEventsByYear = {
+  [key: string]: { [key: string]: { start: string; end: string }[] };
+};
+export type EventsByYear = { [key: string]: { [key: string]: Event[] } };
+
 export type PublicEvent = {
   id: string;
   start: string;

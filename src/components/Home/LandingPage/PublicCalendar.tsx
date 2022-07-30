@@ -1,26 +1,25 @@
 import { DateTime, Info } from "luxon";
-import { NextPage } from "next";
+import { InferGetServerSidePropsType, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useFirestore } from "react-redux-firebase";
+import { getServerSideProps } from "../../../../pages/[id]";
 import Images from "../../../../public/Styles/Assets/Images/Images";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { setEvents } from "../../../../store/reducers/events";
 import useMobileView from "../../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
-import { Event } from "../../Calendar/CalendarTypes";
+import { EventsByYear } from "../../Calendar/CalendarTypes";
 import CreateNewReservation from "../../Calendar/CreateNewReservation/CreateNewReservation";
 import style from "./PublicCalendar.module.scss";
 
-type Props = {};
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const PublicCalendar: NextPage = (props: Props) => {
+  const { events, apartmentEmail, apartmentLogo, apartmentName } = props;
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const navigate = useRouter();
-  const firestore = useFirestore();
 
   const eventsData = useAppSelector(state => state.events.events);
   const [selectedMonth, setSelectedMonth] = useState<number>(
@@ -31,9 +30,6 @@ const PublicCalendar: NextPage = (props: Props) => {
   );
   const [displayNewReservation, setDisplayNewReservation] =
     useState<boolean>(false);
-  const [apartmentEmail, setApartmentEmail] = useState("");
-  const [apartmentName, setApartmentName] = useState("");
-  const [apartmentLogo, setApartmentLogo] = useState("");
 
   const mobileView = useMobileView();
 
@@ -47,49 +43,9 @@ const PublicCalendar: NextPage = (props: Props) => {
 
   const calendarGrid = useRef<null | HTMLDivElement>(null);
 
-  const getEventsById = async (id: string) => {
-    const event = (
-      await firestore.collection("events").doc(`${id}/data/public`).get()
-    ).data();
-
-    if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
-      dispatch(
-        setEvents(event as { [key: string]: { [key: string]: Event[] } })
-      );
-    }
-  };
-
-  const getApartmentEmail = async (id: string) => {
-    const eventsUserId = (
-      await firestore.collection("events").doc(`${id}`).get()
-    ).data();
-
-    if (eventsUserId) {
-      const apartment = (
-        await firestore
-          .collection("apartments")
-          .doc(`${eventsUserId.userId}`)
-          .get()
-      ).data();
-      if (!apartment) {
-        return;
-      }
-      setApartmentLogo(apartment[id].image);
-      setApartmentEmail(apartment[id].email);
-      setApartmentName(apartment[id].name);
-    }
-  };
-
   useEffect(() => {
-    if (
-      navigate &&
-      navigate.query.id &&
-      typeof navigate.query.id === "string"
-    ) {
-      getEventsById(navigate.query.id);
-      getApartmentEmail(navigate.query.id);
-    }
-  }, [navigate.query.id]);
+    dispatch(setEvents(events as EventsByYear));
+  }, []);
 
   return (
     <div>
@@ -305,7 +261,7 @@ const PublicCalendar: NextPage = (props: Props) => {
           ) {
             touchMoveHorizontal = null;
             if (selectedMonth === 1) {
-              setSelectedMonth(1);
+              setSelectedMonth(12);
               setSelectedYear(selectedYear - 1);
               return;
             }
@@ -328,28 +284,19 @@ const PublicCalendar: NextPage = (props: Props) => {
         <div className={style.calendarGrid}>
           {dates.map((day, index) => {
             const startingDay =
-              index > 0 &&
               eventsData &&
               eventsData[day.year] &&
               eventsData[day.year][day.date]?.length &&
-              !(index > 0
-                ? eventsData[day.year][dates[index - 1].date]?.length ||
-                  eventsData[Number(day.year) - 1]?.[dates[index - 1].date]
-                    ?.length
-                : eventsData[lastMonthDates[lastMonthDates.length - 1].year][
-                    lastMonthDates[lastMonthDates.length - 1].date
-                  ]?.length);
+              !eventsData[day.year][day.date].find(
+                event => event.start !== day.date);
 
             const endingDay =
               eventsData &&
               eventsData[day.year] &&
               eventsData[day.year][day.date]?.length &&
-              !(index < dates.length - 1
-                ? eventsData[day.year][dates[index + 1].date]?.length ||
-                  eventsData[Number(day.year) + 1]?.[dates[index + 1].date]
-                    ?.length
-                : eventsData[nextMonthDates[0].year][nextMonthDates[0].date]
-                    ?.length);
+              !eventsData[day.year][day.date].find(
+                event => event.end !== day.date);
+
 
             return DateTime.fromISO(day.date).diffNow("day").days > -1 ? (
               <div

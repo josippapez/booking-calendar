@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Images from "../../../../public/Styles/Assets/Images/Images";
 import Modal from "../../Shared/Modal/Modal";
-import { Day, Event } from "../CalendarTypes";
+import { Day, Event, EventsByYear } from "../CalendarTypes";
 import DateRangePicker from "../DateRangePicker/DateRangePicker";
 import style from "./CreateNewEvent.module.scss";
 
@@ -14,8 +14,8 @@ type Props = {
   showEdit: boolean;
   setShowEdit: (state: boolean) => void;
   selectedEventToEdit: Event | null;
-  setEvents: (events: { [key: string]: { [key: string]: Event[] } }) => void;
-  events: { [key: string]: { [key: string]: Event[] } };
+  setEvents: (events: EventsByYear) => void;
+  events: EventsByYear;
 };
 
 const CreateNewEvent = (props: Props) => {
@@ -266,10 +266,7 @@ const CreateNewEvent = (props: Props) => {
                     }
                     const dates = eachDayOfRange(newEvent.start, newEvent.end);
                     const newDates = dates.reduce(
-                      (
-                        acc: { [key: string]: { [key: string]: Event[] } },
-                        date: Day
-                      ) => ({
+                      (acc: EventsByYear, date: Day) => ({
                         ...acc,
                         [date.year]: {
                           ...acc[date.year],

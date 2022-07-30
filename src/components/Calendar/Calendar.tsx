@@ -216,7 +216,7 @@ const Calendar: NextPage = (props: Props) => {
           ) {
             touchMoveHorizontal = null;
             if (selectedMonth === 1) {
-              setSelectedMonth(1);
+              setSelectedMonth(12);
               setSelectedYear(selectedYear - 1);
               return;
             }

@@ -2,7 +2,6 @@ import { DateTime, Info, Interval } from "luxon";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Events } from "../../../../store/reducers/events";
-import Images from "../../../../public/Styles/Assets/Images/Images";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
 import Modal from "../../Shared/Modal/Modal";
 import { Day, Event } from "../CalendarTypes";
@@ -36,14 +35,10 @@ const DateRangePicker = (props: Props) => {
     DateTime.local().month
   );
 
-  const eachDayOfMonth = useCalculateEachDayOfMonth({
+  const { dates, nextMonthDates } = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
-  }).dates;
-  const eachDayOfNextMonth = useCalculateEachDayOfMonth({
-    year: selectedMonth + 1 === 13 ? selectedYear + 1 : selectedYear,
-    month: selectedMonth + 1 === 13 ? 1 : selectedMonth + 1,
-  }).dates;
+  });
 
   const [currentDate, setCurrentDate] = useState("");
 
@@ -67,7 +62,7 @@ const DateRangePicker = (props: Props) => {
     let selectedDaysContainDisabled: string[] | undefined = [];
     if (currentDate && currentReservations && event.start && !event.end) {
       selectedDaysContainDisabled = Interval.fromDateTimes(
-        DateTime.fromISO(event.start),
+        DateTime.fromISO(event.start).plus({ days: 1 }),
         DateTime.fromISO(currentDate)
       )
         .splitBy({ days: 1 })
@@ -75,7 +70,7 @@ const DateRangePicker = (props: Props) => {
         .find(
           day =>
             currentReservations[day[0].split("-")[0]][day[0]]?.length > 0 &&
-            currentReservations[day[0].split("-")[0]][day[1]]?.length > 0
+            currentReservations[day[1].split("-")[0]][day[1]]?.length > 0
         );
     }
 
@@ -273,15 +268,13 @@ const DateRangePicker = (props: Props) => {
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>
-              {eachDayOfMonth.map((day, index) =>
-                displayDateRangeDays(day, index)
-              )}
+              {dates.map((day, index) => displayDateRangeDays(day, index))}
             </div>
           </div>
           <div>
             {daysHeader()}
             <div className={`${style.calendarGrid}`}>
-              {eachDayOfNextMonth.map((day, index) =>
+              {nextMonthDates.map((day, index) =>
                 displayDateRangeDays(day, index)
               )}
             </div>

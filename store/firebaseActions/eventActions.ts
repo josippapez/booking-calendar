@@ -1,6 +1,10 @@
 import firebase from "firebase/compat/app";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
-import { Event } from "../../src/components/Calendar/CalendarTypes";
+import {
+  Event,
+  EventsByYear,
+  PublicEventsByYear,
+} from "../../src/components/Calendar/CalendarTypes";
 import { setEvents } from "../reducers/events";
 import { AppDispatch, AppState } from "./../store";
 
@@ -12,9 +16,7 @@ export const saveEventsForApartment = (events: {
 
     dispatch(setEvents(events));
     if (selectedApartment && selectedApartment.id) {
-      const privateEventData: {
-        [key: string]: { [key: string]: { start: string; end: string }[] };
-      } = {};
+      const privateEventData: PublicEventsByYear = {};
       Object.keys(events).map(key => {
         privateEventData[key] = {};
         Object.keys(events[key]).map(eventKey => {
@@ -51,7 +53,7 @@ export const removeEventForApartment = (eventId: string) => {
     const selectedApartment = getState().apartments.selectedApartment;
     const events = getState().events.events;
 
-    const removedEvents = {} as { [key: string]: { [key: string]: Event[] } };
+    const removedEvents = {} as EventsByYear;
     Object.keys(events).map(key => {
       removedEvents[key] = {};
       Object.keys(events[key]).map(eventKey => {
