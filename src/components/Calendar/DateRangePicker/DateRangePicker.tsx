@@ -71,11 +71,28 @@ const DateRangePicker = (props: Props) => {
       )
         .splitBy({ days: 1 })
         .map(day => day.toISODate().split("/"))
-        .find(
-          day =>
-            currentReservations[day[0].split("-")[0]][day[0]]?.length > 0 &&
-            currentReservations[day[1].split("-")[0]][day[1]]?.length > 0
-        );
+        .find((date, index) => {
+          const firsDayYear = date[0].split("-")[0];
+          const secondDayYear = date[1].split("-")[0];
+          if (
+            currentReservations[firsDayYear][date[0]]?.length &&
+            currentReservations[secondDayYear][date[1]]?.length
+          ) {
+            if (
+              currentReservations[firsDayYear][date[0]]?.length >= 2 &&
+              currentReservations[secondDayYear][date[1]]?.length >= 2
+            ) {
+              return true;
+            }
+
+
+            return (
+              currentReservations[firsDayYear][date[0]][0].start === date[0] ||
+              currentReservations[secondDayYear][date[1]][0].end === date[1]
+            );
+          }
+          return undefined;
+        });
     }
 
     return (
