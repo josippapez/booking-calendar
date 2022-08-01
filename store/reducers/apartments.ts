@@ -1,12 +1,14 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PURGE } from 'redux-persist';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PURGE } from "redux-persist";
 
-type Apartment = {
+export type Apartment = {
   id: string;
   name: string;
   address: string;
   email: string;
   image: string;
+  iban?: string;
+  pid?: string;
 };
 
 type Apartments = {
@@ -24,7 +26,7 @@ const initialState: ApartmentsData = {
 };
 
 export const apartments = createSlice({
-  name: 'apartments',
+  name: "apartments",
   initialState,
   reducers: {
     setApartments: (state, action: PayloadAction<Apartments>) => {

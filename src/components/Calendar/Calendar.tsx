@@ -1,9 +1,11 @@
+import { FirebaseError } from "firebase/app";
+import firebase from "firebase/compat/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { DateTime, Info } from "luxon";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useFirestore } from "react-redux-firebase";
 import {
   removeEventForApartment,
   saveEventsForApartment,
@@ -16,7 +18,7 @@ import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
 import DateNavigation from "../Shared/DateNavigation/DateNavigation";
 import Dropdown from "../Shared/Dropdown/Dropdown";
 import style from "./Calendar.module.scss";
-import { Event } from "./CalendarTypes";
+import { Event, EventsByYear } from "./CalendarTypes";
 import CreateNewEvent from "./CreateNewEvent/CreateNewEvent";
 import DayDetails from "./DayDetails/DayDetails";
 
@@ -26,7 +28,6 @@ const Calendar: NextPage = (props: Props) => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useRouter();
-  const firestore = useFirestore();
 
   const id = useRef("");
 
@@ -93,18 +94,22 @@ const Calendar: NextPage = (props: Props) => {
   );
 
   const getEventsById = async (id: string) => {
-    const event = (
-      await firestore.collection("events").doc(`${id}/data/private`).get()
-    ).data();
-
-    if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
-      dispatch(
-        setEvents(
-          event as {
-            [key: string]: { [key: string]: Event[] };
-          }
-        )
+    try {
+      const event = await getDoc(
+        doc(getFirestore(firebase.app()), "events", `${id}/data/private`)
       );
+
+      if (JSON.stringify(eventsData) !== JSON.stringify(event.data())) {
+        dispatch(setEvents(event.data() as EventsByYear));
+      }
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log(error);
+
+        if (error.code === "permission-denied") {
+          navigate.push("/");
+        }
+      }
     }
   };
 

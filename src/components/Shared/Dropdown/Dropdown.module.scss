@@ -14,8 +14,10 @@
   padding: 10px;
 }
 .dropdownItem {
-  min-height: 1.5rem;
+  min-height: 2rem;
   margin: 0.2rem;
+  display: flex;
+  align-items: center;
   &:hover {
     opacity: 0.8;
     cursor: pointer;

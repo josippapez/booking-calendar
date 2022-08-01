@@ -1,7 +1,6 @@
 import { DateTime, Info } from "luxon";
 import { InferGetServerSidePropsType, NextPage } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getServerSideProps } from "../../../../pages/[id]";
@@ -288,15 +287,16 @@ const PublicCalendar: NextPage = (props: Props) => {
               eventsData[day.year] &&
               eventsData[day.year][day.date]?.length &&
               !eventsData[day.year][day.date].find(
-                event => event.start !== day.date);
+                event => event.start !== day.date
+              );
 
             const endingDay =
               eventsData &&
               eventsData[day.year] &&
               eventsData[day.year][day.date]?.length &&
               !eventsData[day.year][day.date].find(
-                event => event.end !== day.date);
-
+                event => event.end !== day.date
+              );
 
             return DateTime.fromISO(day.date).diffNow("day").days > -1 ? (
               <div

@@ -1,4 +1,3 @@
-import { GetServerSidePropsContext, NextPage } from "next";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { useAppSelector } from "../../store/hooks";
@@ -19,12 +18,16 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
 
   const checkForAuthentication = () => {
     if (user && user.accessToken) {
-      if (window.location.pathname === "/") {
+      if (
+        !["/apartments", "/apartments/[id]", "/[id]", "/receipt"].includes(
+          router.route
+        )
+      ) {
         router.push("/apartments");
         return;
       }
     } else {
-      if (["apartments"].includes(window.location.pathname.split("/")[1])) {
+      if (window.location.pathname !== "/") {
         router.push("/");
         return false;
       }

@@ -41,12 +41,12 @@ function Dropdown(props: Props) {
 
   return (
     <div
-      className="flex flex-col justify-center relative flex-grow"
+      className="flex flex-col justify-center relative flex-grow font-bold"
       ref={component}
     >
       <div
         className={`${style.dropdownInput}
-        cursor-pointer bg-neutral-50 hover:bg-neutral-300
+        cursor-pointer bg-white hover:bg-neutral-300
         rounded-md flex overflow-hidden
         justify-between relative drop-shadow-md`}
         onClick={() => {

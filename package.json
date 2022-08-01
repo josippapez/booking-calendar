@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^2.3.0",
     "@reduxjs/toolkit": "^1.8.3",
     "@sendgrid/mail": "^7.7.0",
     "cors": "^2.8.5",
@@ -17,13 +18,12 @@
     "i18next-intervalplural-postprocessor": "^3.0.0",
     "lodash": "^4.17.21",
     "luxon": "^3.0.1",
-    "next": "12.2.2",
+    "next": "12.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-i18next": "^11.18.1",
+    "react-pdf": "^5.7.1",
     "react-redux": "^8.0.2",
-    "react-redux-firebase": "^3.11.0",
-    "redux-firestore": "^1.0.0",
     "redux-persist": "^6.0.0",
     "sass": "^1.53.0"
   },
@@ -38,6 +38,7 @@
     "@typescript-eslint/parser": "^5.31.0",
     "@vercel/node": "^2.4.5",
     "autoprefixer": "^10.4.7",
+    "copy-webpack-plugin": "^11.0.0",
     "eslint": "8.19.0",
     "eslint-config-next": "12.2.2",
     "eslint-import-resolver-typescript": "^3.3.0",

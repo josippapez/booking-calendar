@@ -8,7 +8,7 @@ import {
   listAll,
   deleteObject,
 } from "firebase/storage";
-import { setApartments } from "../reducers/apartments";
+import { selectApartment, setApartments } from "../reducers/apartments";
 import { AppDispatch, AppState } from "./../store";
 
 let imageUrl = "";
@@ -161,6 +161,7 @@ const setApartmentDataTofirebase = (
     };
 
     dispatch(setApartments(tempApartments));
+    dispatch(selectApartment({ ...apartment, image: imageUrl }));
     setDoc(
       doc(getFirestore(firebase.app()), "apartments", getState().user.user.id),
       tempApartments

@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 
+const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path");
+
+const pdfWorkerPath = require.resolve(`pdfjs-dist/build/pdf.worker.js`);
+
 const regexEqual = (x, y) => {
   return (
     x instanceof RegExp &&
@@ -25,7 +30,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["firebasestorage.googleapis.com"],
+    domains: ["firebasestorage.googleapis.com", "localhost"],
   },
   webpack: config => {
     const oneOf = config.module.rules.find(
@@ -50,6 +55,24 @@ const nextConfig = {
         }
       }
     }
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            from: pdfWorkerPath,
+            to: path.join(__dirname, "public"),
+          },
+          {
+            from: path.join(
+              path.dirname(require.resolve("pdfjs-dist/package.json")),
+              "cmaps"
+            ),
+            to: "cmaps/",
+          },
+        ],
+      })
+    );
+
     return config;
   },
 };

@@ -3,8 +3,8 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 
-const DynamicCalendar = dynamic(
-  () => import("../../src/components/Calendar/Calendar"),
+const DynamicReceiptPage = dynamic(
+  () => import("../../src/components/Shared/Receipt/Receipt"),
   {
     suspense: true,
   }
@@ -12,12 +12,13 @@ const DynamicCalendar = dynamic(
 
 type Props = {};
 
-const Calendar: NextPage = (props: Props) => {
+const Receipt: NextPage = (props: Props) => {
   return (
     <Suspense fallback={<PageLoader />}>
-      <DynamicCalendar {...props} />
+      <title>Receipt</title>
+      <DynamicReceiptPage />
     </Suspense>
   );
 };
 
-export default Calendar;
+export default Receipt;

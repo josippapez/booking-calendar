@@ -1,10 +1,10 @@
+import firebase from "firebase/compat/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import PageLoader from "../src/components/Shared/Loader/PageLoader";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import firebase from "firebase/compat/app";
 import { EventsByYear } from "../src/components/Calendar/CalendarTypes";
+import PageLoader from "../src/components/Shared/Loader/PageLoader";
 
 const DynamicPublicCalendar = dynamic(
   () => import("../src/components/Home/LandingPage/PublicCalendar"),
@@ -106,7 +106,7 @@ export const getServerSideProps: GetServerSideProps = async (
   }
   return {
     props: {
-      events: null,
+      events: {},
       apartmentEmail: null,
       apartmentLogo: null,
       apartmentName: null,

@@ -1,3 +1,5 @@
+import firebase from "firebase/compat/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import isEqual from "lodash/fp/isEqual";
 import { NextPage } from "next";
 import Image from "next/image";
@@ -5,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useFirestore } from "react-redux-firebase";
 import {
   editApartment,
   removeApartment,
@@ -24,7 +25,6 @@ type Props = {};
 const Apartments: NextPage = (props: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const firestore = useFirestore();
   const mobileView = useMobileView();
   const navigate = useRouter();
   const user = useAppSelector(state => state.user.user);
@@ -48,14 +48,14 @@ const Apartments: NextPage = (props: Props) => {
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   const getApartmentsForuser = async (id: string) => {
-    const apartmentsData = await (
-      await firestore.collection("apartments").doc(id).get()
-    ).data();
+    const apartmentsData = await getDoc(
+      doc(getFirestore(firebase.app()), "apartments", `${id}`)
+    );
 
-    if (!isEqual(apartmentsData, apartments.apartments)) {
+    if (!isEqual(apartmentsData.data(), apartments.apartments)) {
       dispatch(
         setApartments(
-          apartmentsData as {
+          apartmentsData.data() as {
             [key: string]: {
               id: string;
               name: string;
@@ -135,7 +135,7 @@ const Apartments: NextPage = (props: Props) => {
                   {t("apartment_address")}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 mb-3 leading-tight focus:border-blue-500"
+                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500 mb-3"
                   id="apartmentAddress"
                   type="text"
                   placeholder="Apartment Address"
@@ -156,7 +156,7 @@ const Apartments: NextPage = (props: Props) => {
                   {t("apartment_email")}
                 </label>
                 <input
-                  className={`appearance-none border rounded-md w-full text-gray-700 mb-3 leading-tight focus:border-blue-500 ${
+                  className={`appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500 mb-3  ${
                     newApartment.email
                       ? emailRegex.test(newApartment.email)
                         ? "!border-green-500"

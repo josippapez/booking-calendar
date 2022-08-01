@@ -5,7 +5,7 @@ service cloud.firestore {
       allow write, update, delete : if request.auth != null;
       allow read;
       match /data/private {
-      	allow read, write, update, delete : if request.auth != null;
+      	allow read, write, update, delete : if request.auth != null && get(/databases/$(database)/documents/events/$(event)).data.userId == request.auth.uid;
       }
       match /data/public {
       	allow read;
