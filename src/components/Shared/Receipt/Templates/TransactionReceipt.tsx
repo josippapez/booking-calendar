@@ -22,24 +22,33 @@ type Props = {
   };
 };
 
-// Font.register({
-//   family: 'Opensans',
-//   fonts: [
-//     {
-//       src: OpensansRegular,
-//       fontWeight: 'normal',
-//     },
-//     {
-//       src: OpensansBold,
-//       fontWeight: 'bold',
-//     },
-//     { src: OpensansLite, fontWeight: 'light' },
-//     { src: OpensansSemibold, fontWeight: 'semibold' },
-//     { src: OpensansMedium, fontWeight: 'medium' },
-//     { src: OpensansExtraBold, fontWeight: 'extrabold' },
-//     { src: OpensansItalic, fontStyle: 'italic' },
-//   ],
-// });
+Font.register({
+  family: "Inter",
+  fonts: [
+    {
+      src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf",
+      fontWeight: "normal",
+    },
+    // {
+    //   src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf",
+    //   fontWeight: "bold",
+    // },
+    // { src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf", fontWeight: "light" },
+    // {
+    //   src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf",
+    //   fontWeight: "semibold",
+    // },
+    // {
+    //   src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf",
+    //   fontWeight: "medium",
+    // },
+    // {
+    //   src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf",
+    //   fontWeight: "extrabold",
+    // },
+    // { src: "/Styles/Assets/Fonts/Inter-VariableFont.ttf", fontStyle: "italic" },
+  ],
+});
 
 const styles = StyleSheet.create({
   page: {
@@ -164,6 +173,40 @@ const styles = StyleSheet.create({
 const TransactionReceipt = (props: Props): JSX.Element => {
   const { translate, apartmentData, receiptData } = props;
 
+  const data = {
+    apartmentData: {
+      name: "Apartmani Dunav",
+      address: "Trg Dženije Trg 1, 1000 Ljubljana",
+      apartmentOwner: "Dario Čeč",
+      pid: "123456789",
+      iban: "SI56 0234 0234 0234 0234",
+    },
+    recepientData: {
+      recepientName: "Fika Eco d.o.o",
+      recepientAddress: "Trg Dženije Trg 1, 1000 Ljubljana",
+      recepientPID: "123456789",
+    },
+    receiptData: {
+      receiptName: "Receipt",
+      date: "25.03.2021",
+      VAT: false,
+      note: "Odgovorna osoba za idvanje računa: Dario Čeč",
+      contact: "+3861 123 456 789",
+      email: "doracec13@gmail.com",
+      services: [
+        {
+          name: "Service 1",
+          price: "100",
+          ammount: "1",
+        },
+        {
+          name: "Service 2",
+          price: "200",
+          ammount: "2",
+        },
+      ],
+    },
+  };
   return (
     <Document>
       <Page size="A4" style={[styles.page]}>
@@ -178,11 +221,11 @@ const TransactionReceipt = (props: Props): JSX.Element => {
             />
           )}
           <View style={[styles.column, styles.padding20, { width: "40%" }]}>
-            <Text>{apartmentData?.name}</Text>
-            <Text>{apartmentData?.address}</Text>
-            <Text>{receiptData?.apartmentOwner}</Text>
-            <Text>{apartmentData?.pid}</Text>
-            <Text>{apartmentData?.iban}</Text>
+            <Text>{data.apartmentData?.name}</Text>
+            <Text>{data.apartmentData?.address}</Text>
+            <Text>{data.apartmentData?.apartmentOwner}</Text>
+            <Text>{data.apartmentData?.pid}</Text>
+            <Text>{data.apartmentData?.iban}</Text>
           </View>
         </View>
       </Page>

@@ -83,9 +83,7 @@ function Navbar(props: Props) {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      href="/receipt"
-                    >
+                    <Link href="/apartments/receipt">
                       <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
                         {"Receipt"}
                       </a>
@@ -146,6 +144,13 @@ function Navbar(props: Props) {
                 <Link href="/apartments">
                   <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
                     {t("apartments_link_name")}
+                  </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/apartments/receipt">
+                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                    {"Receipt"}
                   </a>
                 </Link>
               </li>

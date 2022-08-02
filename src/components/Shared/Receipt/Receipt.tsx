@@ -2,7 +2,7 @@ import { usePDF } from "@react-pdf/renderer";
 import { NextPage } from "next";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Document, Page } from "react-pdf";
+import { Document, Page, pdfjs } from "react-pdf";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { selectApartment } from "../../../../store/reducers/apartments";
 import useMobileView from "../../../checkForMobileView";
@@ -11,6 +11,8 @@ import PageLoader from "../Loader/PageLoader";
 import PDFDownload from "../PDFDownload/PDFDownload";
 import style from "./Receipt.module.scss";
 import ReceiptTemplate from "./Templates/ReceiptTemplate";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 type Props = {};
 
@@ -61,10 +63,10 @@ const Receipt: NextPage = (props: Props) => {
     updateInstanceRef.current = setTimeout(() => {
       updateInstance();
     }, 500);
-  }, [i18n.language, receiptData]);
+  }, [i18n.language, receiptData, selectedApartment]);
 
   const onDocumentLoadSuccess = useCallback(
-    (document: typeof Document) => {
+    (document: any) => {
       const { numPages: nextNumPages } = document;
       if (pageNumber > nextNumPages) {
         setPageNumber(nextNumPages);
@@ -84,25 +86,27 @@ const Receipt: NextPage = (props: Props) => {
   const renderReceipt = () => {
     return (
       <div>
-        <Dropdown
-          placeholder="Select apartment"
-          data={Object.keys(apartments?.apartments).map(key => {
-            return {
-              id: apartments.apartments[key].id,
-              name: apartments.apartments[key].name,
-              value: apartments.apartments[key],
-            };
-          })}
-          selected={selectedApartment?.id as string}
-          setData={item => {
-            if (item !== (selectedApartment?.id as string)) {
-              dispatch(selectApartment(apartments.apartments[item]));
-            }
-          }}
-        />
+        <div className="w-56">
+          <Dropdown
+            placeholder="Select apartment"
+            data={Object.keys(apartments?.apartments).map(key => {
+              return {
+                id: apartments.apartments[key].id,
+                name: apartments.apartments[key].name,
+                value: apartments.apartments[key],
+              };
+            })}
+            selected={selectedApartment?.id as string}
+            setData={item => {
+              if (item !== (selectedApartment?.id as string)) {
+                dispatch(selectApartment(apartments.apartments[item]));
+              }
+            }}
+          />
+        </div>
         {selectedApartment && (
-          <div className="flex justify-around mt-5">
-            <div className="flex gap-3 flex-col w-1/2">
+          <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
+            <div className="flex gap-3 flex-col w-full xl:w-1/2">
               <h1 className="text-2xl font-bold">Receipt</h1>
               <div className="flex flex-col">
                 <span className="font-bold">Receipt name</span>
@@ -203,7 +207,7 @@ const Receipt: NextPage = (props: Props) => {
                 />
               </div>
             </div>
-            <div className="w-1/2">
+            <div className="w-full xl:w-1/2">
               <Suspense fallback={<PageLoader />}>
                 <Document
                   {...options}
@@ -213,7 +217,7 @@ const Receipt: NextPage = (props: Props) => {
                   onItemClick={onItemClick}
                   onLoadSuccess={onDocumentLoadSuccess}
                 >
-                  <Page renderMode="svg" pageNumber={pageNumber || 1}>
+                  <Page renderMode="canvas" pageNumber={pageNumber || 1}>
                     {pageNumber && numPages && (
                       <div className={`${style["document-controls"]}`}>
                         <div className={`${style["page-controls-navigation"]}`}>

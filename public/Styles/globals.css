@@ -72,6 +72,11 @@ h6 {
   height: 100%;
 }
 
+.react-pdf__Page__canvas {
+  height: auto !important;
+  min-height: 680px;
+}
+
 @font-face {
   font-family: "Inter-variable";
   src: url("./Assets/Fonts/Inter-VariableFont.ttf") format("truetype");

@@ -135,7 +135,7 @@ export const removeApartment = (apartmentId: string) => {
     });
 
     dispatch(setApartments(tempApartments));
-
+    dispatch(selectApartment(null));
     deleteDoc(doc(getFirestore(firebase.app()), "events", apartmentId));
     setDoc(
       doc(getFirestore(firebase.app()), "apartments", getState().user.user.id),
@@ -160,8 +160,8 @@ const setApartmentDataTofirebase = (
       [apartment.id]: { ...apartment, image: imageUrl },
     };
 
-    dispatch(setApartments(tempApartments));
     dispatch(selectApartment({ ...apartment, image: imageUrl }));
+    dispatch(setApartments(tempApartments));
     setDoc(
       doc(getFirestore(firebase.app()), "apartments", getState().user.user.id),
       tempApartments

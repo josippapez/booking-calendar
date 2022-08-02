@@ -14,6 +14,7 @@
 
 # production
 /build
+/store/Config/secret.json
 
 # misc
 .DS_Store

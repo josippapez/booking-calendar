@@ -1,5 +1,10 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:import/recommended",
+    "eslint:recommended",
+    "plugin:import/typescript"
+  ],
   "parser": "@typescript-eslint/parser",
   "settings": {
     "import/parsers": {
@@ -11,5 +16,12 @@
         "project": "./.tsconfig.json"
       }
     }
-  }
+  },
+  "rules": {
+    "no-unused-vars": "warn"
+  },
+  "globals": {
+    "JSX": "readonly"
+  },
+  "ignorePatterns": ["**/*.d.ts", "pdf.worker.js"]
 }

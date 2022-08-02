@@ -1,14 +1,17 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-// import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-// import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-// import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
-// import { connectStorageEmulator, getStorage } from "firebase/storage";
+import {
+  connectFirestoreEmulator,
+  getFirestore as GetFirestore,
+} from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import firebaseConfig from "../src/Config/fbConfig";
+import firebaseConfig from "./Config/fbConfig";
 import { reducers, RootState } from "./reducers/reducer";
 
 const persistConfig = {
@@ -18,9 +21,11 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducers);
 
-firebase.initializeApp(firebaseConfig);
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
+}
 
-// const db = getFirestore();
+// const db = GetFirestore();
 // connectFirestoreEmulator(db, "localhost", 8080);
 // const functions = getFunctions(firebase.app());
 // connectFunctionsEmulator(functions, "localhost", 5001);

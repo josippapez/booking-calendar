@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, NextPage } from "next";
+import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import PageLoader from "../../src/components/Shared/Loader/PageLoader";

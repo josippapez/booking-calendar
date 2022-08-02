@@ -3,7 +3,7 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
-const pdfWorkerPath = require.resolve(`pdfjs-dist/build/pdf.worker.js`);
+// const pdfWorkerPath = require.resolve(`pdfjs-dist/build/pdf.worker.min.js`);
 
 const regexEqual = (x, y) => {
   return (
@@ -55,13 +55,26 @@ const nextConfig = {
         }
       }
     }
+    config.module.rules.unshift({
+      test: /pdf\.worker\.(min\.)?js/,
+      use: [
+        {
+          loader: "file-loader",
+          options: {
+            name: "[contenthash].[ext]",
+            publicPath: "_next/static/worker",
+            outputPath: "static/worker"
+          }
+        }
+      ]
+    });
     config.plugins.push(
       new CopyPlugin({
         patterns: [
-          {
-            from: pdfWorkerPath,
-            to: path.join(__dirname, "public"),
-          },
+          // {
+          //   from: pdfWorkerPath,
+          //   to: path.join(__dirname),
+          // },
           {
             from: path.join(
               path.dirname(require.resolve("pdfjs-dist/package.json")),

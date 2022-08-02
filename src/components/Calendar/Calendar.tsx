@@ -4,7 +4,7 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { DateTime, Info } from "luxon";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   removeEventForApartment,
@@ -97,14 +97,14 @@ const Calendar: NextPage = (props: Props) => {
     try {
       const event = await getDoc(
         doc(getFirestore(firebase.app()), "events", `${id}/data/private`)
-      );
+      ).then(doc => doc.data());
 
-      if (JSON.stringify(eventsData) !== JSON.stringify(event.data())) {
-        dispatch(setEvents(event.data() as EventsByYear));
+      if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
+        dispatch(setEvents(event as EventsByYear));
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
-        console.log(error);
+        console.log(error.stack, error.message);
 
         if (error.code === "permission-denied") {
           navigate.push("/");
@@ -243,7 +243,7 @@ const Calendar: NextPage = (props: Props) => {
         </div>
         <div className={style.calendarGrid}>
           {eachDayOfMonth.map((day, index) => {
-            const objectOfDivs: JSX.Element[] = [];
+            const objectOfDivs: ReactElement[] = [];
             if (
               eventsData &&
               eventsData[day.year] &&

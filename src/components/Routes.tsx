@@ -19,15 +19,18 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const checkForAuthentication = () => {
     if (user && user.accessToken) {
       if (
-        !["/apartments", "/apartments/[id]", "/[id]", "/receipt"].includes(
-          router.route
-        )
+        ![
+          "/apartments",
+          "/apartments/[id]",
+          "/[id]",
+          "/apartments/receipt",
+        ].includes(router.route)
       ) {
         router.push("/apartments");
         return;
       }
     } else {
-      if (window.location.pathname !== "/") {
+      if (!["/", "/[id]"].includes(router.route)) {
         router.push("/");
         return false;
       }
