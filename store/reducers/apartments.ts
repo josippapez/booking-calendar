@@ -9,6 +9,7 @@ export type Apartment = {
   image: string;
   iban?: string;
   pid?: string;
+  owner?: string;
 };
 
 type Apartments = {

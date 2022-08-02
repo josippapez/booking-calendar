@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import PageLoader from "../../../src/components/Shared/Loader/PageLoader";
+import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 
 const DynamicReceiptPage = dynamic(
-  () => import("../../../src/components/Shared/Receipt/Receipt"),
+  () => import("../../src/components/Shared/Receipt/Receipt"),
   {
     suspense: true,
     ssr: false,

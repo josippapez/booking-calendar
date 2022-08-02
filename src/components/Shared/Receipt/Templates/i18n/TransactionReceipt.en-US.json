@@ -1,0 +1,16 @@
+{
+  "date_of_receipt": "Date of receipt",
+  "service_name": "Service name",
+  "ammount": "Ammount",
+  "price": "Price",
+  "total": "Total",
+  "total_price": "Total price",
+  "user_is_free_of_vat": "VAT Exemption",
+  "free_of_vat_true": "User is VAT exempt",
+  "free_of_vat_false": "User is not VAT exempt",
+  "fiscalisation_receipt": "Fiscalisation of receipt",
+  "transaction_receipt": "Transaction Receipt",
+  "note": "Note",
+  "contact": "Contact",
+  "email": "Email"
+}

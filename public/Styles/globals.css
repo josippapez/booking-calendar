@@ -21,7 +21,7 @@ body {
 
 body {
   margin: 0;
-  font-family: "Inter-variable", "Nunito-variable", sans-serif;
+  font-family: "Inter-variable", sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -80,13 +80,6 @@ h6 {
 @font-face {
   font-family: "Inter-variable";
   src: url("./Assets/Fonts/Inter-VariableFont.ttf") format("truetype");
-  font-style: italic normal oblique;
-  font-weight: 100 900;
-}
-
-@font-face {
-  font-family: "Nunito-variable";
-  src: url("./Assets/Fonts/Nunito-VariableFont_wght.ttf") format("truetype");
   font-style: italic normal oblique;
   font-weight: 100 900;
 }

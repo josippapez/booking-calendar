@@ -35,21 +35,88 @@ const Receipt: NextPage = (props: Props) => {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [displayDownloadModal, setDisplayDownloadModal] =
     useState<boolean>(false);
-  const [receiptData, setReceiptData] = useState({
-    receiptName: "",
-    apartmentOwner: "",
-    apartmentIBAN: "",
-    apartmentPID: "",
-    recepient: "",
-    recepientAddress: "",
-    recepientPID: "",
+  const [displayInputSection, setDisplayInputSection] =
+    useState("apartmentData");
+  const [transactionReceiptData, setTransactionReceiptData] = useState<{
+    apartmentData: {
+      name: string;
+      address: string;
+      apartmentOwner: string;
+      pid: string;
+      iban: string;
+    };
+    recepientData: {
+      recepientName: string;
+      recepientAddress: string;
+      recepientPID: string;
+    };
+    receiptData: {
+      receiptName: string;
+      date: string;
+      VAT: boolean;
+      note: string;
+      contact: string;
+      contact_name: string;
+      email: string;
+      totalCurrency: string;
+      services: {
+        name: string;
+        price: string;
+        ammount: string;
+        total: string;
+      }[];
+    };
+  }>({
+    apartmentData: {
+      name: "",
+      address: "",
+      apartmentOwner: "",
+      pid: "",
+      iban: "",
+    },
+    recepientData: {
+      recepientName: "",
+      recepientAddress: "",
+      recepientPID: "",
+    },
+    receiptData: {
+      receiptName: "",
+      date: "",
+      VAT: false,
+      note: "",
+      contact: "",
+      contact_name: "",
+      email: "",
+      totalCurrency: "",
+      services: [
+        {
+          name: "",
+          price: "",
+          ammount: "",
+          total: "",
+        },
+        {
+          name: "",
+          price: "",
+          ammount: "",
+          total: "",
+        },
+      ],
+    },
   });
 
   const [instance, updateInstance] = usePDF({
     document: ReceiptTemplate({
       t,
-      apartmentData: selectedApartment && { ...selectedApartment },
-      receiptData,
+      locale: i18n.language,
+      apartmentData: selectedApartment && {
+        ...selectedApartment,
+        pid: "",
+        iban: "",
+        owner: "",
+      },
+      receiptData: transactionReceiptData.receiptData,
+      recepientData: transactionReceiptData.recepientData,
     }),
   });
 
@@ -63,7 +130,7 @@ const Receipt: NextPage = (props: Props) => {
     updateInstanceRef.current = setTimeout(() => {
       updateInstance();
     }, 500);
-  }, [i18n.language, receiptData, selectedApartment]);
+  }, [i18n.language, transactionReceiptData, selectedApartment]);
 
   const onDocumentLoadSuccess = useCallback(
     (document: any) => {
@@ -107,105 +174,112 @@ const Receipt: NextPage = (props: Props) => {
         {selectedApartment && (
           <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
             <div className="flex gap-3 flex-col w-full xl:w-1/2">
-              <h1 className="text-2xl font-bold">Receipt</h1>
-              <div className="flex flex-col">
-                <span className="font-bold">Receipt name</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.receiptName}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      receiptName: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold">Recepient</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.recepient}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      recepient: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold">Recepient address</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.recepientAddress}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      recepientAddress: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold">Recepient PID</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.recepientPID}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      recepientPID: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold">Apartment owner</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.apartmentOwner}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      apartmentOwner: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold">Apartment PID</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.apartmentPID}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      apartmentPID: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold">Recepient IBAN</span>
-                <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  type="text"
-                  value={receiptData.apartmentIBAN}
-                  onChange={e => {
-                    setReceiptData({
-                      ...receiptData,
-                      apartmentIBAN: e.target.value,
-                    });
-                  }}
-                />
-              </div>
+              {Object.keys(transactionReceiptData).map(key => {
+                return (
+                  <div key={key} className="flex flex-col">
+                    <h1
+                      className="text-2xl font-bold hover:cursor-pointer"
+                      onClick={() => {
+                        setDisplayInputSection(key);
+                      }}
+                    >
+                      {t(`${key}`)}
+                    </h1>
+                    <div
+                      className={`${
+                        displayInputSection === key
+                          ? "block h-full"
+                          : "hidden h-0"
+                      }`}
+                    >
+                      {Object.entries(
+                        transactionReceiptData[
+                          key as keyof typeof transactionReceiptData
+                        ]
+                      ).map(([innerKey, value]) => {
+                        if (innerKey !== "services") {
+                          return (
+                            <div key={innerKey} className="flex flex-col">
+                              <span className="font-bold">{t(innerKey)}</span>
+                              {innerKey === "VAT" ? (
+                                <input
+                                  className="h-6 focus:border-blue-500"
+                                  type={"checkbox"}
+                                  checked={value ? Boolean(value) : false}
+                                  onChange={e => {
+                                    setTransactionReceiptData({
+                                      ...transactionReceiptData,
+                                      receiptData: {
+                                        ...transactionReceiptData[
+                                          "receiptData"
+                                        ],
+                                        VAT: e.target.checked,
+                                      },
+                                    });
+                                  }}
+                                />
+                              ) : (
+                                <input
+                                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                                  type={"text"}
+                                  value={value ? value.toString() : ""}
+                                  onChange={e => {
+                                    setTransactionReceiptData({
+                                      ...transactionReceiptData,
+                                      [key]: {
+                                        ...transactionReceiptData[
+                                          key as keyof typeof transactionReceiptData
+                                        ],
+                                        [innerKey]: e.target.value,
+                                      },
+                                    });
+                                  }}
+                                />
+                              )}
+                            </div>
+                          );
+                        } else {
+                          Object.entries(
+                            transactionReceiptData["receiptData"][innerKey]
+                          ).map(([innerInnerKey, value]) => {
+                            return (
+                              <div
+                                key={innerInnerKey}
+                                className="flex flex-col"
+                              >
+                                <span className="font-bold">
+                                  {t(innerInnerKey)}
+                                </span>
+                                <input
+                                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                                  type={"text"}
+                                  value={value ? value.toString() : ""}
+                                  onChange={e => {
+                                    setTransactionReceiptData({
+                                      ...transactionReceiptData,
+                                      receiptData: {
+                                        ...transactionReceiptData[
+                                          "receiptData"
+                                        ],
+                                        services: {
+                                          ...transactionReceiptData[
+                                            "receiptData"
+                                          ]["services"],
+                                          [innerInnerKey]: e.target.value,
+                                        },
+                                      },
+                                    });
+                                  }}
+                                />
+                              </div>
+                            );
+                          });
+                        }
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="w-full xl:w-1/2">
               <Suspense fallback={<PageLoader />}>

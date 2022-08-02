@@ -194,7 +194,7 @@ const DateRangePicker = (props: Props) => {
   const daysHeader = () => {
     return (
       <div className={style.calendarGridHeader}>
-        {Info.weekdaysFormat("short", { locale: i18n.languages[0] }).map(
+        {Info.weekdaysFormat("short", { locale: i18n.language }).map(
           (day, index) => (
             <div
               key={index}

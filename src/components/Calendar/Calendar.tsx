@@ -104,8 +104,6 @@ const Calendar: NextPage = (props: Props) => {
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
-        console.log(error.stack, error.message);
-
         if (error.code === "permission-denied") {
           navigate.push("/");
         }
@@ -230,7 +228,7 @@ const Calendar: NextPage = (props: Props) => {
         }}
       >
         <div className={style.calendarGridHeader}>
-          {Info.weekdaysFormat("short", { locale: i18n.languages[0] }).map(
+          {Info.weekdaysFormat("short", { locale: i18n.language }).map(
             (day, index) => (
               <div
                 key={index}

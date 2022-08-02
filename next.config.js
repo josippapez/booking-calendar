@@ -63,10 +63,14 @@ const nextConfig = {
           options: {
             name: "[contenthash].[ext]",
             publicPath: "_next/static/worker",
-            outputPath: "static/worker"
-          }
-        }
-      ]
+            outputPath: "static/worker",
+          },
+        },
+      ],
+    });
+    config.module.rules.unshift({
+      test: /\.(woff|woff2|eot|ttf|otf)$/i,
+      type: "asset/resource",
     });
     config.plugins.push(
       new CopyPlugin({

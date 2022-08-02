@@ -5,30 +5,45 @@ import TransactionReceipt from "./TransactionReceipt";
 
 type Props = {
   t: TFunction;
+  locale: string;
   apartmentData: Apartment | null;
-  receiptData: {
-    receiptName: string;
-    apartmentOwner: string;
-    recepient: string;
+  recepientData: {
+    recepientName: string;
     recepientAddress: string;
     recepientPID: string;
-    apartmentPID: string;
-    apartmentIBAN: string;
+  };
+  receiptData: {
+    receiptName: string;
+    date: string;
+    VAT: boolean;
+    note: string;
+    contact: string;
+    contact_name: string;
+    email: string;
+    totalCurrency: string;
+    services: {
+      name: string;
+      price: string;
+      ammount: string;
+      total: string;
+    }[];
   };
 };
 
 const ReceiptTemplate = (props: Props): JSX.Element => {
-  const { t, apartmentData, receiptData } = props;
+  const { t, locale, apartmentData, receiptData, recepientData } = props;
 
   const options = {
     translate: t,
+    locale: locale,
     apartmentData: apartmentData,
     receiptData: receiptData,
+    recepientData: recepientData,
   };
 
   return useMemo(
     () => TransactionReceipt(options),
-    [apartmentData, receiptData]
+    [apartmentData, receiptData, recepientData]
   );
 };
 

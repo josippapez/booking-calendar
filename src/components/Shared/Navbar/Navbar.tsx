@@ -52,7 +52,7 @@ function Navbar(props: Props) {
   }, [component, languageComponent]);
 
   const languages = [
-    { title: "English", value: "eng" },
+    { title: "English", value: "en-US" },
     { title: "Croatian", value: "hr" },
   ];
 
@@ -83,7 +83,7 @@ function Navbar(props: Props) {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/apartments/receipt">
+                    <Link href="/receipt">
                       <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
                         {"Receipt"}
                       </a>
@@ -148,7 +148,7 @@ function Navbar(props: Props) {
                 </Link>
               </li>
               <li>
-                <Link href="/apartments/receipt">
+                <Link href="/receipt">
                   <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
                     {"Receipt"}
                   </a>
@@ -186,7 +186,7 @@ function Navbar(props: Props) {
                 <div
                   key={language.value}
                   className={`cursor-pointer px-1 py-[2px] rounded-md hover:dark:bg-slate-600 hover:bg-gray-200 ${
-                    i18n.languages[0] === language.value &&
+                    i18n.language === language.value &&
                     "bg-blue-500 text-white hover:bg-blue-500 hover:opacity-70"
                   }`}
                   onClick={() => {

@@ -23,7 +23,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
           "/apartments",
           "/apartments/[id]",
           "/[id]",
-          "/apartments/receipt",
+          "/receipt",
         ].includes(router.route)
       ) {
         router.push("/apartments");

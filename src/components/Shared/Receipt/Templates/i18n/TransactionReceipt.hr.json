@@ -1,0 +1,16 @@
+{
+  "date_of_receipt": "Datum računa",
+  "service_name": "Naziv usluge",
+  "ammount": "Količina",
+  "price": "Cijena",
+  "total": "Ukupno",
+  "total_price": "Ukupna cijena",
+  "user_is_free_of_vat": "Oslobođenje od PDV-a",
+  "free_of_vat_true": "Davatelj usluge nije u sustavu PDV-a",
+  "free_of_vat_false": "Davatelj usluge je u sustavu PDV-a",
+  "fiscalisation_receipt": "Fiskalizacija računa",
+  "transaction_receipt": "Transakcijski račun",
+  "note": "Napomena",
+  "contact": "Kontakt",
+  "email": "Email"
+}
