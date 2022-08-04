@@ -14,6 +14,7 @@ import {
 } from "../../../../store/firebaseActions/apartmentActions";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
+  Apartment,
   selectApartment,
   setApartments,
 } from "../../../../store/reducers/apartments";
@@ -23,7 +24,7 @@ import useMobileView from "../../../checkForMobileView";
 type Props = {};
 
 const Apartments: NextPage = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Apartments");
   const dispatch = useAppDispatch();
   const mobileView = useMobileView();
   const navigate = useRouter();
@@ -37,12 +38,18 @@ const Apartments: NextPage = (props: Props) => {
     id: string;
     email: string;
     image: File | string;
+    pid: string;
+    iban: string;
+    owner: string;
   }>({
     id: "",
     name: "",
     address: "",
     email: "",
     image: "",
+    pid: "",
+    iban: "",
+    owner: "",
   });
   const emailRegex =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
@@ -62,6 +69,9 @@ const Apartments: NextPage = (props: Props) => {
               address: string;
               email: string;
               image: string;
+              pid: string;
+              iban: string;
+              owner: string;
             };
           }
         )
@@ -105,6 +115,9 @@ const Apartments: NextPage = (props: Props) => {
                       address: "",
                       email: "",
                       image: "",
+                      pid: "",
+                      iban: "",
+                      owner: "",
                     });
                   }}
                 />
@@ -120,7 +133,6 @@ const Apartments: NextPage = (props: Props) => {
                   className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
                   id="apartmentName"
                   type="text"
-                  placeholder="Apartment Name"
                   value={newApartment.name}
                   onChange={e => {
                     setNewApartment({ ...newApartment, name: e.target.value });
@@ -135,15 +147,74 @@ const Apartments: NextPage = (props: Props) => {
                   {t("apartment_address")}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500 mb-3"
+                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
                   id="apartmentAddress"
                   type="text"
-                  placeholder="Apartment Address"
                   value={newApartment.address}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
                       address: e.target.value,
+                    });
+                  }}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold"
+                  htmlFor="apartmentOwner"
+                >
+                  {t("apartment_owner")}
+                </label>
+                <input
+                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                  id="apartmentOwner"
+                  type="text"
+                  value={newApartment.owner}
+                  onChange={e => {
+                    setNewApartment({
+                      ...newApartment,
+                      owner: e.target.value,
+                    });
+                  }}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold"
+                  htmlFor="apartmentPID"
+                >
+                  {t("apartment_pid")}
+                </label>
+                <input
+                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                  id="apartmentPID"
+                  type="text"
+                  value={newApartment.pid}
+                  onChange={e => {
+                    setNewApartment({
+                      ...newApartment,
+                      pid: e.target.value,
+                    });
+                  }}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold"
+                  htmlFor="apartmentIBAN"
+                >
+                  {t("apartment_IBAN")}
+                </label>
+                <input
+                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                  id="apartmentIBAN"
+                  type="text"
+                  value={newApartment.iban}
+                  onChange={e => {
+                    setNewApartment({
+                      ...newApartment,
+                      iban: e.target.value,
                     });
                   }}
                 />
@@ -165,7 +236,6 @@ const Apartments: NextPage = (props: Props) => {
                   }`}
                   id="appartmentEmail"
                   type="text"
-                  placeholder="Apartment Email"
                   value={newApartment.email}
                   onChange={e => {
                     setNewApartment({
@@ -200,6 +270,9 @@ const Apartments: NextPage = (props: Props) => {
                           address: "",
                           email: "",
                           image: "",
+                          pid: "",
+                          iban: "",
+                          owner: "",
                         });
                         return;
                       }
@@ -221,6 +294,9 @@ const Apartments: NextPage = (props: Props) => {
                         address: "",
                         email: "",
                         image: "",
+                        pid: "",
+                        iban: "",
+                        owner: "",
                       });
                     }
                   }}
@@ -396,7 +472,12 @@ const Apartments: NextPage = (props: Props) => {
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4"
                       onClick={e => {
                         e.stopPropagation();
-                        setNewApartment(apartments.apartments[apartment]);
+                        setNewApartment({
+                          pid: apartments.apartments[apartment]?.pid || "",
+                          iban: apartments.apartments[apartment]?.iban || "",
+                          owner: apartments.apartments[apartment]?.owner || "",
+                          ...apartments.apartments[apartment],
+                        });
                       }}
                     >
                       {t("edit")}

@@ -8,7 +8,11 @@ import {
   listAll,
   deleteObject,
 } from "firebase/storage";
-import { selectApartment, setApartments } from "../reducers/apartments";
+import {
+  Apartment,
+  selectApartment,
+  setApartments,
+} from "../reducers/apartments";
 import { AppDispatch, AppState } from "./../store";
 
 let imageUrl = "";
@@ -20,6 +24,9 @@ const saveApartmentData = async (
     name: string;
     address: string;
     email: string;
+    iban?: string;
+    pid?: string;
+    owner?: string;
   },
   setProgress: (progress: number) => void,
   setError: (error: string) => void,
@@ -88,11 +95,14 @@ const saveApartmentData = async (
 
 export const saveApartment = (
   apartment: {
-    id: string;
     name: string;
     address: string;
+    id: string;
     email: string;
     image: File | string;
+    pid?: string;
+    iban?: string;
+    owner?: string;
   },
   setProgress: (progress: number) => void,
   setError: (error: string) => void
@@ -104,11 +114,14 @@ export const saveApartment = (
 
 export const editApartment = (
   apartment: {
-    id: string;
     name: string;
     address: string;
+    id: string;
     email: string;
     image: File | string;
+    pid?: string;
+    iban?: string;
+    owner?: string;
   },
   setProgress: (progress: number) => void,
   setError: (error: string) => void
@@ -151,6 +164,9 @@ const setApartmentDataTofirebase = (
     address: string;
     email: string;
     image: File | string;
+    iban?: string;
+    pid?: string;
+    owner?: string;
   },
   imageUrl: string
 ) => {

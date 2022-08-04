@@ -13,7 +13,7 @@ import style from "./LoginPage.module.scss";
 type Props = {};
 
 const LoginPage: NextPage = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("LoginPage");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");

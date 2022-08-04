@@ -23,7 +23,7 @@ const options = {
 
 const Receipt: NextPage = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("Receipt");
   const mobileView = useMobileView();
 
   const apartments = useAppSelector(state => state.apartments);
@@ -41,7 +41,8 @@ const Receipt: NextPage = (props: Props) => {
     apartmentData: {
       name: string;
       address: string;
-      apartmentOwner: string;
+      owner: string;
+      image: string;
       pid: string;
       iban: string;
     };
@@ -70,7 +71,8 @@ const Receipt: NextPage = (props: Props) => {
     apartmentData: {
       name: "",
       address: "",
-      apartmentOwner: "",
+      owner: "",
+      image: "",
       pid: "",
       iban: "",
     },
@@ -107,14 +109,23 @@ const Receipt: NextPage = (props: Props) => {
 
   const [instance, updateInstance] = usePDF({
     document: ReceiptTemplate({
-      t,
-      locale: i18n.language,
-      apartmentData: selectedApartment && {
-        ...selectedApartment,
-        pid: "",
-        iban: "",
-        owner: "",
-      },
+      apartmentData: selectedApartment
+        ? {
+            name: selectedApartment.name,
+            address: selectedApartment.address,
+            image: selectedApartment.image,
+            owner: selectedApartment.owner ? selectedApartment.owner : "",
+            pid: selectedApartment.pid ? selectedApartment.pid : "",
+            iban: selectedApartment.iban ? selectedApartment.iban : "",
+          }
+        : {
+            name: "",
+            address: "",
+            owner: "",
+            image: "",
+            pid: "",
+            iban: "",
+          },
       receiptData: transactionReceiptData.receiptData,
       recepientData: transactionReceiptData.recepientData,
     }),
@@ -130,7 +141,23 @@ const Receipt: NextPage = (props: Props) => {
     updateInstanceRef.current = setTimeout(() => {
       updateInstance();
     }, 500);
-  }, [i18n.language, transactionReceiptData, selectedApartment]);
+  }, [i18n.language, transactionReceiptData]);
+
+  useEffect(() => {
+    if (selectedApartment) {
+      setTransactionReceiptData({
+        ...transactionReceiptData,
+        apartmentData: {
+          name: selectedApartment.name,
+          address: selectedApartment.address,
+          image: selectedApartment.image,
+          owner: selectedApartment.owner ? selectedApartment.owner : "",
+          pid: selectedApartment.pid ? selectedApartment.pid : "",
+          iban: selectedApartment.iban ? selectedApartment.iban : "",
+        },
+      });
+    }
+  }, [selectedApartment]);
 
   const onDocumentLoadSuccess = useCallback(
     (document: any) => {
@@ -173,12 +200,21 @@ const Receipt: NextPage = (props: Props) => {
         </div>
         {selectedApartment && (
           <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
-            <div className="flex gap-3 flex-col w-full xl:w-1/2">
+            <div
+              className={`flex gap-3 flex-col w-full xl:w-1/2 max-h[${
+                window.innerHeight + "px"
+              }]`}
+            >
               {Object.keys(transactionReceiptData).map(key => {
                 return (
-                  <div key={key} className="flex flex-col">
+                  <div
+                    key={key}
+                    className={`${style.sections} ${
+                      displayInputSection === key && style.sections__show
+                    }`}
+                  >
                     <h1
-                      className="text-2xl font-bold hover:cursor-pointer"
+                      className="text-2xl font-bold hover:cursor-pointer bg-zinc-200 text-gray-800 px-3 py-2 rounded-md hover:bg-zinc-100"
                       onClick={() => {
                         setDisplayInputSection(key);
                       }}
@@ -186,94 +222,103 @@ const Receipt: NextPage = (props: Props) => {
                       {t(`${key}`)}
                     </h1>
                     <div
-                      className={`${
-                        displayInputSection === key
-                          ? "block h-full"
-                          : "hidden h-0"
-                      }`}
+                      className={`flex flex-col gap-3 ${style.section}`}
+                      ref={el => {
+                        if (el) {
+                          if (displayInputSection === key) {
+                            setTimeout(() => {
+                              el.style.overflowY = "auto";
+                            }, 250);
+                          } else {
+                            el.style.overflowY = "hidden";
+                          }
+                        }
+                      }}
                     >
                       {Object.entries(
                         transactionReceiptData[
                           key as keyof typeof transactionReceiptData
                         ]
                       ).map(([innerKey, value]) => {
-                        if (innerKey !== "services") {
-                          return (
-                            <div key={innerKey} className="flex flex-col">
-                              <span className="font-bold">{t(innerKey)}</span>
-                              {innerKey === "VAT" ? (
-                                <input
-                                  className="h-6 focus:border-blue-500"
-                                  type={"checkbox"}
-                                  checked={value ? Boolean(value) : false}
-                                  onChange={e => {
-                                    setTransactionReceiptData({
-                                      ...transactionReceiptData,
-                                      receiptData: {
-                                        ...transactionReceiptData[
-                                          "receiptData"
-                                        ],
-                                        VAT: e.target.checked,
-                                      },
-                                    });
-                                  }}
-                                />
-                              ) : (
-                                <input
-                                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                                  type={"text"}
-                                  value={value ? value.toString() : ""}
-                                  onChange={e => {
-                                    setTransactionReceiptData({
-                                      ...transactionReceiptData,
-                                      [key]: {
-                                        ...transactionReceiptData[
-                                          key as keyof typeof transactionReceiptData
-                                        ],
-                                        [innerKey]: e.target.value,
-                                      },
-                                    });
-                                  }}
-                                />
-                              )}
-                            </div>
-                          );
-                        } else {
-                          Object.entries(
-                            transactionReceiptData["receiptData"][innerKey]
-                          ).map(([innerInnerKey, value]) => {
+                        if (innerKey !== "image") {
+                          if (innerKey !== "services") {
                             return (
-                              <div
-                                key={innerInnerKey}
-                                className="flex flex-col"
-                              >
-                                <span className="font-bold">
-                                  {t(innerInnerKey)}
-                                </span>
-                                <input
-                                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                                  type={"text"}
-                                  value={value ? value.toString() : ""}
-                                  onChange={e => {
-                                    setTransactionReceiptData({
-                                      ...transactionReceiptData,
-                                      receiptData: {
-                                        ...transactionReceiptData[
-                                          "receiptData"
-                                        ],
-                                        services: {
+                              <div key={innerKey} className="flex flex-col">
+                                <span className="font-bold">{t(innerKey)}</span>
+                                {innerKey === "VAT" ? (
+                                  <input
+                                    className="h-6 focus:border-blue-500"
+                                    type={"checkbox"}
+                                    checked={value ? Boolean(value) : false}
+                                    onChange={e => {
+                                      setTransactionReceiptData({
+                                        ...transactionReceiptData,
+                                        receiptData: {
                                           ...transactionReceiptData[
                                             "receiptData"
-                                          ]["services"],
-                                          [innerInnerKey]: e.target.value,
+                                          ],
+                                          VAT: e.target.checked,
                                         },
-                                      },
-                                    });
-                                  }}
-                                />
+                                      });
+                                    }}
+                                  />
+                                ) : (
+                                  <input
+                                    className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                                    type={"text"}
+                                    value={value ? value.toString() : ""}
+                                    onChange={e => {
+                                      setTransactionReceiptData({
+                                        ...transactionReceiptData,
+                                        [key]: {
+                                          ...transactionReceiptData[
+                                            key as keyof typeof transactionReceiptData
+                                          ],
+                                          [innerKey]: e.target.value,
+                                        },
+                                      });
+                                    }}
+                                  />
+                                )}
                               </div>
                             );
-                          });
+                          } else {
+                            Object.entries(
+                              transactionReceiptData["receiptData"][innerKey]
+                            ).map(([innerInnerKey, value]) => {
+                              return (
+                                <div
+                                  key={innerInnerKey}
+                                  className="flex flex-col"
+                                >
+                                  <span className="font-bold">
+                                    {t(innerInnerKey)}
+                                  </span>
+                                  <input
+                                    className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                                    type={"text"}
+                                    value={value ? value.toString() : ""}
+                                    onChange={e => {
+                                      setTransactionReceiptData({
+                                        ...transactionReceiptData,
+                                        receiptData: {
+                                          ...transactionReceiptData[
+                                            "receiptData"
+                                          ],
+                                          services: {
+                                            ...transactionReceiptData[
+                                              "receiptData"
+                                            ]["services"],
+                                            [innerInnerKey]: e.target.value,
+                                          },
+                                        },
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              );
+                            });
+                          }
                         }
                       })}
                     </div>

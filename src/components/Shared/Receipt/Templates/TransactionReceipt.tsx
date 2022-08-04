@@ -12,12 +12,18 @@ import { TFunction } from "react-i18next";
 import InterBold from "../../../../../public/Styles/Assets/Fonts/Inter-Bold.ttf";
 import InterLight from "../../../../../public/Styles/Assets/Fonts/Inter-Light.ttf";
 import InterRegular from "../../../../../public/Styles/Assets/Fonts/Inter-Regular.ttf";
-import { Apartment } from "../../../../../store/reducers/apartments";
 
 type Props = {
   translate: TFunction;
   locale: string;
-  apartmentData: Apartment | null;
+  apartmentData: {
+    name: string;
+    address: string;
+    owner: string;
+    image: string;
+    pid: string;
+    iban: string;
+  };
   recepientData: {
     recepientName: string;
     recepientAddress: string;
@@ -115,6 +121,7 @@ const styles = StyleSheet.create({
 const TransactionReceipt = (props: Props): JSX.Element => {
   const { translate, locale, apartmentData, receiptData, recepientData } =
     props;
+console.log(apartmentData);
 
   return (
     <Document>
@@ -227,14 +234,14 @@ const TransactionReceipt = (props: Props): JSX.Element => {
               {translate("user_is_free_of_vat")}
             </Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
-              <Text>{translate(`free_of_vat_${receiptData?.VAT}`)}</Text>
+              <Text>{translate(`free_of_vat_${!receiptData?.VAT}`)}</Text>
             </View>
             <Text style={[{ fontSize: 10 }]}>
               {translate("fiscalisation_receipt")}
             </Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>
-                {translate("transaction_receipt")}
+                {translate("transaction_receipt")}{" "}
                 {DateTime.now()
                   .setLocale(locale)
                   .toLocaleString(DateTime.DATE_FULL)}

@@ -25,7 +25,7 @@ import DayDetails from "./DayDetails/DayDetails";
 type Props = {};
 
 const Calendar: NextPage = (props: Props) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("Calendar");
   const dispatch = useAppDispatch();
   const navigate = useRouter();
 

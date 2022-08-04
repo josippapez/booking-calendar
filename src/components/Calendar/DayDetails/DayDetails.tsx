@@ -27,7 +27,7 @@ const DayDetails = (props: Props) => {
     setSelectedDay,
   } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("DayDetails");
 
   const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
 

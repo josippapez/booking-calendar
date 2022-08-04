@@ -17,7 +17,7 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const PublicCalendar: NextPage = (props: Props) => {
   const { events, apartmentEmail, apartmentLogo, apartmentName } = props;
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("PublicCalendar");
   const dispatch = useAppDispatch();
 
   const eventsData = useAppSelector(state => state.events.events);

@@ -1,12 +1,16 @@
 import { useMemo } from "react";
-import { TFunction } from "react-i18next";
-import { Apartment } from "../../../../../store/reducers/apartments";
+import { useTranslation } from "react-i18next";
 import TransactionReceipt from "./TransactionReceipt";
 
 type Props = {
-  t: TFunction;
-  locale: string;
-  apartmentData: Apartment | null;
+  apartmentData: {
+    name: string;
+    address: string;
+    owner: string;
+    image: string;
+    pid: string;
+    iban: string;
+  };
   recepientData: {
     recepientName: string;
     recepientAddress: string;
@@ -31,14 +35,14 @@ type Props = {
 };
 
 const ReceiptTemplate = (props: Props): JSX.Element => {
-  const { t, locale, apartmentData, receiptData, recepientData } = props;
-
+  const { apartmentData, receiptData, recepientData } = props;
+  const { t, i18n } = useTranslation("TransactionReceipt");
   const options = {
     translate: t,
-    locale: locale,
-    apartmentData: apartmentData,
-    receiptData: receiptData,
-    recepientData: recepientData,
+    locale: i18n.language,
+    apartmentData,
+    receiptData,
+    recepientData,
   };
 
   return useMemo(

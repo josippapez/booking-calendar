@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import style from "./Modal.module.scss";
 
 interface Props {
@@ -46,7 +46,7 @@ const Modal = (props: Props): JSX.Element => {
     };
   }, [show]);
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div
       ref={el => {
         if (el) {

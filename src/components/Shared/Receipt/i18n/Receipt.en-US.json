@@ -1,1 +1,21 @@
-{}
+{
+  "apartmentData": "Apartment data",
+  "name": "Name",
+  "address": "Address",
+  "owner": "Apartment Owner",
+  "pid": "PID",
+  "iban": "IBAN",
+  "recepientData": "Recepient data",
+  "recepientName": "Name",
+  "recepientAddress": "Address",
+  "recepientPID": "PID",
+  "receiptData": "Receipt data",
+  "receiptName": "Name",
+  "date": "Date",
+  "VAT": "VAT",
+  "note": "Note",
+  "contact": "Contact",
+  "contact_name": "Name of the contact",
+  "email": "Email",
+  "totalCurrency": "Total currency"
+}

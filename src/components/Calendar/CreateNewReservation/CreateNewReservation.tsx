@@ -17,7 +17,7 @@ type Props = {
 const CreateNewReservation = (props: Props) => {
   const { show, setShow, currentReservations, apartmentEmail } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("CreateNewReservation");
   const dispatch = useAppDispatch();
 
   const [newReservation, setNewReservation] = useState({

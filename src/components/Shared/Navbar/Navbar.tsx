@@ -12,7 +12,7 @@ type Props = { userAuthenticated: boolean };
 
 function Navbar(props: Props) {
   const { userAuthenticated } = props;
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("Navbar");
   const darkmode = useDarkMode();
   const router = useRouter();
   const mobileView = useMobileView();

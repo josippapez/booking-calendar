@@ -1,1 +1,21 @@
-{}
+{
+  "apartmentData": "Podaci o apartmanu",
+  "name": "Naziv",
+  "address": "Adresa",
+  "owner": "Vlasnik apartmana",
+  "pid": "OIB",
+  "iban": "IBAN",
+  "recepientData": "Podaci o platitelju",
+  "recepientName": "Ime i prezime",
+  "recepientAddress": "Adresa",
+  "recepientPID": "OIB",
+  "receiptData": "Podaci o računu",
+  "receiptName": "Naziv",
+  "date": "Datum",
+  "VAT": "PDV",
+  "note": "Napomena",
+  "contact": "Kontakt",
+  "contact_name": "Ime i prezime kontakta",
+  "email": "Email",
+  "totalCurrency": "Valuta ukupnog iznosa"
+}

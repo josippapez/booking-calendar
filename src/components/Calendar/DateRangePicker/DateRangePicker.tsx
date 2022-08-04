@@ -26,7 +26,7 @@ const DateRangePicker = (props: Props) => {
     disableForCurrentReservations,
   } = props;
 
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("DateRangePicker");
 
   const [selectedYear, setSelectedYear] = useState<number>(
     DateTime.local().year

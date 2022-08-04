@@ -29,7 +29,7 @@ const CreateNewEvent = (props: Props) => {
     selectedEventToEdit,
   } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("CreateNewEvent");
 
   const [newEvent, setNewEvent] = useState<Event>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
