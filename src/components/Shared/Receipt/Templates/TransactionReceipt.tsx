@@ -40,8 +40,8 @@ type Props = {
     totalCurrency: string;
     services: {
       name: string;
-      price: string;
-      ammount: string;
+      price: number;
+      ammount: number;
       total: string;
     }[];
   };
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
 const TransactionReceipt = (props: Props): JSX.Element => {
   const { translate, locale, apartmentData, receiptData, recepientData } =
     props;
-console.log(apartmentData);
 
   return (
     <Document>
@@ -135,7 +134,7 @@ console.log(apartmentData);
           {apartmentData?.image && (
             <Image
               src={apartmentData.image}
-              style={[{ width: "50%", height: 100, objectFit: "contain" }]}
+              style={[{ width: "40%", height: 100, objectFit: "contain", padding: 10}]}
             />
           )}
           <View style={[styles.column, styles.padding20, { width: "40%" }]}>
@@ -145,6 +144,11 @@ console.log(apartmentData);
             <Text>{apartmentData?.pid}</Text>
             <Text>{apartmentData?.iban}</Text>
           </View>
+        </View>
+        <View style={[styles.column, { marginBottom: 40 }]}>
+          <Text>{recepientData.recepientName}</Text>
+          <Text>{recepientData.recepientAddress}</Text>
+          <Text>{recepientData.recepientPID}</Text>
         </View>
         <View style={[styles.row, { marginBottom: 40 }]}>
           <View style={[styles.column, { left: 40 }]}>

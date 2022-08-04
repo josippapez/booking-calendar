@@ -62,8 +62,8 @@ const Receipt: NextPage = (props: Props) => {
       totalCurrency: string;
       services: {
         name: string;
-        price: string;
-        ammount: string;
+        price: number;
+        ammount: number;
         total: string;
       }[];
     };
@@ -93,14 +93,8 @@ const Receipt: NextPage = (props: Props) => {
       services: [
         {
           name: "",
-          price: "",
-          ammount: "",
-          total: "",
-        },
-        {
-          name: "",
-          price: "",
-          ammount: "",
+          price: 0,
+          ammount: 0,
           total: "",
         },
       ],
@@ -201,9 +195,11 @@ const Receipt: NextPage = (props: Props) => {
         {selectedApartment && (
           <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
             <div
-              className={`flex gap-3 flex-col w-full xl:w-1/2 max-h[${
-                window.innerHeight + "px"
-              }]`}
+              className={`flex gap-3 flex-col w-full xl:w-1/2`}
+              style={{
+                minHeight:
+                  window.innerHeight - 60 - window.innerHeight * 0.05 + "px",
+              }}
             >
               {Object.keys(transactionReceiptData).map(key => {
                 return (
@@ -283,41 +279,149 @@ const Receipt: NextPage = (props: Props) => {
                               </div>
                             );
                           } else {
-                            Object.entries(
-                              transactionReceiptData["receiptData"][innerKey]
-                            ).map(([innerInnerKey, value]) => {
-                              return (
-                                <div
-                                  key={innerInnerKey}
-                                  className="flex flex-col"
-                                >
-                                  <span className="font-bold">
-                                    {t(innerInnerKey)}
-                                  </span>
-                                  <input
-                                    className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                                    type={"text"}
-                                    value={value ? value.toString() : ""}
-                                    onChange={e => {
-                                      setTransactionReceiptData({
-                                        ...transactionReceiptData,
-                                        receiptData: {
+                            return (
+                              <div key={innerKey}>
+                                <span className="font-bold">{t(innerKey)}</span>
+                                <div className="flex flex-col">
+                                  {Object.entries(
+                                    transactionReceiptData["receiptData"][
+                                      "services"
+                                    ]
+                                  ).map(([serviceKey, serviceValue]) => {
+                                    let newArray = [
+                                      ...transactionReceiptData["receiptData"][
+                                        "services"
+                                      ],
+                                    ];
+                                    return (
+                                      <div
+                                        key={`service-${serviceKey}`}
+                                        className="flex flex-row gap-2 w-full mb-2"
+                                      >
+                                        <input
+                                          className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-2/6"
+                                          type={"text"}
+                                          value={serviceValue.name}
+                                          onChange={e => {
+                                            newArray[Number(serviceKey)].name =
+                                              e.target.value;
+                                            newArray[Number(serviceKey)].total =
+                                              (
+                                                serviceValue.price *
+                                                serviceValue.ammount
+                                              ).toFixed(2);
+                                            setTransactionReceiptData({
+                                              ...transactionReceiptData,
+                                              [key]: {
+                                                ...transactionReceiptData[
+                                                  key as keyof typeof transactionReceiptData
+                                                ],
+                                                services: newArray,
+                                              },
+                                            });
+                                          }}
+                                        />
+                                        <input
+                                          className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6"
+                                          type={"number"}
+                                          value={serviceValue.ammount}
+                                          onChange={e => {
+                                            newArray[
+                                              Number(serviceKey)
+                                            ].ammount = Number(e.target.value);
+                                            newArray[Number(serviceKey)].total =
+                                              (
+                                                serviceValue.price *
+                                                serviceValue.ammount
+                                              ).toFixed(2);
+                                            setTransactionReceiptData({
+                                              ...transactionReceiptData,
+                                              [key]: {
+                                                ...transactionReceiptData[
+                                                  key as keyof typeof transactionReceiptData
+                                                ],
+                                                services: newArray,
+                                              },
+                                            });
+                                          }}
+                                        />
+                                        <input
+                                          className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6"
+                                          type={"number"}
+                                          value={serviceValue.price}
+                                          onChange={e => {
+                                            newArray[Number(serviceKey)].price =
+                                              Number(e.target.value);
+                                            newArray[Number(serviceKey)].total =
+                                              (
+                                                serviceValue.price *
+                                                serviceValue.ammount
+                                              ).toFixed(2);
+                                            setTransactionReceiptData({
+                                              ...transactionReceiptData,
+                                              [key]: {
+                                                ...transactionReceiptData[
+                                                  key as keyof typeof transactionReceiptData
+                                                ],
+                                                services: newArray,
+                                              },
+                                            });
+                                          }}
+                                        />
+                                        <div className="appearance-none bg-gray-200 flex items-center justify-center border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6">
+                                          {serviceValue.total}
+                                        </div>
+                                        <button
+                                          className={`${style.removeButton}
+                                            w-10 h-10`}
+                                          onClick={() => {
+                                            newArray.splice(
+                                              Number(serviceKey),
+                                              1
+                                            );
+                                            setTransactionReceiptData({
+                                              ...transactionReceiptData,
+                                              [key]: {
+                                                ...transactionReceiptData[
+                                                  key as keyof typeof transactionReceiptData
+                                                ],
+                                                services: newArray,
+                                              },
+                                            });
+                                          }}
+                                        />
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                                <button
+                                  className="appearance-none p-3 border rounded-md bg-white hover:bg-gray-100 text-gray-700 leading-tight"
+                                  onClick={() => {
+                                    setTransactionReceiptData({
+                                      ...transactionReceiptData,
+                                      [key]: {
+                                        ...transactionReceiptData[
+                                          key as keyof typeof transactionReceiptData
+                                        ],
+                                        services: [
                                           ...transactionReceiptData[
                                             "receiptData"
-                                          ],
-                                          services: {
-                                            ...transactionReceiptData[
-                                              "receiptData"
-                                            ]["services"],
-                                            [innerInnerKey]: e.target.value,
+                                          ]["services"],
+                                          {
+                                            name: "",
+                                            ammount: 0,
+                                            price: 0,
+                                            total: "",
                                           },
-                                        },
-                                      });
-                                    }}
-                                  />
-                                </div>
-                              );
-                            });
+                                        ],
+                                      },
+                                    });
+                                  }}
+                                >
+                                  {t("add_new_service")}
+                                </button>
+                              </div>
+                            );
                           }
                         }
                       })}
@@ -326,7 +430,7 @@ const Receipt: NextPage = (props: Props) => {
                 );
               })}
             </div>
-            <div className="w-full xl:w-1/2">
+            <div className={`w-full xl:w-1/2`}>
               <Suspense fallback={<PageLoader />}>
                 <Document
                   {...options}

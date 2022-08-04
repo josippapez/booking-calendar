@@ -17,5 +17,7 @@
   "contact": "Kontakt",
   "contact_name": "Ime i prezime kontakta",
   "email": "Email",
-  "totalCurrency": "Valuta ukupnog iznosa"
+  "totalCurrency": "Valuta ukupnog iznosa",
+  "services": "Usluge",
+  "add_new_service": "Dodaj novu uslugu"
 }

@@ -27,8 +27,8 @@ type Props = {
     totalCurrency: string;
     services: {
       name: string;
-      price: string;
-      ammount: string;
+      price: number;
+      ammount: number;
       total: string;
     }[];
   };

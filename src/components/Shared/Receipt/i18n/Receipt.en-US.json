@@ -17,5 +17,7 @@
   "contact": "Contact",
   "contact_name": "Name of the contact",
   "email": "Email",
-  "totalCurrency": "Total currency"
+  "totalCurrency": "Total currency",
+  "services": "Services",
+  "add_new_service": "Add new service"
 }
