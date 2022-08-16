@@ -24,6 +24,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
           "/apartments/[id]",
           "/[id]",
           "/receipt",
+          "/guests"
         ].includes(router.route)
       ) {
         router.push("/apartments");
@@ -46,8 +47,8 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
           user.accessToken ? "min-h-[calc(100%_-_60px)]" : "min-h-full"
         } min-w-screen w-full overflow-x-hidden page-container ${
           mobileView
-            ? "py-10 px-2.5"
-            : window.location.pathname !== "/" && "py-16 px-[5%]"
+            ? window.location.pathname !== "/" && "py-10"
+            : window.location.pathname !== "/" && "py-16"
         } select-none`}
       >
         {checkForAuthentication() ? <Component {...pageProps} /> : null}

@@ -21,7 +21,7 @@ type Props = {
 
 function Dropdown(props: Props) {
   const { placeholder, data, setData, selected } = props;
-  const [opennedDropdown, setOpennedDropdown] = useState(false);
+  const [openedDropdown, setOpenedDropdown] = useState(false);
   const component = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function Dropdown(props: Props) {
         component.current &&
         !component.current.contains(event.target as Node)
       ) {
-        setOpennedDropdown(false);
+        setOpenedDropdown(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -50,7 +50,7 @@ function Dropdown(props: Props) {
         rounded-md flex overflow-hidden
         justify-between relative drop-shadow-md`}
         onClick={() => {
-          setOpennedDropdown(!opennedDropdown);
+          setOpenedDropdown(!openedDropdown);
         }}
       >
         <input
@@ -67,7 +67,7 @@ function Dropdown(props: Props) {
           bg-transparent backdrop-blur-md`}
         />
       </div>
-      {opennedDropdown && (
+      {openedDropdown && (
         <div className={`${style.dropdown} rounded-md p-1 shadow-md`}>
           {data &&
             data.map(item => (
@@ -78,7 +78,7 @@ function Dropdown(props: Props) {
                 ${selected === item.id && "text-blue-600"}`}
                 onClick={() => {
                   setData(item.id.toString());
-                  setOpennedDropdown(false);
+                  setOpenedDropdown(false);
                 }}
               >
                 {item.name}

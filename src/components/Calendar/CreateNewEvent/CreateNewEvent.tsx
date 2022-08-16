@@ -43,7 +43,7 @@ const CreateNewEvent = (props: Props) => {
     weekNumber: 0,
   });
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
-  const [opennedDropdown, setOpennedDropdown] = useState(false);
+  const [openedDropdown, setOpenedDropdown] = useState(false);
 
   const eachDayOfRange = (startDate: string, endDate: string) => {
     const start = DateTime.fromISO(startDate);
@@ -182,13 +182,13 @@ const CreateNewEvent = (props: Props) => {
                     placeholder="Color"
                     className={`${style.dropdownInput} cursor-pointer border focus:border-blue-500 rounded-md placeholder:text-sm`}
                     onClick={() => {
-                      setOpennedDropdown(!opennedDropdown);
+                      setOpenedDropdown(!openedDropdown);
                     }}
                     style={{
                       backgroundColor: newEvent.color,
                     }}
                   />
-                  {opennedDropdown && (
+                  {openedDropdown && (
                     <div
                       className={`${style.dropdown} border focus:border-blue-500 rounded-md p-1`}
                     >
@@ -203,7 +203,7 @@ const CreateNewEvent = (props: Props) => {
                                 ...newEvent,
                                 color: color,
                               });
-                              setOpennedDropdown(false);
+                              setOpenedDropdown(false);
                             }}
                           />
                         )

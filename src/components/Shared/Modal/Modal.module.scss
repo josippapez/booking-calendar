@@ -35,6 +35,7 @@
   bottom: 0;
   background: rgba(17, 21, 24, 0.45);
   cursor: default;
+  z-index: 1;
   align-items: center;
 
   &.center {
@@ -52,6 +53,7 @@
     justify-content: center;
   }
   .children {
+    z-index: 2;
     cursor: default;
 
     transform: scaleX(var(--scale-x)) scaleY(var(--scale-y));

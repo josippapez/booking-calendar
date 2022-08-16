@@ -3,22 +3,23 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 
-const DynamicApartmentsCalendarPage = dynamic(
-  () => import("../../src/components/Calendar/Apartments/Apartments"),
+const DynamicGuestsPage = dynamic(
+  () => import("../../src/components/Guests/Guests"),
   {
     suspense: true,
+    ssr: false,
   }
 );
 
 type Props = {};
 
-const Apartments: NextPage = (props: Props) => {
+const Guests: NextPage = (props: Props) => {
   return (
     <Suspense fallback={<PageLoader />}>
-      <title>Apartments</title>
-      <DynamicApartmentsCalendarPage />
+      <title>Guests</title>
+      <DynamicGuestsPage />
     </Suspense>
   );
 };
 
-export default Apartments;
+export default Guests;

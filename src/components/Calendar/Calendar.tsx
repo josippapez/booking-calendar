@@ -135,10 +135,10 @@ const Calendar: NextPage = (props: Props) => {
   }, [eventsData, eachDayOfMonth]);
 
   return (
-    <div>
+    <>
       <title>{apartments.selectedApartment?.name}</title>
       <div
-        className={`flex justify-between ${
+        className={`flex justify-between h-fit ${
           mobileView ? "flex-col" : "flex-row"
         }`}
       >
@@ -177,7 +177,11 @@ const Calendar: NextPage = (props: Props) => {
       </div>
       <div
         ref={calendarGrid}
-        className={`${style.calendar} transition-all duration-75 drop-shadow-md relative`}
+        className={`${
+          style.calendar
+        } transition-all duration-75 drop-shadow-md relative ${
+          mobileView && "full-bleed"
+        }`}
         onTouchStart={e => {
           touchMoveHorizontal = e.targetTouches.item(0).clientX;
           currentScrollPosition = e.touches.item(0).pageX;
@@ -369,7 +373,7 @@ const Calendar: NextPage = (props: Props) => {
           +
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

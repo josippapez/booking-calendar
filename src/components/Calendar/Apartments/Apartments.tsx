@@ -84,7 +84,7 @@ const Apartments: NextPage = (props: Props) => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-10">
+    <>
       <div>
         <div className="flex justify-between">
           <div className="font-bold text-xl">{t("apartments")}</div>
@@ -401,7 +401,11 @@ const Apartments: NextPage = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="relative overflow-x-auto drop-shadow-md rounded-lg">
+      <div
+        className={`relative overflow-x-auto drop-shadow-md rounded-lg ${
+          mobileView && "full-bleed"
+        }`}
+      >
         <table className="w-full text-left text-gray-500 dark:text-gray-400 text-base">
           <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
             <tr>
@@ -511,7 +515,7 @@ const Apartments: NextPage = (props: Props) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

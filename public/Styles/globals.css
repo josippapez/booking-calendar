@@ -86,13 +86,14 @@ h6 {
 
 .page-container {
   display: grid;
-  grid-template-columns: 1fr min(120em, calc(100% - 64px)) 1fr;
-  grid-column-gap: 32px;
+  grid-template-columns: 1fr min(120em, calc(100% - 160px)) 1fr;
+  grid-template-rows: max-content;
+  column-gap: 32px;
 }
 
 @media screen and (max-width: 768px) {
   .page-container {
-    display: block;
+    grid-template-columns: 1fr calc(100% - 64px) 1fr;
   }
 }
 
