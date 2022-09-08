@@ -238,7 +238,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
               {translate("user_is_free_of_vat")}
             </Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
-              <Text>{translate(`free_of_vat_${!receiptData?.VAT}`)}</Text>
+              <Text>{translate(`free_of_vat_true`)}</Text>
             </View>
             <Text style={[{ fontSize: 10 }]}>
               {translate("fiscalisation_receipt")}

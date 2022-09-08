@@ -94,7 +94,7 @@ function Navbar(props: Props) {
             </div>
             <div className="flex items-center md:order-2">
               <button
-                className="hidden md:block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-fit self-end"
+                className="hidden md:block bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-fit self-end"
                 type="button"
                 onClick={async () => {
                   logout();
@@ -136,20 +136,20 @@ function Navbar(props: Props) {
             </div>
           </div>
           <div
-            className="hidden md:hidden justify-between items-center w-full md:w-auto md:order-1 absolute px-4 py-2.5 bg-white z-10 left-0 top-[60px] drop-shadow-lg"
+            className="hidden md:hidden justify-between items-center w-full md:w-auto md:order-1 absolute px-4 py-2.5 bg-white z-10 left-0 top-[63px] drop-shadow-lg full-bleed"
             id="mobile-menu-2"
           >
             <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium gap-[10px]">
               <li>
                 <Link href="/apartments">
-                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
                     {t("apartments_link_name")}
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="/receipt">
-                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
                     {t("receipt_link_name")}
                   </a>
                 </Link>

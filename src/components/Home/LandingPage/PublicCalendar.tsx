@@ -186,7 +186,7 @@ const PublicCalendar: NextPage = (props: Props) => {
             </div>
           )}
           <button
-            className="bg-blue-500 hover:bg-blue-400 rounded-md font-bold text-white px-3 py-2 h-fit"
+            className="bg-blue-700 hover:bg-blue-500 rounded-md font-bold text-white px-3 py-2 h-fit"
             onClick={() => setDisplayNewReservation(true)}
           >
             {t("create_reservation")}

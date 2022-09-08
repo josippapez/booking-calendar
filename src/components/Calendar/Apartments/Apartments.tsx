@@ -252,7 +252,7 @@ const Apartments: NextPage = (props: Props) => {
                     !newApartment.name ||
                     !emailRegex.test(newApartment.email)
                   }
-                  className="bg-blue-500 hover:bg-blue-700 text-white shadow-md font-bold py-2 px-4 rounded disabled:bg-gray-400"
+                  className="bg-blue-700 hover:bg-blue-500 text-white shadow-md font-bold py-2 px-4 rounded disabled:bg-gray-400"
                   type="button"
                   onClick={() => {
                     if (
@@ -382,7 +382,7 @@ const Apartments: NextPage = (props: Props) => {
                   {newApartment.image && newApartment.image !== "" && (
                     <div>
                       <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white shadow-md font-bold py-2 px-4 rounded"
+                        className="bg-blue-700 hover:bg-blue-500 text-white shadow-md font-bold py-2 px-4 rounded"
                         type="button"
                         onClick={() => {
                           setNewApartment({

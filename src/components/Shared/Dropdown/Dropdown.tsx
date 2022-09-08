@@ -41,7 +41,7 @@ function Dropdown(props: Props) {
 
   return (
     <div
-      className="flex flex-col justify-center relative flex-grow font-bold"
+      className="justify-center relative flex-grow font-bold"
       ref={component}
     >
       <div
@@ -56,15 +56,16 @@ function Dropdown(props: Props) {
         <input
           type={"button"}
           placeholder={placeholder}
-          className={`placeholder:text-sm w-full cursor-pointer`}
+          className={`placeholder:text-sm cursor-pointer w-[calc(100%_-_30px)] text-ellipsis overflow-hidden`}
           value={selected ? data.find(item => item.id === selected)?.name : ""}
         />
         <Image
           src={Images.DownArrow}
           alt="arrow"
-          className={`${style.arrow} absolute
-          right-0 top-0
-          bg-transparent backdrop-blur-md`}
+          width={30}
+          className={`absolute
+            right-0 top-0
+            bg-transparent`}
         />
       </div>
       {openedDropdown && (
