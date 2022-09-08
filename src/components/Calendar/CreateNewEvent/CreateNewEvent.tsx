@@ -178,7 +178,7 @@ const CreateNewEvent = (props: Props) => {
                 <label className="text-sm font-bold">{t("color")}</label>
                 <div className="flex flex-col justify-center relative">
                   <input
-                    type={"button"}
+                    type="button"
                     placeholder="Color"
                     className={`${style.dropdownInput} cursor-pointer border focus:border-blue-500 rounded-md placeholder:text-sm`}
                     onClick={() => {

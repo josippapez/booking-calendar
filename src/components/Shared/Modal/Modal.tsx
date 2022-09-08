@@ -7,6 +7,7 @@ interface Props {
   closeModal(): void;
   position?: "center" | "left" | "right" | "bottom" | "top";
   children: JSX.Element;
+  contentClassname?: string;
   show: boolean;
   width?: "screen" | string;
   animation?:
@@ -29,8 +30,16 @@ interface Props {
 let openned = 0;
 
 const Modal = (props: Props): JSX.Element => {
-  const { closeModal, position, children, show, width, animation, ratio } =
-    props;
+  const {
+    closeModal,
+    position,
+    children,
+    show,
+    width,
+    animation,
+    ratio,
+    contentClassname,
+  } = props;
 
   useEffect(() => {
     if (openned === 0) {
@@ -79,6 +88,7 @@ const Modal = (props: Props): JSX.Element => {
         className={`
           ${style.children}
           ${style[`${animation}`]}
+          ${contentClassname}
           subpixel-antialiased
           flex flex-col
         `}

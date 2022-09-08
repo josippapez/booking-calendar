@@ -183,6 +183,10 @@ const setApartmentDataTofirebase = (
       tempApartments
     );
 
+    setDoc(doc(getFirestore(firebase.app()), `guests`, apartment.id), {
+      userId: getState().user.user.id,
+    });
+
     setDoc(doc(getFirestore(firebase.app()), "events", apartment.id), {
       userId: getState().user.user.id,
       apartmentName: apartment.name,

@@ -1,6 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+  	match /guests/{apartmentID} {
+    	allow write, update, delete : if request.auth != null;
+      match /data/{id} {
+      	allow read, write, update, delete : if request.auth != null && get(/databases/$(database)/documents/guests/$(apartmentID)).data.userId == request.auth.uid;
+      }
+    }
     match /events/{event} {
       allow write, update, delete : if request.auth != null;
       allow read;

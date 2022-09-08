@@ -1,4 +1,14 @@
 {
-  "guest_book": "Guest book",
-  "add_new_guest": "Add new guest"
+  "title": "Add new guest",
+  "name": "Name and surname",
+  "PID": "PID",
+  "address": "Address",
+  "country": "Country",
+  "dob": "Date of Birth",
+  "dateOfArrival": "Date of arrival",
+  "dateOfDeparture": "Date of departure",
+  "numberOfReceipt": "Receipt number",
+  "note": "Note",
+  "cancel": "Cancel",
+  "save": "Save"
 }

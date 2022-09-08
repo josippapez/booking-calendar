@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { selectApartment } from "../../../../store/reducers/apartments";
-import useMobileView from "../../../checkForMobileView";
 import Dropdown from "../Dropdown/Dropdown";
 import PageLoader from "../Loader/PageLoader";
 import PDFDownload from "../PDFDownload/PDFDownload";
@@ -24,8 +23,6 @@ const options = {
 const Receipt: NextPage = (props: Props) => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("Receipt");
-  const mobileView = useMobileView();
-
   const apartments = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
     state => state.apartments.selectedApartment
