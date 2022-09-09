@@ -10,6 +10,7 @@ interface Props {
   contentClassname?: string;
   show: boolean;
   width?: "screen" | string;
+  zindex?: number;
   animation?:
     | "fade"
     | "slide-left"
@@ -39,6 +40,7 @@ const Modal = (props: Props): JSX.Element => {
     animation,
     ratio,
     contentClassname,
+    zindex,
   } = props;
 
   useEffect(() => {
@@ -71,6 +73,7 @@ const Modal = (props: Props): JSX.Element => {
       id="modal-overlay"
       style={{
         display: !show ? "none" : "flex",
+        zIndex: zindex,
       }}
       aria-hidden="true"
       role="button"

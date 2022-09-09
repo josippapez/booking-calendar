@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../../store/hooks";
 import { Events } from "../../../../store/reducers/events";
 import { sendEmail } from "../../../../store/sendgridActions/emailActions";
 import Modal from "../../Shared/Modal/Modal";
-import DateRangePicker from "../DateRangePicker/DateRangePicker";
+import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
 
 type Props = {
   show: boolean;

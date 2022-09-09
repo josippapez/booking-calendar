@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Images from "../../../../public/Styles/Assets/Images/Images";
 import Modal from "../../Shared/Modal/Modal";
 import { Day, Event, EventsByYear } from "../CalendarTypes";
-import DateRangePicker from "../DateRangePicker/DateRangePicker";
+import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
 import style from "./CreateNewEvent.module.scss";
 
 type Props = {

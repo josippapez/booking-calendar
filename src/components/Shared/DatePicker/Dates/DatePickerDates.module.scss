@@ -25,14 +25,8 @@
   font-size: medium;
 }
 
-.dateRangeGrid {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  gap: 20px;
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-    gap: 10px;
-  }
+.selectedDate {
+  @apply bg-blue-600;
+  @apply text-white;
+  border-radius: 50%;
 }

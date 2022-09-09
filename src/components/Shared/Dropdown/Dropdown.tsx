@@ -41,22 +41,21 @@ function Dropdown(props: Props) {
 
   return (
     <div
-      className="justify-center relative flex-grow font-bold"
+      className={`${style.dropdownInput} justify-center relative flex-grow font-bold`}
       ref={component}
     >
       <div
-        className={`${style.dropdownInput}
-        cursor-pointer bg-white hover:bg-neutral-300
+        className="cursor-pointer bg-white hover:bg-neutral-300
         rounded-md flex overflow-hidden
-        justify-between relative drop-shadow-md`}
+        justify-between relative drop-shadow-md"
         onClick={() => {
           setOpenedDropdown(!openedDropdown);
         }}
       >
         <input
-          type={"button"}
+          type="button"
           placeholder={placeholder}
-          className={`placeholder:text-sm cursor-pointer w-[calc(100%_-_30px)] text-ellipsis overflow-hidden`}
+          className="placeholder:text-sm cursor-pointer w-[calc(100%_-_30px)] text-ellipsis overflow-hidden"
           value={selected ? data.find(item => item.id === selected)?.name : ""}
         />
         <Image

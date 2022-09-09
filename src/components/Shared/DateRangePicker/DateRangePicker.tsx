@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Events } from "../../../../store/reducers/events";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
-import Modal from "../../Shared/Modal/Modal";
-import { Day, Event } from "../CalendarTypes";
+import Modal from "../Modal/Modal";
+import { Day, Event } from "../../Calendar/CalendarTypes";
 import style from "./DateRangePicker.module.scss";
+import DatepickerHeader from "../DatePicker/Header/DatepickerHeader";
+import DatePickerDates from "../DatePicker/Dates/DatePickerDates";
 
 type Props = {
   showDateRangePicker: boolean;
@@ -26,7 +28,7 @@ const DateRangePicker = (props: Props) => {
     disableForCurrentReservations,
   } = props;
 
-  const { t, i18n } = useTranslation("DateRangePicker");
+  const { t } = useTranslation("DateRangePicker");
 
   const [selectedYear, setSelectedYear] = useState<number>(
     DateTime.local().year
@@ -38,11 +40,7 @@ const DateRangePicker = (props: Props) => {
   const eachDayOfMonth = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
-  }).dates;
-  const eachDayOfNextMonth = useCalculateEachDayOfMonth({
-    year: selectedMonth + 1 === 13 ? selectedYear + 1 : selectedYear,
-    month: selectedMonth + 1 === 13 ? 1 : selectedMonth + 1,
-  }).dates;
+  });
 
   const [currentDate, setCurrentDate] = useState("");
 
@@ -84,7 +82,6 @@ const DateRangePicker = (props: Props) => {
             ) {
               return true;
             }
-
 
             return (
               currentReservations[firsDayYear][date[0]][0].start === date[0] ||
@@ -191,23 +188,6 @@ const DateRangePicker = (props: Props) => {
     );
   };
 
-  const daysHeader = () => {
-    return (
-      <div className={style.calendarGridHeader}>
-        {Info.weekdaysFormat("short", { locale: i18n.language }).map(
-          (day, index) => (
-            <div
-              key={index}
-              className={`${style.dayName} select-none font-bold`}
-            >
-              {day}
-            </div>
-          )
-        )}
-      </div>
-    );
-  };
-
   return (
     <Modal
       animation="fade"
@@ -215,93 +195,18 @@ const DateRangePicker = (props: Props) => {
       closeModal={() => setShowDateRangePicker(false)}
     >
       <div className="p-4 bg-white rounded-md relative">
-        <div className="flex justify-center select-none gap-3 drop-shadow-md">
-          <div className="flex items-center w-36 rounded-md h-10">
-            <button
-              onClick={() => {
-                if (selectedMonth === 1) {
-                  setSelectedMonth(12);
-                  setSelectedYear(selectedYear - 1);
-                  return;
-                }
-                setSelectedMonth(selectedMonth - 1);
-              }}
-              style={{
-                backgroundImage: `url(/Styles/Assets/Images/left-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5"
-            />
-            <h2 className="w-full text-center px-5 select-none font-bold">
-              {selectedMonth}
-            </h2>
-            <button
-              onClick={() => {
-                if (selectedMonth === 12) {
-                  setSelectedMonth(1);
-                  setSelectedYear(selectedYear + 1);
-                  return;
-                }
-                setSelectedMonth(selectedMonth + 1);
-              }}
-              style={{
-                backgroundImage: `url(/Styles/Assets/Images/right-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5"
-            />
-          </div>
-          <div className="flex items-center w-[165px] rounded-md h-10">
-            <button
-              onClick={() => {
-                setSelectedYear(selectedYear - 1);
-              }}
-              style={{
-                backgroundImage: `url(/Styles/Assets/Images/left-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5"
-            />
-            <h2 className="w-full text-center px-5 select-none font-bold">
-              {selectedYear}
-            </h2>
-            <button
-              onClick={() => {
-                setSelectedYear(selectedYear + 1);
-              }}
-              style={{
-                backgroundImage: `url(/Styles/Assets/Images/right-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5"
-            />
-          </div>
-        </div>
+        <DatepickerHeader
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          setSelectedMonth={setSelectedMonth}
+          setSelectedYear={setSelectedYear}
+        />
         <div className={`${style.dateRangeGrid} my-4`}>
-          <div>
-            {daysHeader()}
-            <div className={`${style.calendarGrid}`}>
-              {eachDayOfMonth.map((day, index) =>
-                displayDateRangeDays(day, index)
-              )}
-            </div>
-          </div>
-          <div>
-            {daysHeader()}
-            <div className={`${style.calendarGrid}`}>
-              {eachDayOfNextMonth.map((day, index) =>
-                displayDateRangeDays(day, index)
-              )}
-            </div>
-          </div>
+          <DatePickerDates
+            currentMonthDates={eachDayOfMonth.dates}
+            nextMonthDates={eachDayOfMonth.nextMonthDates}
+            customDisplayDate={displayDateRangeDays}
+          />
         </div>
         <div className="flex justify-end">
           <button

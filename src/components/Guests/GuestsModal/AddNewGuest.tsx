@@ -1,7 +1,9 @@
+import { DateTime } from "luxon";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { saveGuestForApartment } from "../../../../store/firebaseActions/guestsActions";
 import { useAppDispatch } from "../../../../store/hooks";
+import DatePicker from "../../Shared/DatePicker/DatePicker";
 import Modal from "../../Shared/Modal/Modal";
 
 type Props = {
@@ -22,7 +24,7 @@ export type Guest = {
 };
 
 const AddNewGuest = (props: Props) => {
-  const { t } = useTranslation("AddNewGuest");
+  const { t, i18n } = useTranslation("AddNewGuest");
   const dispatch = useAppDispatch();
   const { show, closeModal } = props;
   const [guestInfo, setGuestInfo] = useState<Guest>({
@@ -36,6 +38,8 @@ const AddNewGuest = (props: Props) => {
     numberOfReceipt: "",
     note: "",
   });
+
+  const [showDatePicker, setShowDatePicker] = useState<string>("");
 
   return (
     <Modal
@@ -57,19 +61,50 @@ const AddNewGuest = (props: Props) => {
                     {t(key)}
                   </label>
                   {key.includes("dateOf") ? (
-                    <input
-                      type="date"
-                      name={key}
-                      id={key}
-                      className="bg-white border focus:border-blue-500 rounded-md"
-                      value={guestInfo[key as keyof Guest]}
-                      onChange={e => {
-                        setGuestInfo({
-                          ...guestInfo,
-                          [key]: e.target.value,
-                        });
-                      }}
-                    />
+                    <>
+                      <input
+                        type="button"
+                        name={key}
+                        id={key}
+                        className="bg-white border focus:border-blue-500 rounded-md"
+                        value={
+                          guestInfo[key as keyof Guest]
+                            ? DateTime.fromISO(
+                                guestInfo[
+                                  key as keyof {
+                                    dateOfArrival: string;
+                                    dateOfDeparture: string;
+                                  }
+                                ]
+                              )
+                                .setLocale(i18n.language)
+                                .toLocaleString({
+                                  month: "long",
+                                  day: "2-digit",
+                                  year: "numeric",
+                                })
+                            : guestInfo[key as keyof Guest]
+                        }
+                        onClick={() => setShowDatePicker(key)}
+                      />
+                      <DatePicker
+                        closeDatePicker={() => setShowDatePicker("")}
+                        showDatePicker={showDatePicker === key ? true : false}
+                        initialDate={guestInfo[key as keyof Guest]}
+                        setDate={(date: string) => {
+                          setGuestInfo({
+                            ...guestInfo,
+                            [key as keyof Guest]: date,
+                          });
+                        }}
+                        resetData={() => {
+                          setGuestInfo({
+                            ...guestInfo,
+                            [key as keyof Guest]: "",
+                          });
+                        }}
+                      />
+                    </>
                   ) : (
                     <input
                       type="text"
