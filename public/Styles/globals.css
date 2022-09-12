@@ -69,7 +69,6 @@ h6 {
 
 #__next {
   isolation: isolate;
-  height: 100%;
 }
 
 .react-pdf__Page__canvas {

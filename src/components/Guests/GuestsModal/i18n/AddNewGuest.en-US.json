@@ -4,7 +4,7 @@
   "PID": "PID",
   "address": "Address",
   "country": "Country",
-  "dob": "Date of Birth",
+  "dateOfBirth": "Date of Birth",
   "dateOfArrival": "Date of arrival",
   "dateOfDeparture": "Date of departure",
   "numberOfReceipt": "Receipt number",

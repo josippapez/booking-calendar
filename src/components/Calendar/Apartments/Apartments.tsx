@@ -444,12 +444,9 @@ const Apartments: NextPage = (props: Props) => {
                     );
                   }}
                 >
-                  <th
-                    scope="row"
-                    className="font-bold px-6 py-4 text-gray-900 dark:text-white whitespace-nowrap"
-                  >
+                  <td className="font-bold px-6 py-4 text-gray-900 dark:text-white whitespace-nowrap">
                     {apartments.apartments[apartment].name}
-                  </th>
+                  </td>
                   <td className="font-bold px-6 py-4">
                     {apartments.apartments[apartment].address}
                   </td>

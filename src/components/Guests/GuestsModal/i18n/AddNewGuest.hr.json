@@ -4,7 +4,7 @@
   "PID": "OIB",
   "address": "Adresa",
   "country": "Država",
-  "dob": "Datum rođenja",
+  "dateOfBirth": "Datum rođenja",
   "dateOfArrival": "Datum dolaska",
   "dateOfDeparture": "Datum odlaska",
   "numberOfReceipt": "Broj računa",

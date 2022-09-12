@@ -14,7 +14,7 @@ type Props = {
 export type Guest = {
   name: string;
   PID: string;
-  dob: string;
+  dateOfBirth: string;
   country: string;
   address: string;
   dateOfArrival: string;
@@ -30,7 +30,7 @@ const AddNewGuest = (props: Props) => {
   const [guestInfo, setGuestInfo] = useState<Guest>({
     name: "",
     PID: "",
-    dob: "",
+    dateOfBirth: "",
     country: "",
     address: "",
     dateOfArrival: "",
@@ -40,6 +40,17 @@ const AddNewGuest = (props: Props) => {
   });
 
   const [showDatePicker, setShowDatePicker] = useState<string>("");
+
+  const checkForRequiredFields = () => {
+    if (
+      guestInfo.dateOfArrival === "" ||
+      guestInfo.dateOfDeparture === "" ||
+      guestInfo.name === "" ||
+      guestInfo.PID === ""
+    )
+      return false;
+    return true;
+  };
 
   return (
     <Modal
@@ -127,16 +138,18 @@ const AddNewGuest = (props: Props) => {
         </div>
         <div className="flex justify-between p-5">
           <button
-            className="bg-blue-700 hover:bg-blue-500 text-white p-2 rounded-md font-bold hover:"
+            className="bg-blue-700 hover:bg-blue-500 text-white p-2 rounded-md font-bold"
             onClick={closeModal}
           >
             {t("cancel")}
           </button>
           <button
-            className="bg-blue-700 hover:bg-blue-500 text-white p-2 rounded-md font-bold hover:"
+            className="bg-blue-700 hover:bg-blue-500 text-white p-2 rounded-md font-bold"
             onClick={async () => {
-              await dispatch(saveGuestForApartment(guestInfo));
-              closeModal();
+              if (checkForRequiredFields()) {
+                await dispatch(saveGuestForApartment(guestInfo));
+                closeModal();
+              }
             }}
           >
             {t("save")}
