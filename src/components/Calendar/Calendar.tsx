@@ -15,7 +15,7 @@ import { selectApartment } from "../../../store/reducers/apartments";
 import { setEvents } from "../../../store/reducers/events";
 import useMobileView from "../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
-import DateNavigation from "../Shared/DateNavigation/DateNavigation";
+import DatePickerHeader from "../Shared/DatePicker/Header/DatePickerHeader";
 import Dropdown from "../Shared/Dropdown/Dropdown";
 import style from "./Calendar.module.scss";
 import { Event, EventsByYear } from "./CalendarTypes";
@@ -167,7 +167,7 @@ const Calendar: NextPage = (props: Props) => {
             {t("public_view")}
           </button>
         </div>
-        <DateNavigation
+        <DatePickerHeader
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
           setSelectedMonth={setSelectedMonth}

@@ -1,11 +1,13 @@
 import { DateTime, Info } from "luxon";
 import { useTranslation } from "react-i18next";
+import useCalculateEachDayOfMonth from "../../../../Hooks/calculateEachDayOfMonth";
 import { Day } from "../../../Calendar/CalendarTypes";
 import style from "./DatePickerDates.module.scss";
 
 type Props = {
-  currentMonthDates: Day[];
-  nextMonthDates?: Day[];
+  dates: ReturnType<typeof useCalculateEachDayOfMonth>;
+  showNextMonth?: boolean;
+  showPreviousMonth?: boolean;
   initialDate?: string;
   setDate?: (date: string) => void;
   disabledCondition?: boolean;
@@ -18,8 +20,9 @@ const DatePickerDates = (props: Props) => {
     setDate,
     disabledCondition,
     customDisplayDate,
-    currentMonthDates,
-    nextMonthDates,
+    dates,
+    showNextMonth,
+    showPreviousMonth,
   } = props;
   const { i18n } = useTranslation("DateRangePicker");
 
@@ -59,42 +62,57 @@ const DatePickerDates = (props: Props) => {
     );
   };
 
-  const daysHeader = () => {
+  const daysHeader = (month: number) => {
     return (
-      <div className={style.calendarGridHeader}>
-        {Info.weekdaysFormat("short", { locale: i18n.language }).map(
-          (day, index) => (
-            <div
-              key={index}
-              className={`${style.dayName} select-none font-bold`}
-            >
-              {day}
-            </div>
-          )
-        )}
+      <div>
+        <div className="font-extrabold text-xl px-2 pb-2 drop-shadow-md">{Info.months("long", { locale: i18n.language })[month - 1]}</div>
+        <div className={style.calendarGridHeader}>
+          {Info.weekdaysFormat("short", { locale: i18n.language }).map(
+            (day, index) => (
+              <div
+                key={index}
+                className={`${style.dayName} select-none font-semibold`}
+              >
+                {day}
+              </div>
+            )
+          )}
+        </div>
       </div>
     );
   };
 
   return (
-    <>
-      {currentMonthDates && (
+    dates && (
+      <>
+        {showPreviousMonth && (
+          <div>
+            {daysHeader(dates.month - 1)}
+            <div className={`${style.calendarGrid}`}>
+              {dates.lastMonthDates.map((day, index) =>
+                displayDate(day, index)
+              )}
+            </div>
+          </div>
+        )}
         <div>
-          {daysHeader()}
+          {daysHeader(dates.month)}
           <div className={`${style.calendarGrid}`}>
-            {currentMonthDates.map((day, index) => displayDate(day, index))}
+            {dates.dates.map((day, index) => displayDate(day, index))}
           </div>
         </div>
-      )}
-      {nextMonthDates && (
-        <div>
-          {daysHeader()}
-          <div className={`${style.calendarGrid}`}>
-            {nextMonthDates.map((day, index) => displayDate(day, index))}
+        {showNextMonth && (
+          <div>
+            {daysHeader(dates.month + 1)}
+            <div className={`${style.calendarGrid}`}>
+              {dates.nextMonthDates.map((day, index) =>
+                displayDate(day, index)
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </>
+    )
   );
 };
 

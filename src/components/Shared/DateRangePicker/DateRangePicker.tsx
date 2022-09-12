@@ -1,13 +1,13 @@
-import { DateTime, Info, Interval } from "luxon";
+import { DateTime, Interval } from "luxon";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Events } from "../../../../store/reducers/events";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
-import Modal from "../Modal/Modal";
 import { Day, Event } from "../../Calendar/CalendarTypes";
-import style from "./DateRangePicker.module.scss";
-import DatepickerHeader from "../DatePicker/Header/DatepickerHeader";
 import DatePickerDates from "../DatePicker/Dates/DatePickerDates";
+import DatePickerHeader from "../DatePicker/Header/DatePickerHeader";
+import Modal from "../Modal/Modal";
+import style from "./DateRangePicker.module.scss";
 
 type Props = {
   showDateRangePicker: boolean;
@@ -45,6 +45,7 @@ const DateRangePicker = (props: Props) => {
   const [currentDate, setCurrentDate] = useState("");
 
   const displayDateRangeDays = (day: Day, index: number) => {
+    const isToday = DateTime.local().hasSame(DateTime.fromISO(day.date), "day");
     const disabled =
       disableForCurrentReservations &&
       (DateTime.fromISO(day.date).diffNow("day").days < -1 ||
@@ -107,6 +108,7 @@ const DateRangePicker = (props: Props) => {
         }}
         className={`cursor-pointer
         ${style["dateRange-Day"]} font-bold select-none
+        ${isToday && "border-2 border-blue-500"}
         ${
           ["Saturday", "Sunday"].includes(day.name)
             ? "bg-opacity-60 text-neutral-500"
@@ -195,7 +197,7 @@ const DateRangePicker = (props: Props) => {
       closeModal={() => setShowDateRangePicker(false)}
     >
       <div className="p-4 bg-white rounded-md relative">
-        <DatepickerHeader
+        <DatePickerHeader
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
           setSelectedMonth={setSelectedMonth}
@@ -203,8 +205,8 @@ const DateRangePicker = (props: Props) => {
         />
         <div className={`${style.dateRangeGrid} my-4`}>
           <DatePickerDates
-            currentMonthDates={eachDayOfMonth.dates}
-            nextMonthDates={eachDayOfMonth.nextMonthDates}
+            showNextMonth
+            dates={eachDayOfMonth}
             customDisplayDate={displayDateRangeDays}
           />
         </div>

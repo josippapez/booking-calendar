@@ -32,7 +32,7 @@ const PublicCalendar: NextPage = (props: Props) => {
 
   const mobileView = useMobileView();
 
-  const { lastMonthDates, dates, nextMonthDates } = useCalculateEachDayOfMonth({
+  const { dates } = useCalculateEachDayOfMonth({
     year: selectedYear,
     month: selectedMonth,
   });

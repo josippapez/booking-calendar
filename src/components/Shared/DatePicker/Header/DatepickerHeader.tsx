@@ -1,19 +1,29 @@
-import React from "react";
+import useMobileView from "../../../../checkForMobileView";
 
 type Props = {
-  selectedMonth: number;
-  selectedYear: number;
-  setSelectedMonth: (month: number) => void;
   setSelectedYear: (year: number) => void;
+  setSelectedMonth: (month: number) => void;
+  selectedYear: number;
+  selectedMonth: number;
+  className?: string;
 };
 
-const DatepickerHeader = (props: Props) => {
-  const { selectedMonth, selectedYear, setSelectedMonth, setSelectedYear } =
-    props;
+const DatePickerHeader = (props: Props) => {
+  const {
+    setSelectedYear,
+    setSelectedMonth,
+    selectedMonth,
+    selectedYear,
+    className,
+  } = props;
 
   return (
-    <div className="flex justify-center select-none gap-3 drop-shadow-md">
-      <div className="flex items-center w-36 rounded-md h-10">
+    <div className={`${className} flex justify-center select-none gap-3 drop-shadow-md`}>
+      <div
+        className={`flex items-center ${
+          useMobileView() ? "w-[165px]" : "w-36"
+        } rounded-md h-10`}
+      >
         <button
           onClick={() => {
             if (selectedMonth === 1) {
@@ -29,7 +39,7 @@ const DatepickerHeader = (props: Props) => {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
-          className="bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5"
+          className="hover:bg-neutral-100 p-5 rounded-l-md"
         />
         <h2 className="w-full text-center px-5 select-none font-bold">
           {selectedMonth}
@@ -49,7 +59,7 @@ const DatepickerHeader = (props: Props) => {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
-          className="bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5"
+          className="hover:bg-neutral-100 p-5 rounded-r-md"
         />
       </div>
       <div className="flex items-center w-[165px] rounded-md h-10">
@@ -63,7 +73,7 @@ const DatepickerHeader = (props: Props) => {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
-          className="bg-neutral-50 hover:bg-neutral-100 rounded-l-md p-5"
+          className="hover:bg-neutral-100 p-5 rounded-l-md"
         />
         <h2 className="w-full text-center px-5 select-none font-bold">
           {selectedYear}
@@ -78,11 +88,11 @@ const DatepickerHeader = (props: Props) => {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
-          className="bg-neutral-50 hover:bg-neutral-100 rounded-r-md p-5"
+          className="hover:bg-neutral-100 p-5 rounded-r-md"
         />
       </div>
     </div>
   );
 };
 
-export default DatepickerHeader;
+export default DatePickerHeader;

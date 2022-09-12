@@ -1,11 +1,9 @@
-import { groupBy, uniq } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Images from "../../../../public/Styles/Assets/Images/Images";
+import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
 import Modal from "../../Shared/Modal/Modal";
 import { Day, Event, EventsByYear } from "../CalendarTypes";
-import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
 import style from "./CreateNewEvent.module.scss";
 
 type Props = {

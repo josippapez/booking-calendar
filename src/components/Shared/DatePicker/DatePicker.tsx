@@ -5,7 +5,7 @@ import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
 import { Day } from "../../Calendar/CalendarTypes";
 import Modal from "../Modal/Modal";
 import DatePickerDates from "./Dates/DatePickerDates";
-import DatepickerHeader from "./Header/DatepickerHeader";
+import DatePickerHeader from "./Header/DatePickerHeader";
 
 type Props = {
   showDatePicker: boolean;
@@ -48,7 +48,7 @@ const DatePicker = (props: Props) => {
       zindex={10}
     >
       <div className="p-4 bg-white rounded-md relative">
-        <DatepickerHeader
+        <DatePickerHeader
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
           setSelectedMonth={setSelectedMonth}
@@ -56,7 +56,7 @@ const DatePicker = (props: Props) => {
         />
         <div className="my-4">
           <DatePickerDates
-            currentMonthDates={eachDayOfMonth.dates}
+            dates={eachDayOfMonth}
             initialDate={initialDate}
             setDate={setDate}
             disabledCondition={disabledCondition}
