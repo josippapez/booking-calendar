@@ -12,5 +12,6 @@
   "numberOfReceipt": "Receipt number",
   "note": "Note",
   "cancel": "Cancel",
-  "save": "Save"
+  "save": "Save",
+  "sorting": "Sorting"
 }

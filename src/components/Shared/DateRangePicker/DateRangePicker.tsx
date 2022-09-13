@@ -74,6 +74,8 @@ const DateRangePicker = (props: Props) => {
           const firsDayYear = date[0].split("-")[0];
           const secondDayYear = date[1].split("-")[0];
           if (
+            currentReservations[firsDayYear] &&
+            currentReservations[secondDayYear] &&
             currentReservations[firsDayYear][date[0]]?.length &&
             currentReservations[secondDayYear][date[1]]?.length
           ) {

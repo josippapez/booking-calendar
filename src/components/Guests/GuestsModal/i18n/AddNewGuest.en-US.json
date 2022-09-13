@@ -8,7 +8,9 @@
   "dateOfArrival": "Date of arrival",
   "dateOfDeparture": "Date of departure",
   "numberOfReceipt": "Receipt number",
+  "travelIdNumber": "Travel ID number",
   "note": "Note",
   "cancel": "Cancel",
-  "save": "Save"
+  "save": "Save",
+  "delete": "Delete"
 }

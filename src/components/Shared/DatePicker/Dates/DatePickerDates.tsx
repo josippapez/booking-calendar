@@ -63,7 +63,7 @@ const DatePickerDates = (props: Props) => {
   };
 
   const daysHeader = (month: number) => {
-    return (
+     return (
       <div>
         <div className="font-extrabold text-xl px-2 pb-2 drop-shadow-md">{Info.months("long", { locale: i18n.language })[month - 1]}</div>
         <div className={style.calendarGridHeader}>
@@ -87,7 +87,7 @@ const DatePickerDates = (props: Props) => {
       <>
         {showPreviousMonth && (
           <div>
-            {daysHeader(dates.month - 1)}
+            {daysHeader(dates.lastMonth)}
             <div className={`${style.calendarGrid}`}>
               {dates.lastMonthDates.map((day, index) =>
                 displayDate(day, index)
@@ -103,7 +103,7 @@ const DatePickerDates = (props: Props) => {
         </div>
         {showNextMonth && (
           <div>
-            {daysHeader(dates.month + 1)}
+            {daysHeader(dates.nextMonth)}
             <div className={`${style.calendarGrid}`}>
               {dates.nextMonthDates.map((day, index) =>
                 displayDate(day, index)

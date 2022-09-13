@@ -45,7 +45,7 @@ function Dropdown(props: Props) {
       ref={component}
     >
       <div
-        className="cursor-pointer bg-white hover:bg-neutral-300
+        className="cursor-pointer bg-white hover:bg-stone-200
         rounded-md flex overflow-hidden
         justify-between relative drop-shadow-md"
         onClick={() => {

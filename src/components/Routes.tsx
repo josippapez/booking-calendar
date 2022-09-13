@@ -43,9 +43,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
     <>
       <Navbar userAuthenticated={!!user.accessToken} />
       <div
-        className={`${
-          user.accessToken ? "min-h-[calc(100%_-_60px)]" : "min-h-full"
-        } min-w-screen w-full overflow-x-hidden page-container ${
+        className={`min-w-screen w-full overflow-x-hidden page-container ${
           mobileView
             ? window.location.pathname !== "/" && "py-10"
             : window.location.pathname !== "/" && "py-16"

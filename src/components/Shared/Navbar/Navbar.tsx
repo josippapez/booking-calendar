@@ -89,6 +89,13 @@ function Navbar(props: Props) {
                       </a>
                     </Link>
                   </li>
+                  <li>
+                    <Link href="/guests">
+                      <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                        {t("guests_link_name")}
+                      </a>
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -155,6 +162,13 @@ function Navbar(props: Props) {
                 </Link>
               </li>
               <li>
+                <Link href="/guests">
+                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                    {t("guests_link_name")}
+                  </a>
+                </Link>
+              </li>
+              <li>
                 <button
                   className="w-full text-left py-2 pr-4 pl-3 text-white bg-blue-900 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
                   type="button"
@@ -193,7 +207,7 @@ function Navbar(props: Props) {
                     i18n.changeLanguage(language.value);
                   }}
                 >
-                  {t(language.title)}
+                  {t(language.title, { ns: "Languages" })}
                 </div>
               ))}
             </div>

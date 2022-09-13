@@ -46,7 +46,7 @@ export const sendEmail = (
         sendgrid_key,
       }),
     }).then(res => {
-      console.log(res);
+      return res;
     });
   };
 };

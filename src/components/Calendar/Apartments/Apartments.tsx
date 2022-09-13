@@ -87,7 +87,7 @@ const Apartments: NextPage = (props: Props) => {
     <>
       <div>
         <div className="flex justify-between">
-          <div className="font-bold text-xl">{t("apartments")}</div>
+          <div className="font-bold text-3xl">{t("apartments")}</div>
         </div>
         <div
           className={`flex ${

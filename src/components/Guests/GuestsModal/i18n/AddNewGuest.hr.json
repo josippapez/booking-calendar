@@ -8,7 +8,9 @@
   "dateOfArrival": "Datum dolaska",
   "dateOfDeparture": "Datum odlaska",
   "numberOfReceipt": "Broj računa",
+  "travelIdNumber": "Broj putne isprave",
   "note": "Napomena",
   "cancel": "Odustani",
-  "save": "Spremi"
+  "save": "Spremi",
+  "delete": "Obriši"
 }

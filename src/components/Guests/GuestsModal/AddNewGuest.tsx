@@ -1,19 +1,25 @@
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { saveGuestForApartment } from "../../../../store/firebaseActions/guestsActions";
+import {
+  deleteGuestForApartment,
+  saveGuestForApartment,
+} from "../../../../store/firebaseActions/guestsActions";
 import { useAppDispatch } from "../../../../store/hooks";
 import DatePicker from "../../Shared/DatePicker/DatePicker";
 import Modal from "../../Shared/Modal/Modal";
 
 type Props = {
   show: boolean;
+  selectedGuest?: Guest;
+  selectedGuestId?: string;
   closeModal: () => void;
 };
 
 export type Guest = {
   name: string;
   PID: string;
+  travelIdNumber: string;
   dateOfBirth: string;
   country: string;
   address: string;
@@ -26,18 +32,21 @@ export type Guest = {
 const AddNewGuest = (props: Props) => {
   const { t, i18n } = useTranslation("AddNewGuest");
   const dispatch = useAppDispatch();
-  const { show, closeModal } = props;
-  const [guestInfo, setGuestInfo] = useState<Guest>({
-    name: "",
-    PID: "",
-    dateOfBirth: "",
-    country: "",
-    address: "",
-    dateOfArrival: "",
-    dateOfDeparture: "",
-    numberOfReceipt: "",
-    note: "",
-  });
+  const { show, closeModal, selectedGuest, selectedGuestId } = props;
+  const [guestInfo, setGuestInfo] = useState<Guest>(
+    selectedGuest || {
+      name: "",
+      PID: "",
+      dateOfBirth: "",
+      country: "",
+      address: "",
+      dateOfArrival: "",
+      dateOfDeparture: "",
+      numberOfReceipt: "",
+      travelIdNumber: "",
+      note: "",
+    }
+  );
 
   const [showDatePicker, setShowDatePicker] = useState<string>("");
 
@@ -143,10 +152,28 @@ const AddNewGuest = (props: Props) => {
           >
             {t("cancel")}
           </button>
+          {selectedGuest && selectedGuestId && (
+            <button
+              className="bg-red-700 hover:bg-red-500 text-white p-2 rounded-md font-bold"
+              onClick={async () => {
+                await dispatch(
+                  deleteGuestForApartment(selectedGuestId, selectedGuest)
+                );
+                closeModal();
+              }}
+            >
+              {t("delete")}
+            </button>
+          )}
           <button
             className="bg-blue-700 hover:bg-blue-500 text-white p-2 rounded-md font-bold"
             onClick={async () => {
               if (checkForRequiredFields()) {
+                if (selectedGuest && selectedGuestId) {
+                  await dispatch(
+                    deleteGuestForApartment(selectedGuestId, selectedGuest)
+                  );
+                }
                 await dispatch(saveGuestForApartment(guestInfo));
                 closeModal();
               }
