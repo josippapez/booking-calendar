@@ -15,9 +15,12 @@
   "VAT": "VAT",
   "note": "Note",
   "contact": "Contact",
+  "image": "Image/Logo",
   "contact_name": "Name of the contact",
   "email": "Email",
   "totalCurrency": "Total currency",
   "services": "Services",
-  "add_new_service": "Add new service"
+  "add_new_service": "Add new service",
+  "amount": "Amount",
+  "price": "Price"
 }

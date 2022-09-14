@@ -59,8 +59,8 @@ const Receipt: NextPage = (props: Props) => {
       totalCurrency: string;
       services: {
         name: string;
-        price: number;
-        ammount: number;
+        price: string;
+        ammount: string;
         total: string;
       }[];
     };
@@ -90,8 +90,8 @@ const Receipt: NextPage = (props: Props) => {
       services: [
         {
           name: "",
-          price: 0,
-          ammount: 0,
+          price: "",
+          ammount: "",
           total: "",
         },
       ],
@@ -100,23 +100,7 @@ const Receipt: NextPage = (props: Props) => {
 
   const [instance, updateInstance] = usePDF({
     document: ReceiptTemplate({
-      apartmentData: selectedApartment
-        ? {
-            name: selectedApartment.name,
-            address: selectedApartment.address,
-            image: selectedApartment.image,
-            owner: selectedApartment.owner ? selectedApartment.owner : "",
-            pid: selectedApartment.pid ? selectedApartment.pid : "",
-            iban: selectedApartment.iban ? selectedApartment.iban : "",
-          }
-        : {
-            name: "",
-            address: "",
-            owner: "",
-            image: "",
-            pid: "",
-            iban: "",
-          },
+      apartmentData: transactionReceiptData.apartmentData,
       receiptData: transactionReceiptData.receiptData,
       recepientData: transactionReceiptData.recepientData,
     }),
@@ -142,9 +126,9 @@ const Receipt: NextPage = (props: Props) => {
           name: selectedApartment.name,
           address: selectedApartment.address,
           image: selectedApartment.image,
-          owner: selectedApartment.owner ? selectedApartment.owner : "",
-          pid: selectedApartment.pid ? selectedApartment.pid : "",
-          iban: selectedApartment.iban ? selectedApartment.iban : "",
+          owner: selectedApartment.owner ?? "",
+          pid: selectedApartment.pid ?? "",
+          iban: selectedApartment.iban ?? "",
         },
       });
     }
@@ -298,14 +282,15 @@ const Receipt: NextPage = (props: Props) => {
                                         <input
                                           className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-2/6"
                                           type={"text"}
+                                          placeholder={t("name")}
                                           value={serviceValue.name}
                                           onChange={e => {
                                             newArray[Number(serviceKey)].name =
                                               e.target.value;
                                             newArray[Number(serviceKey)].total =
                                               (
-                                                serviceValue.price *
-                                                serviceValue.ammount
+                                                Number(serviceValue.price) *
+                                                Number(serviceValue.ammount)
                                               ).toFixed(2);
                                             setTransactionReceiptData({
                                               ...transactionReceiptData,
@@ -321,15 +306,18 @@ const Receipt: NextPage = (props: Props) => {
                                         <input
                                           className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6"
                                           type={"number"}
-                                          value={serviceValue.ammount}
+                                          lang={i18n.language}
+                                          placeholder={t("amount")}
                                           onChange={e => {
                                             newArray[
                                               Number(serviceKey)
-                                            ].ammount = Number(e.target.value);
+                                            ].ammount = Number(
+                                              e.target.value
+                                            ).toFixed(2);
                                             newArray[Number(serviceKey)].total =
                                               (
-                                                serviceValue.price *
-                                                serviceValue.ammount
+                                                Number(serviceValue.price) *
+                                                Number(serviceValue.ammount)
                                               ).toFixed(2);
                                             setTransactionReceiptData({
                                               ...transactionReceiptData,
@@ -345,14 +333,15 @@ const Receipt: NextPage = (props: Props) => {
                                         <input
                                           className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6"
                                           type={"number"}
-                                          value={serviceValue.price}
+                                          lang={i18n.language}
+                                          placeholder={t("price")}
                                           onChange={e => {
                                             newArray[Number(serviceKey)].price =
-                                              Number(e.target.value);
+                                              Number(e.target.value).toFixed(2);
                                             newArray[Number(serviceKey)].total =
                                               (
-                                                serviceValue.price *
-                                                serviceValue.ammount
+                                                Number(serviceValue.price) *
+                                                Number(serviceValue.ammount)
                                               ).toFixed(2);
                                             setTransactionReceiptData({
                                               ...transactionReceiptData,
@@ -366,7 +355,11 @@ const Receipt: NextPage = (props: Props) => {
                                           }}
                                         />
                                         <div className="appearance-none bg-gray-200 flex items-center justify-center border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6">
-                                          {serviceValue.total}
+                                          {Number(
+                                            serviceValue.total
+                                          ).toLocaleString(i18n.language, {
+                                            minimumFractionDigits: 2,
+                                          })}
                                         </div>
                                         <button
                                           className={`${style.removeButton}
@@ -406,8 +399,8 @@ const Receipt: NextPage = (props: Props) => {
                                           ]["services"],
                                           {
                                             name: "",
-                                            ammount: 0,
-                                            price: 0,
+                                            ammount: "",
+                                            price: "",
                                             total: "",
                                           },
                                         ],
@@ -420,6 +413,91 @@ const Receipt: NextPage = (props: Props) => {
                               </div>
                             );
                           }
+                        } else {
+                          return (
+                            <div className="flex flex-col">
+                              <span className="font-bold mb">
+                                {t(innerKey)}
+                              </span>
+                              {transactionReceiptData.apartmentData.image ? (
+                                <div className="flex w-full">
+                                  <img
+                                    className="w-32 h-32"
+                                    style={{ objectFit: "cover" }}
+                                    src={
+                                      transactionReceiptData.apartmentData
+                                        .image ?? ""
+                                    }
+                                    alt="profile picture"
+                                  />
+                                  <button
+                                    className="p-2 ml-2 rounded-full bg-red-500 text-white"
+                                    style={{
+                                      background:
+                                        "url(/Styles/Assets/Images/xCircle.svg)",
+                                      backgroundRepeat: "no-repeat",
+                                      backgroundPosition: "center",
+                                      width: "40px",
+                                    }}
+                                    onClick={() => {
+                                      setTransactionReceiptData({
+                                        ...transactionReceiptData,
+                                        apartmentData: {
+                                          ...transactionReceiptData.apartmentData,
+                                          image: "",
+                                        },
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              ) : (
+                                <div>
+                                  <label
+                                    htmlFor="apartment-logo"
+                                    className="block h-24 w-28 rounded-lg border-2 hover:border-blue-700 hover:cursor-pointer border-dashed border-blue-400"
+                                    style={{
+                                      background:
+                                        "url(/Styles/Assets/Images/upload.svg)",
+                                      backgroundRepeat: "no-repeat",
+                                      backgroundPosition: "center",
+                                      backgroundSize: "50%",
+                                    }}
+                                  >
+                                    <div className="add-icon" />
+                                  </label>
+                                  <input
+                                    id="apartment-logo"
+                                    name="apartment-logo"
+                                    className="hidden"
+                                    type="file"
+                                    accept="image/png, image/gif, image/jpeg"
+                                    onChange={e => {
+                                      if (e.target.files) {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                          const reader = new FileReader();
+                                          reader.onload = e => {
+                                            const image = e.target
+                                              ?.result as string;
+                                            if (image) {
+                                              setTransactionReceiptData({
+                                                ...transactionReceiptData,
+                                                apartmentData: {
+                                                  ...transactionReceiptData.apartmentData,
+                                                  image: image,
+                                                },
+                                              });
+                                            }
+                                          };
+                                          reader.readAsDataURL(file);
+                                        }
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          );
                         }
                       })}
                     </div>

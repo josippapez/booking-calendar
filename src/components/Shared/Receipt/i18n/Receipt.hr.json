@@ -15,9 +15,12 @@
   "VAT": "PDV",
   "note": "Napomena",
   "contact": "Kontakt",
+  "image": "Slika/Logo",
   "contact_name": "Ime i prezime kontakta",
   "email": "Email",
   "totalCurrency": "Valuta ukupnog iznosa",
   "services": "Usluge",
-  "add_new_service": "Dodaj novu uslugu"
+  "add_new_service": "Dodaj novu uslugu",
+  "amount": "Količina",
+  "price": "Cijena"
 }

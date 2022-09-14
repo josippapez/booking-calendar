@@ -40,8 +40,8 @@ type Props = {
     totalCurrency: string;
     services: {
       name: string;
-      price: number;
-      ammount: number;
+      price: string;
+      ammount: string;
       total: string;
     }[];
   };
@@ -134,7 +134,14 @@ const TransactionReceipt = (props: Props): JSX.Element => {
           {apartmentData?.image && (
             <Image
               src={apartmentData.image}
-              style={[{ width: "40%", height: 100, objectFit: "contain", padding: 10}]}
+              style={[
+                {
+                  width: "40%",
+                  height: 100,
+                  objectFit: "contain",
+                  padding: 10,
+                },
+              ]}
             />
           )}
           <View style={[styles.column, styles.padding20, { width: "40%" }]}>
@@ -204,9 +211,21 @@ const TransactionReceipt = (props: Props): JSX.Element => {
                 <Text style={[{ width: "40%", textAlign: "left" }]}>
                   {service.name}
                 </Text>
-                <Text style={[{ width: "20%" }]}>{service.ammount}</Text>
-                <Text style={[{ width: "20%" }]}>{service.price}</Text>
-                <Text style={[{ width: "20%" }]}>{service.total}</Text>
+                <Text style={[{ width: "20%" }]}>
+                  {Number(service.ammount).toLocaleString(locale, {
+                    minimumFractionDigits: 2,
+                  })}
+                </Text>
+                <Text style={[{ width: "20%" }]}>
+                  {Number(service.price).toLocaleString(locale, {
+                    minimumFractionDigits: 2,
+                  })}
+                </Text>
+                <Text style={[{ width: "20%" }]}>
+                  {Number(service.total).toLocaleString(locale, {
+                    minimumFractionDigits: 2,
+                  })}
+                </Text>
               </View>
             ))}
           </View>
@@ -227,7 +246,9 @@ const TransactionReceipt = (props: Props): JSX.Element => {
             <Text>
               {receiptData?.services
                 .reduce((a, b) => a + Number(b.total), 0)
-                .toFixed(2)}{" "}
+                .toLocaleString(locale, {
+                  minimumFractionDigits: 2,
+                })}{" "}
               {receiptData?.totalCurrency}
             </Text>
           </View>
@@ -251,9 +272,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
                   .toLocaleString(DateTime.DATE_FULL)}
               </Text>
             </View>
-            <Text style={[{ fontSize: 10 }]}>
-              {translate("note")}: {receiptData?.note}
-            </Text>
+            <Text style={[{ fontSize: 10 }]}>{translate("note")}:</Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>{receiptData?.note}</Text>
             </View>

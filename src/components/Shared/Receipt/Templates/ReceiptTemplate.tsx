@@ -27,8 +27,8 @@ type Props = {
     totalCurrency: string;
     services: {
       name: string;
-      price: number;
-      ammount: number;
+      price: string;
+      ammount: string;
       total: string;
     }[];
   };
@@ -47,7 +47,7 @@ const ReceiptTemplate = (props: Props): JSX.Element => {
 
   return useMemo(
     () => TransactionReceipt(options),
-    [apartmentData, receiptData, recepientData]
+    [i18n.language, apartmentData, receiptData, recepientData]
   );
 };
 
