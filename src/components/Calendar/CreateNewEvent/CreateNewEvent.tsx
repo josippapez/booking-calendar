@@ -36,6 +36,7 @@ const CreateNewEvent = (props: Props) => {
     end: "",
     color: "",
     description: "",
+    price: "",
     phone: "",
     booking: false,
     weekNumber: 0,
@@ -158,6 +159,17 @@ const CreateNewEvent = (props: Props) => {
                   value={newEvent.description}
                   onChange={e =>
                     setNewEvent({ ...newEvent, description: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex flex-col justify-center">
+                <label className="text-sm font-bold">{t("price")}</label>
+                <input
+                  className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
+                  type="text"
+                  value={newEvent.price}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, price: e.target.value })
                   }
                 />
               </div>
