@@ -19,6 +19,7 @@ type Props = {
   receiptData: {
     receiptName: string;
     date: string;
+    dateOfFiscalization: string;
     VAT: boolean;
     note: string;
     contact: string;

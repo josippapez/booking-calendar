@@ -12,6 +12,7 @@
   "receiptData": "Podaci o računu",
   "receiptName": "Naziv",
   "date": "Datum",
+  "dateOfFiscalization": "Datum fiskalizacije",
   "VAT": "PDV",
   "note": "Napomena",
   "contact": "Kontakt",

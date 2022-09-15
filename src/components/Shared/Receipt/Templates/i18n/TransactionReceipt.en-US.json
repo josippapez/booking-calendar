@@ -10,6 +10,8 @@
   "free_of_vat_false": "User is not VAT exempt",
   "fiscalisation_receipt": "Fiscalisation of receipt",
   "transaction_receipt": "Transaction Receipt",
+  "iban": "IBAN",
+  "pid": "PID",
   "note": "Note",
   "contact": "Contact",
   "email": "Email"

@@ -10,6 +10,8 @@
   "free_of_vat_false": "Davatelj usluge je u sustavu PDV-a",
   "fiscalisation_receipt": "Fiskalizacija računa",
   "transaction_receipt": "Transakcijski račun",
+  "iban": "IBAN",
+  "pid": "OIB",
   "note": "Napomena",
   "contact": "Kontakt",
   "email": "Email"

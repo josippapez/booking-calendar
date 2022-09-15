@@ -32,6 +32,7 @@ type Props = {
   receiptData: {
     receiptName: string;
     date: string;
+    dateOfFiscalization: string;
     VAT: boolean;
     note: string;
     contact: string;
@@ -148,8 +149,16 @@ const TransactionReceipt = (props: Props): JSX.Element => {
             <Text>{apartmentData?.name}</Text>
             <Text>{apartmentData?.address}</Text>
             <Text>{apartmentData?.owner}</Text>
-            <Text>{apartmentData?.pid}</Text>
-            <Text>{apartmentData?.iban}</Text>
+            <Text>
+              {apartmentData?.pid
+                ? `${translate("pid")}: ${apartmentData?.pid}`
+                : ""}
+            </Text>
+            <Text>
+              {apartmentData?.iban
+                ? `${translate("iban")}: ${apartmentData?.iban}`
+                : ""}
+            </Text>
           </View>
         </View>
         <View style={[styles.column, { marginBottom: 40 }]}>
@@ -172,7 +181,16 @@ const TransactionReceipt = (props: Props): JSX.Element => {
               {receiptData?.receiptName}
             </Text>
             <Text>
-              {translate("date_of_receipt")}: {receiptData?.date}
+              {translate("date_of_receipt")}:{" "}
+              {receiptData.date
+                ? DateTime.fromISO(receiptData.date)
+                    .setLocale(locale)
+                    .toLocaleString({
+                      month: "long",
+                      day: "2-digit",
+                      year: "numeric",
+                    })
+                : ""}
             </Text>
           </View>
         </View>
@@ -212,9 +230,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
                   {service.name}
                 </Text>
                 <Text style={[{ width: "20%" }]}>
-                  {Number(service.ammount).toLocaleString(locale, {
-                    minimumFractionDigits: 2,
-                  })}
+                  {Number(service.ammount).toLocaleString(locale)}
                 </Text>
                 <Text style={[{ width: "20%" }]}>
                   {Number(service.price).toLocaleString(locale, {
@@ -267,9 +283,15 @@ const TransactionReceipt = (props: Props): JSX.Element => {
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>
                 {translate("transaction_receipt")}{" "}
-                {DateTime.now()
-                  .setLocale(locale)
-                  .toLocaleString(DateTime.DATE_FULL)}
+                {receiptData.dateOfFiscalization !== ""
+                  ? DateTime.fromISO(receiptData.dateOfFiscalization)
+                      .setLocale(locale)
+                      .toLocaleString({
+                        month: "long",
+                        day: "2-digit",
+                        year: "numeric",
+                      })
+                  : ""}
               </Text>
             </View>
             <Text style={[{ fontSize: 10 }]}>{translate("note")}:</Text>

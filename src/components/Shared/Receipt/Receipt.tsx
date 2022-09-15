@@ -1,10 +1,13 @@
 import { usePDF } from "@react-pdf/renderer";
+import { DateTime } from "luxon";
 import { NextPage } from "next";
+import Image from "next/image";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { selectApartment } from "../../../../store/reducers/apartments";
+import DatePicker from "../DatePicker/DatePicker";
 import Dropdown from "../Dropdown/Dropdown";
 import PageLoader from "../Loader/PageLoader";
 import PDFDownload from "../PDFDownload/PDFDownload";
@@ -34,6 +37,7 @@ const Receipt: NextPage = (props: Props) => {
     useState<boolean>(false);
   const [displayInputSection, setDisplayInputSection] =
     useState("apartmentData");
+  const [displayDatePicker, setDisplayDatePicker] = useState("");
   const [transactionReceiptData, setTransactionReceiptData] = useState<{
     apartmentData: {
       name: string;
@@ -50,6 +54,7 @@ const Receipt: NextPage = (props: Props) => {
     };
     receiptData: {
       receiptName: string;
+      dateOfFiscalization: string;
       date: string;
       VAT: boolean;
       note: string;
@@ -81,6 +86,7 @@ const Receipt: NextPage = (props: Props) => {
     receiptData: {
       receiptName: "",
       date: "",
+      dateOfFiscalization: "",
       VAT: false,
       note: "",
       contact: "",
@@ -219,46 +225,106 @@ const Receipt: NextPage = (props: Props) => {
                       ).map(([innerKey, value]) => {
                         if (innerKey !== "image") {
                           if (innerKey !== "services") {
-                            return (
-                              <div key={innerKey} className="flex flex-col">
-                                <span className="font-bold">{t(innerKey)}</span>
-                                {innerKey === "VAT" ? (
+                            if (innerKey.includes("date")) {
+                              return (
+                                <div key={innerKey} className="flex flex-col">
+                                  <span className="font-bold">
+                                    {t(`${innerKey}`)}
+                                  </span>
                                   <input
-                                    className="h-6 focus:border-blue-500"
-                                    type={"checkbox"}
-                                    checked={value ? Boolean(value) : false}
-                                    onChange={e => {
-                                      setTransactionReceiptData({
-                                        ...transactionReceiptData,
-                                        receiptData: {
-                                          ...transactionReceiptData[
-                                            "receiptData"
-                                          ],
-                                          VAT: e.target.checked,
-                                        },
-                                      });
+                                    type="button"
+                                    className="appearance-none border bg-white rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                                    value={
+                                      value !== ""
+                                        ? DateTime.fromISO(value as string)
+                                            .setLocale(i18n.language)
+                                            .toLocaleString({
+                                              month: "long",
+                                              day: "2-digit",
+                                              year: "numeric",
+                                            })
+                                        : ""
+                                    }
+                                    onClick={() => {
+                                      setDisplayDatePicker(innerKey);
                                     }}
                                   />
-                                ) : (
-                                  <input
-                                    className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                                    type={"text"}
-                                    value={value ? value.toString() : ""}
-                                    onChange={e => {
-                                      setTransactionReceiptData({
-                                        ...transactionReceiptData,
-                                        [key]: {
-                                          ...transactionReceiptData[
-                                            key as keyof typeof transactionReceiptData
-                                          ],
-                                          [innerKey]: e.target.value,
-                                        },
-                                      });
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            );
+                                  {innerKey === displayDatePicker && (
+                                    <DatePicker
+                                      closeDatePicker={() => {
+                                        setDisplayDatePicker("");
+                                      }}
+                                      setDate={date => {
+                                        setTransactionReceiptData({
+                                          ...transactionReceiptData,
+                                          [key]: {
+                                            ...transactionReceiptData[
+                                              key as keyof typeof transactionReceiptData
+                                            ],
+                                            [innerKey]: date,
+                                          },
+                                        });
+                                      }}
+                                      resetData={() => {
+                                        setTransactionReceiptData({
+                                          ...transactionReceiptData,
+                                          [key]: {
+                                            ...transactionReceiptData[
+                                              key as keyof typeof transactionReceiptData
+                                            ],
+                                            [innerKey]: "",
+                                          },
+                                        });
+                                      }}
+                                      showDatePicker={true}
+                                      initialDate={value as string}
+                                    />
+                                  )}
+                                </div>
+                              );
+                            } else
+                              return (
+                                <div key={innerKey} className="flex flex-col">
+                                  <span className="font-bold">
+                                    {t(innerKey)}
+                                  </span>
+                                  {innerKey === "VAT" ? (
+                                    <input
+                                      className="h-6 focus:border-blue-500"
+                                      type={"checkbox"}
+                                      checked={value ? Boolean(value) : false}
+                                      onChange={e => {
+                                        setTransactionReceiptData({
+                                          ...transactionReceiptData,
+                                          receiptData: {
+                                            ...transactionReceiptData[
+                                              "receiptData"
+                                            ],
+                                            VAT: e.target.checked,
+                                          },
+                                        });
+                                      }}
+                                    />
+                                  ) : (
+                                    <input
+                                      className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
+                                      type={"text"}
+                                      value={value ? value.toString() : ""}
+                                      onChange={e => {
+                                        setTransactionReceiptData({
+                                          ...transactionReceiptData,
+                                          [key]: {
+                                            ...transactionReceiptData[
+                                              key as keyof typeof transactionReceiptData
+                                            ],
+                                            [innerKey]: e.target.value,
+                                          },
+                                        });
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              );
                           } else {
                             return (
                               <div key={innerKey}>
@@ -421,14 +487,16 @@ const Receipt: NextPage = (props: Props) => {
                               </span>
                               {transactionReceiptData.apartmentData.image ? (
                                 <div className="flex w-full">
-                                  <img
-                                    className="w-32 h-32"
-                                    style={{ objectFit: "cover" }}
+                                  <Image
                                     src={
                                       transactionReceiptData.apartmentData
                                         .image ?? ""
                                     }
-                                    alt="profile picture"
+                                    objectFit="contain"
+                                    width={"120px"}
+                                    height={"120px"}
+                                    alt="apartment Logo"
+                                    placeholder="empty"
                                   />
                                   <button
                                     className="p-2 ml-2 rounded-full bg-red-500 text-white"
