@@ -1,5 +1,5 @@
 import firebase from "firebase/compat/app";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { Guest } from "../../src/components/Guests/GuestsModal/AddNewGuest";
 import { Guests, setGuests } from "../reducers/guests";
 import { AppDispatch, AppState } from "../store";
@@ -14,23 +14,47 @@ export const saveGuestForApartment = (guest: Guest) => {
       const dateOfDeparture = guest.dateOfDeparture.split("-");
       const UID = crypto.randomUUID();
 
-      let newGuestsForAppartment = {};
-      if (dateOfArrival[1] === dateOfDeparture[1]) {
-        newGuestsForAppartment = {
-          ...guestsForAppartment,
-          [dateOfArrival[1]]: {
-            ...guestsForAppartment[dateOfArrival[1]],
-            [UID]: guest,
-          },
-        };
-        await setDoc(
-          doc(
-            getFirestore(firebase.app()),
-            `guests/${selectedApartment.id}/data`,
-            dateOfArrival[0]
-          ),
-          newGuestsForAppartment
-        );
+      let newGuestsForAppartment,
+        newGuestForAppartmentForNewYear = {};
+      if (dateOfArrival[0] === dateOfDeparture[0]) {
+        if (dateOfArrival[1] === dateOfDeparture[1]) {
+          newGuestsForAppartment = {
+            ...guestsForAppartment,
+            [dateOfArrival[1]]: {
+              ...guestsForAppartment[dateOfArrival[1]],
+              [UID]: guest,
+            },
+          };
+          await setDoc(
+            doc(
+              getFirestore(firebase.app()),
+              `guests/${selectedApartment.id}/data`,
+              dateOfArrival[0]
+            ),
+            newGuestsForAppartment
+          );
+        } else {
+          newGuestsForAppartment = {
+            ...guestsForAppartment,
+            [dateOfArrival[1]]: {
+              ...guestsForAppartment[dateOfArrival[1]],
+              [UID]: guest,
+            },
+            [dateOfDeparture[1]]: {
+              ...guestsForAppartment[dateOfDeparture[1]],
+              [UID]: guest,
+            },
+          };
+
+          await setDoc(
+            doc(
+              getFirestore(firebase.app()),
+              `guests/${selectedApartment.id}/data`,
+              dateOfArrival[0]
+            ),
+            newGuestsForAppartment
+          );
+        }
       } else {
         newGuestsForAppartment = {
           ...guestsForAppartment,
@@ -38,11 +62,32 @@ export const saveGuestForApartment = (guest: Guest) => {
             ...guestsForAppartment[dateOfArrival[1]],
             [UID]: guest,
           },
-          [dateOfDeparture[1]]: {
-            ...guestsForAppartment[dateOfDeparture[1]],
-            [UID]: guest,
-          },
         };
+
+        await getDoc(
+          doc(
+            getFirestore(firebase.app()),
+            `guests/${selectedApartment.id}/data`,
+            dateOfDeparture[0]
+          )
+        ).then(doc => {
+          if (doc.exists()) {
+            newGuestForAppartmentForNewYear = {
+              ...doc.data(),
+              [dateOfDeparture[1]]: {
+                ...doc.data()[dateOfDeparture[1]],
+                [UID]: guest,
+              },
+            };
+          } else {
+            newGuestForAppartmentForNewYear = {
+              [dateOfDeparture[1]]: {
+                [UID]: guest,
+              },
+            };
+          }
+        });
+
         await setDoc(
           doc(
             getFirestore(firebase.app()),
@@ -57,7 +102,7 @@ export const saveGuestForApartment = (guest: Guest) => {
             `guests/${selectedApartment.id}/data`,
             dateOfDeparture[0]
           ),
-          newGuestsForAppartment
+          newGuestForAppartmentForNewYear
         );
       }
 

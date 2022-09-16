@@ -38,10 +38,10 @@ const AddNewGuest = (props: Props) => {
       name: "",
       PID: "",
       dateOfBirth: "",
-      country: "",
-      address: "",
       dateOfArrival: "",
       dateOfDeparture: "",
+      country: "",
+      address: "",
       numberOfReceipt: "",
       travelIdNumber: "",
       note: "",
@@ -61,6 +61,20 @@ const AddNewGuest = (props: Props) => {
     return true;
   };
 
+  const sortInputs = (a: string, b: string) => {
+    if (
+      ["name", "PID", "dateOfBirth", "dateOfArrival", "dateOfBirth"].includes(a)
+    ) {
+      return -1;
+    }
+    if (
+      ["name", "PID", "dateOfBirth", "dateOfArrival", "dateOfBirth"].includes(b)
+    ) {
+      return 1;
+    }
+    return 0;
+  };
+
   return (
     <Modal
       show={show}
@@ -74,75 +88,79 @@ const AddNewGuest = (props: Props) => {
         </h1>
         <div className="p-5">
           <div className="flex flex-col gap-2">
-            {Object.keys(guestInfo).map((key: string) => {
-              return (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="font-semibold">
-                    {t(key)}
-                  </label>
-                  {key.includes("dateOf") ? (
-                    <>
+            {Object.keys(guestInfo)
+              .sort((a, b) => {
+                return sortInputs(a, b);
+              })
+              .map((key: string) => {
+                return (
+                  <div key={key} className="flex flex-col">
+                    <label htmlFor={key} className="font-semibold">
+                      {t(key)}
+                    </label>
+                    {key.includes("dateOf") ? (
+                      <>
+                        <input
+                          type="button"
+                          name={key}
+                          id={key}
+                          className="bg-white border focus:border-blue-500 rounded-md"
+                          value={
+                            guestInfo[key as keyof Guest]
+                              ? DateTime.fromISO(
+                                  guestInfo[
+                                    key as keyof {
+                                      dateOfArrival: string;
+                                      dateOfDeparture: string;
+                                    }
+                                  ]
+                                )
+                                  .setLocale(i18n.language)
+                                  .toLocaleString({
+                                    month: "long",
+                                    day: "2-digit",
+                                    year: "numeric",
+                                  })
+                              : guestInfo[key as keyof Guest]
+                          }
+                          onClick={() => setShowDatePicker(key)}
+                        />
+                        <DatePicker
+                          closeDatePicker={() => setShowDatePicker("")}
+                          showDatePicker={showDatePicker === key ? true : false}
+                          initialDate={guestInfo[key as keyof Guest]}
+                          setDate={(date: string) => {
+                            setGuestInfo({
+                              ...guestInfo,
+                              [key as keyof Guest]: date,
+                            });
+                          }}
+                          resetData={() => {
+                            setGuestInfo({
+                              ...guestInfo,
+                              [key as keyof Guest]: "",
+                            });
+                          }}
+                        />
+                      </>
+                    ) : (
                       <input
-                        type="button"
+                        type="text"
                         name={key}
                         id={key}
                         className="bg-white border focus:border-blue-500 rounded-md"
-                        value={
-                          guestInfo[key as keyof Guest]
-                            ? DateTime.fromISO(
-                                guestInfo[
-                                  key as keyof {
-                                    dateOfArrival: string;
-                                    dateOfDeparture: string;
-                                  }
-                                ]
-                              )
-                                .setLocale(i18n.language)
-                                .toLocaleString({
-                                  month: "long",
-                                  day: "2-digit",
-                                  year: "numeric",
-                                })
-                            : guestInfo[key as keyof Guest]
-                        }
-                        onClick={() => setShowDatePicker(key)}
-                      />
-                      <DatePicker
-                        closeDatePicker={() => setShowDatePicker("")}
-                        showDatePicker={showDatePicker === key ? true : false}
-                        initialDate={guestInfo[key as keyof Guest]}
-                        setDate={(date: string) => {
+                        value={guestInfo[key as keyof Guest]}
+                        onChange={e => {
                           setGuestInfo({
                             ...guestInfo,
-                            [key as keyof Guest]: date,
-                          });
-                        }}
-                        resetData={() => {
-                          setGuestInfo({
-                            ...guestInfo,
-                            [key as keyof Guest]: "",
+                            [key]: e.target.value,
                           });
                         }}
                       />
-                    </>
-                  ) : (
-                    <input
-                      type="text"
-                      name={key}
-                      id={key}
-                      className="bg-white border focus:border-blue-500 rounded-md"
-                      value={guestInfo[key as keyof Guest]}
-                      onChange={e => {
-                        setGuestInfo({
-                          ...guestInfo,
-                          [key]: e.target.value,
-                        });
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
+                    )}
+                  </div>
+                );
+              })}
           </div>
         </div>
         <div className="flex justify-between p-5">
