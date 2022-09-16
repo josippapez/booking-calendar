@@ -12,40 +12,14 @@ import { TFunction } from "react-i18next";
 import InterBold from "../../../../../public/Styles/Assets/Fonts/Inter-Bold.ttf";
 import InterLight from "../../../../../public/Styles/Assets/Fonts/Inter-Light.ttf";
 import InterRegular from "../../../../../public/Styles/Assets/Fonts/Inter-Regular.ttf";
+import { TransactionReceiptData } from "../Receipt";
 
 type Props = {
   translate: TFunction;
   locale: string;
-  apartmentData: {
-    name: string;
-    address: string;
-    owner: string;
-    image: string;
-    pid: string;
-    iban: string;
-  };
-  recepientData: {
-    recepientName: string;
-    recepientAddress: string;
-    recepientPID: string;
-  };
-  receiptData: {
-    receiptName: string;
-    date: string;
-    dateOfFiscalization: string;
-    VAT: boolean;
-    note: string;
-    contact: string;
-    contact_name: string;
-    email: string;
-    totalCurrency: string;
-    services: {
-      name: string;
-      price: string;
-      ammount: string;
-      total: string;
-    }[];
-  };
+  apartmentData: TransactionReceiptData["apartmentData"];
+  recepientData: TransactionReceiptData["recepientData"];
+  receiptData: TransactionReceiptData["receiptData"];
 };
 
 Font.register({
@@ -210,7 +184,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
               <Text style={[{ width: "40%", textAlign: "left" }]}>
                 {translate("service_name")}
               </Text>
-              <Text style={[{ width: "20%" }]}>{translate("ammount")}</Text>
+              <Text style={[{ width: "20%" }]}>{translate("amount")}</Text>
               <Text style={[{ width: "20%" }]}>{translate("price")}</Text>
               <Text style={[{ width: "20%" }]}>{translate("total")}</Text>
             </View>
@@ -230,7 +204,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
                   {service.name}
                 </Text>
                 <Text style={[{ width: "20%" }]}>
-                  {Number(service.ammount).toLocaleString(locale)}
+                  {Number(service.amount).toLocaleString(locale)}
                 </Text>
                 <Text style={[{ width: "20%" }]}>
                   {Number(service.price).toLocaleString(locale, {

@@ -1,7 +1,7 @@
 {
   "date_of_receipt": "Datum računa",
   "service_name": "Naziv usluge",
-  "ammount": "Količina",
+  "amount": "Količina",
   "price": "Cijena",
   "total": "Ukupno",
   "total_price": "Ukupna cijena",
