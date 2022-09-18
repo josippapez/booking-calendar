@@ -4,13 +4,15 @@
   "PID": "PID",
   "address": "Address",
   "country": "Country",
+  "city": "City",
   "dateOfBirth": "Date of Birth",
   "dateOfArrival": "Date of arrival",
   "dateOfDeparture": "Date of departure",
-  "numberOfReceipt": "Receipt number",
+  "numberOfInvoice": "Invoice number",
   "travelIdNumber": "Travel ID number",
   "note": "Note",
   "cancel": "Cancel",
   "save": "Save",
-  "delete": "Delete"
+  "delete": "Delete",
+  "remove_guest": "Are you sure you want to delete this guest?"
 }

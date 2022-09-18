@@ -1,11 +1,12 @@
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   deleteGuestForApartment,
   saveGuestForApartment,
 } from "../../../../store/firebaseActions/guestsActions";
 import { useAppDispatch } from "../../../../store/hooks";
+import { useAlert } from "../../../AlertModalProvider";
 import DatePicker from "../../Shared/DatePicker/DatePicker";
 import Modal from "../../Shared/Modal/Modal";
 
@@ -21,15 +22,17 @@ export type Guest = {
   PID: string;
   travelIdNumber: string;
   dateOfBirth: string;
-  country: string;
-  address: string;
   dateOfArrival: string;
   dateOfDeparture: string;
-  numberOfReceipt?: string;
+  country: string;
+  city: string;
+  address: string;
+  numberOfInvoice?: string;
   note: string;
 };
 
 const AddNewGuest = (props: Props) => {
+  const { showAlert } = useAlert();
   const { t, i18n } = useTranslation("AddNewGuest");
   const dispatch = useAppDispatch();
   const { show, closeModal, selectedGuest, selectedGuestId } = props;
@@ -41,24 +44,33 @@ const AddNewGuest = (props: Props) => {
       dateOfArrival: "",
       dateOfDeparture: "",
       country: "",
+      city: "",
       address: "",
-      numberOfReceipt: "",
+      numberOfInvoice: "",
       travelIdNumber: "",
       note: "",
     }
   );
-
+  const [errors, setErrors] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState<string>("");
 
+  const requiredFileds = [
+    "name",
+    "PID",
+    "dateOfBirth",
+    "dateOfArrival",
+    "dateOfDeparture",
+  ];
+
   const checkForRequiredFields = () => {
-    if (
-      guestInfo.dateOfArrival === "" ||
-      guestInfo.dateOfDeparture === "" ||
-      guestInfo.name === "" ||
-      guestInfo.PID === ""
-    )
-      return false;
-    return true;
+    const errors: string[] = [];
+    requiredFileds.forEach((field: string) => {
+      if (!guestInfo[field as keyof Guest]) {
+        errors.push(field);
+      }
+    });
+    setErrors(errors);
+    return errors.length === 0;
   };
 
   const sortInputs = (a: string, b: string) => {
@@ -104,7 +116,9 @@ const AddNewGuest = (props: Props) => {
                           type="button"
                           name={key}
                           id={key}
-                          className="bg-white border focus:border-blue-500 rounded-md"
+                          className={`bg-white border focus:border-blue-500 rounded-md ${
+                            errors.includes(key) ? "border-red-500" : ""
+                          }`}
                           value={
                             guestInfo[key as keyof Guest]
                               ? DateTime.fromISO(
@@ -130,6 +144,9 @@ const AddNewGuest = (props: Props) => {
                           showDatePicker={showDatePicker === key ? true : false}
                           initialDate={guestInfo[key as keyof Guest]}
                           setDate={(date: string) => {
+                            setErrors(prev => {
+                              return prev.filter(error => error !== key);
+                            });
                             setGuestInfo({
                               ...guestInfo,
                               [key as keyof Guest]: date,
@@ -148,9 +165,14 @@ const AddNewGuest = (props: Props) => {
                         type="text"
                         name={key}
                         id={key}
-                        className="bg-white border focus:border-blue-500 rounded-md"
+                        className={`bg-white border focus:border-blue-500 rounded-md ${
+                          errors.includes(key) ? "border-red-500" : ""
+                        }`}
                         value={guestInfo[key as keyof Guest]}
                         onChange={e => {
+                          setErrors(prev => {
+                            return prev.filter(error => error !== key);
+                          });
                           setGuestInfo({
                             ...guestInfo,
                             [key]: e.target.value,
@@ -174,10 +196,12 @@ const AddNewGuest = (props: Props) => {
             <button
               className="bg-red-700 hover:bg-red-500 text-white p-2 rounded-md font-bold"
               onClick={async () => {
-                await dispatch(
-                  deleteGuestForApartment(selectedGuestId, selectedGuest)
-                );
-                closeModal();
+                showAlert(t("remove_guest"), false, () => async () => {
+                  await dispatch(
+                    deleteGuestForApartment(selectedGuestId, selectedGuest)
+                  );
+                  closeModal();
+                });
               }}
             >
               {t("delete")}

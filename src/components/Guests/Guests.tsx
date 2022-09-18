@@ -176,7 +176,7 @@ const Guests = (props: Props) => {
                                 {t("dateOfDeparture")}
                               </th>
                               <th className="font-semibold">
-                                {t("numberOfReceipt")}
+                                {t("numberOfInvoice")}
                               </th>
                               <th className="font-semibold">{t("note")}</th>
                             </tr>
@@ -237,7 +237,7 @@ const Guests = (props: Props) => {
                                           year: "numeric",
                                         })}
                                     </td>
-                                    <td>{value.numberOfReceipt}</td>
+                                    <td>{value.numberOfInvoice}</td>
                                     <td>{value.note}</td>
                                   </tr>
                                 );

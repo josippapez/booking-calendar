@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import "../public/Styles/globals.css";
+import { AlertModalProvider } from "../src/AlertModalProvider";
 import { AuthProvider } from "../src/AuthProvider";
 import { ProtectedRoutes } from "../src/components/Routes";
 import PageLoader from "../src/components/Shared/Loader/PageLoader";
@@ -41,11 +42,13 @@ function MyApp({ Component, pageProps, router }: AppProps) {
           {loading ? (
             <PageLoader />
           ) : (
-            <ProtectedRoutes
-              Component={Component}
-              pageProps={pageProps}
-              router={router}
-            />
+            <AlertModalProvider>
+              <ProtectedRoutes
+                Component={Component}
+                pageProps={pageProps}
+                router={router}
+              />
+            </AlertModalProvider>
           )}
         </PersistGate>
       </AuthProvider>

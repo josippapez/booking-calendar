@@ -4,13 +4,15 @@
   "PID": "OIB",
   "address": "Adresa",
   "country": "Država",
+  "city": "Grad",
   "dateOfBirth": "Datum rođenja",
   "dateOfArrival": "Datum dolaska",
   "dateOfDeparture": "Datum odlaska",
-  "numberOfReceipt": "Broj računa",
+  "numberOfInvoice": "Broj računa",
   "travelIdNumber": "Broj putne isprave",
   "note": "Napomena",
   "cancel": "Odustani",
   "save": "Spremi",
-  "delete": "Obriši"
+  "delete": "Obriši",
+  "remove_guest": "Jeste li sigurni da želite obrisati gosta?"
 }

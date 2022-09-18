@@ -14,16 +14,17 @@ import {
 } from "../../../../store/firebaseActions/apartmentActions";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
-  Apartment,
   selectApartment,
   setApartments,
 } from "../../../../store/reducers/apartments";
 import { setEvents } from "../../../../store/reducers/events";
+import { useAlert } from "../../../AlertModalProvider";
 import useMobileView from "../../../checkForMobileView";
 
 type Props = {};
 
 const Apartments: NextPage = (props: Props) => {
+  const { showAlert } = useAlert();
   const { t } = useTranslation("Apartments");
   const dispatch = useAppDispatch();
   const mobileView = useMobileView();
@@ -462,8 +463,15 @@ const Apartments: NextPage = (props: Props) => {
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       onClick={e => {
                         e.stopPropagation();
-                        dispatch(
-                          removeApartment(apartments.apartments[apartment].id)
+                        showAlert(
+                          t("remove_apartment"),
+                          false,
+                          () => () =>
+                            dispatch(
+                              removeApartment(
+                                apartments.apartments[apartment].id
+                              )
+                            )
                         );
                       }}
                     >
