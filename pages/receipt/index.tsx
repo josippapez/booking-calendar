@@ -6,8 +6,7 @@ import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 const DynamicReceiptPage = dynamic(
   () => import("../../src/components/Shared/Receipt/Receipt"),
   {
-    suspense: true,
-    ssr: false,
+    suspense: true
   }
 );
 

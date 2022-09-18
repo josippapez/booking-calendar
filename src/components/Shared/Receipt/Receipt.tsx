@@ -99,8 +99,8 @@ const Receipt: NextPage = (props: Props) => {
             })}
             selected={selectedApartment?.id as string}
             setData={item => {
-              if (item !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item]));
+              if (item.id !== (selectedApartment?.id as string)) {
+                dispatch(selectApartment(apartments.apartments[item.id]));
               }
             }}
           />

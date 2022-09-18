@@ -1,18 +1,14 @@
 import firebase from "firebase/compat/app";
 import { deleteDoc, doc, getFirestore, setDoc } from "firebase/firestore";
 import {
+  deleteObject,
   getDownloadURL,
   getStorage,
+  listAll,
   ref,
   uploadBytesResumable,
-  listAll,
-  deleteObject,
 } from "firebase/storage";
-import {
-  Apartment,
-  selectApartment,
-  setApartments,
-} from "../reducers/apartments";
+import { selectApartment, setApartments } from "../reducers/apartments";
 import { AppDispatch, AppState } from "./../store";
 
 let imageUrl = "";
@@ -32,15 +28,6 @@ const saveApartmentData = async (
   setError: (error: string) => void,
   dispatch: AppDispatch
 ) => {
-  const storage = getStorage();
-  const storageRef = ref(storage, `apartments/${apartment.name}`);
-
-  listAll(storageRef).then((files: any) => {
-    files.items.forEach(async (fileRef: any) => {
-      await deleteObject(ref(storage, fileRef.fullPath));
-    });
-  });
-
   if (typeof apartment.image === "string") {
     dispatch(setApartmentDataTofirebase(apartment, apartment.image));
   } else {
@@ -48,6 +35,14 @@ const saveApartmentData = async (
       contentType: apartment.image.type,
     };
     const storage = getStorage();
+    const storageRefExisting = ref(storage, `apartments/${apartment.name}`);
+
+    await listAll(storageRefExisting).then((files: any) => {
+      files.items.forEach(async (fileRef: any) => {
+        await deleteObject(ref(storage, fileRef.fullPath));
+      });
+    });
+
     const storageRef = ref(
       storage,
       `apartments/${apartment.name}/${apartment.image.name}`

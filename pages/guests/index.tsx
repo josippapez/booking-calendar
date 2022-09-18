@@ -6,8 +6,7 @@ import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 const DynamicGuestsPage = dynamic(
   () => import("../../src/components/Guests/Guests"),
   {
-    suspense: true,
-    ssr: false,
+    suspense: true
   }
 );
 

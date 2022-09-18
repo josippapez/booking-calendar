@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import useMobileView from "../checkForMobileView";
 import Navbar from "./Shared/Navbar/Navbar";
@@ -7,6 +7,7 @@ import Navbar from "./Shared/Navbar/Navbar";
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const user = useAppSelector(state => state.user.user);
   const mobileView = useMobileView();
+  const [displayPage, setDisplayPage] = useState(false);
 
   useEffect(() => {
     const element = document.getElementById("__next");
@@ -24,20 +25,22 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
           "/apartments/[id]",
           "/[id]",
           "/receipt",
-          "/guests"
+          "/guests",
         ].includes(router.route)
       ) {
         router.push("/apartments");
-        return;
       }
     } else {
       if (!["/", "/[id]"].includes(router.route)) {
         router.push("/");
-        return false;
       }
     }
-    return true;
+    setDisplayPage(true);
   };
+
+  useEffect(() => {
+    checkForAuthentication();
+  }, [router]);
 
   return (
     <>
@@ -49,7 +52,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
             : window.location.pathname !== "/" && "py-16"
         } select-none`}
       >
-        {checkForAuthentication() ? <Component {...pageProps} /> : null}
+        {displayPage ? <Component {...pageProps} /> : null}
       </div>
     </>
   );

@@ -154,9 +154,9 @@ const Calendar: NextPage = (props: Props) => {
             })}
             selected={navigate.query.id as string}
             setData={item => {
-              if (item !== (navigate.query.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item]));
-                navigate.push(`/apartments/${item}`);
+              if (item.id !== (navigate.query.id as string)) {
+                dispatch(selectApartment(apartments.apartments[item.id]));
+                navigate.push(`/apartments/${item.id}`);
               }
             }}
           />

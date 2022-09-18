@@ -18,7 +18,7 @@ import {
 import { FirebaseError } from "firebase/app";
 import firebase from "firebase/compat/app";
 import { setUser } from "../reducers/user";
-import { store } from "../store";
+import { persistor, store } from "../store";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -124,7 +124,9 @@ export const signInEmailAndPassword = async (
   }
 };
 
-export const logout = () => {
+export const logout = async () => {
+  await persistor.purge();
+  await persistor.flush();
   const auth = getAuth(firebase.app());
   signOut(auth);
 };

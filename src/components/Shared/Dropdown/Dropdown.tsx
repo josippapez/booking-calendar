@@ -16,7 +16,16 @@ type Props = {
           [key: string]: number | string;
         };
   }[];
-  setData: (data: string) => void;
+  setData: (data: {
+    id: string;
+    name: string;
+    value:
+      | string
+      | number
+      | {
+          [key: string]: number | string;
+        };
+  }) => void;
 };
 
 function Dropdown(props: Props) {
@@ -77,7 +86,7 @@ function Dropdown(props: Props) {
                 text-gray-700 hover:bg-slate-200 rounded-md p-2
                 ${selected === item.id && "text-blue-600"}`}
                 onClick={() => {
-                  setData(item.id.toString());
+                  setData(item);
                   setOpenedDropdown(false);
                 }}
               >

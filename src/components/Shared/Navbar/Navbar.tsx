@@ -173,9 +173,7 @@ function Navbar(props: Props) {
                   className="w-full text-left py-2 pr-4 pl-3 text-white bg-blue-900 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
                   type="button"
                   onClick={async () => {
-                    logout();
-                    await persistor.purge();
-                    await persistor.flush();
+                    await logout();
                     router.push("/");
                   }}
                 >
