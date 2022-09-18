@@ -12,7 +12,7 @@ type Props = {
 
 const PDFDownload = (props: Props) => {
   const { pdfInstance, show, closeModal } = props;
-  const [cvName, setCvName] = useState("Receipt");
+  const [cvName, setCvName] = useState("Invoice");
   return (
     <Modal
       show={show}
@@ -22,7 +22,7 @@ const PDFDownload = (props: Props) => {
     >
       <div className="w-fit h-fit bg-white p-5 flex-col relative">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Download Receipt</h1>
+          <h1 className="text-2xl font-bold">Download Invoice</h1>
           <button
             className="font-bold absolute top-1 right-3 hover:bg-slate-500 hover:text-white rounded-full"
             style={{
@@ -39,11 +39,11 @@ const PDFDownload = (props: Props) => {
           </button>
         </div>
         <div className="flex justify-center mt-4">
-          <span className="font-bold w-auto self-center mr-3">Receipt file name</span>
+          <span className="font-bold w-auto self-center mr-3">Invoice file name</span>
           <input
             className="w-auto p-2 border border-gray-400"
             type="text"
-            placeholder="Enter Receipt name"
+            placeholder="Enter Invoice name"
             value={cvName}
             onChange={e => setCvName(e.target.value)}
           />

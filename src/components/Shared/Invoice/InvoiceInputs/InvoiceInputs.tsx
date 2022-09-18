@@ -3,19 +3,19 @@ import { useTranslation } from "react-i18next";
 import DateInput from "../../Inputs/DateInput";
 import ImageInput from "../../Inputs/ImageInput";
 import ServiceInput from "../../Inputs/ServiceInput";
-import { TransactionReceiptData } from "../Receipt";
+import { TransactionInvoiceData } from "../Invoice";
 
-import style from "./ReceiptInputs.module.scss";
+import style from "./InvoiceInputs.module.scss";
 
 type Props = {
-  receiptData: TransactionReceiptData;
-  setReceiptData: (data: TransactionReceiptData) => void;
+  invoiceData: TransactionInvoiceData;
+  setInvoiceData: (data: TransactionInvoiceData) => void;
 };
 
-const ReceiptInputs = (props: Props) => {
-  const { receiptData, setReceiptData } = props;
+const InvoiceInputs = (props: Props) => {
+  const { invoiceData, setInvoiceData } = props;
 
-  const { t } = useTranslation("ReceiptInputs");
+  const { t } = useTranslation("InvoiceInputs");
 
   const [displayInputSection, setDisplayInputSection] =
     useState("apartmentData");
@@ -27,7 +27,7 @@ const ReceiptInputs = (props: Props) => {
         minHeight: window.innerHeight - 60 - window.innerHeight * 0.05 + "px",
       }}
     >
-      {Object.keys(receiptData).map(key => {
+      {Object.keys(invoiceData).map(key => {
         return (
           <div
             key={key}
@@ -58,7 +58,7 @@ const ReceiptInputs = (props: Props) => {
               }}
             >
               {Object.entries(
-                receiptData[key as keyof TransactionReceiptData]
+                invoiceData[key as keyof TransactionInvoiceData]
               ).map(([innerKey, value]) => {
                 if (innerKey !== "image") {
                   if (innerKey !== "services") {
@@ -69,22 +69,22 @@ const ReceiptInputs = (props: Props) => {
                           <DateInput
                             value={value as string}
                             resetData={() => {
-                              setReceiptData({
-                                ...receiptData,
+                              setInvoiceData({
+                                ...invoiceData,
                                 [key]: {
-                                  ...receiptData[
-                                    key as keyof typeof receiptData
+                                  ...invoiceData[
+                                    key as keyof typeof invoiceData
                                   ],
                                   [innerKey]: "",
                                 },
                               });
                             }}
                             setValue={date => {
-                              setReceiptData({
-                                ...receiptData,
+                              setInvoiceData({
+                                ...invoiceData,
                                 [key]: {
-                                  ...receiptData[
-                                    key as keyof typeof receiptData
+                                  ...invoiceData[
+                                    key as keyof typeof invoiceData
                                   ],
                                   [innerKey]: date,
                                 },
@@ -103,10 +103,10 @@ const ReceiptInputs = (props: Props) => {
                               type={"checkbox"}
                               checked={value ? Boolean(value) : false}
                               onChange={e => {
-                                setReceiptData({
-                                  ...receiptData,
-                                  receiptData: {
-                                    ...receiptData["receiptData"],
+                                setInvoiceData({
+                                  ...invoiceData,
+                                  invoiceData: {
+                                    ...invoiceData["invoiceData"],
                                     VAT: e.target.checked,
                                   },
                                 });
@@ -118,11 +118,11 @@ const ReceiptInputs = (props: Props) => {
                               type={"text"}
                               value={value ? value.toString() : ""}
                               onChange={e => {
-                                setReceiptData({
-                                  ...receiptData,
+                                setInvoiceData({
+                                  ...invoiceData,
                                   [key]: {
-                                    ...receiptData[
-                                      key as keyof typeof receiptData
+                                    ...invoiceData[
+                                      key as keyof typeof invoiceData
                                     ],
                                     [innerKey]: e.target.value,
                                   },
@@ -138,10 +138,10 @@ const ReceiptInputs = (props: Props) => {
                         <span className="font-bold">{t(innerKey)}</span>
                         <div className="flex flex-col">
                           {Object.entries(
-                            receiptData["receiptData"]["services"]
+                            invoiceData["invoiceData"]["services"]
                           ).map(([serviceKey, serviceValue]) => {
                             let newArray = [
-                              ...receiptData["receiptData"]["services"],
+                              ...invoiceData["invoiceData"]["services"],
                             ];
 
                             const handleServiceName = (value: string) => {
@@ -150,11 +150,11 @@ const ReceiptInputs = (props: Props) => {
                                 Number(serviceValue.price) *
                                 Number(serviceValue.amount)
                               ).toFixed(2);
-                              setReceiptData({
-                                ...receiptData,
+                              setInvoiceData({
+                                ...invoiceData,
                                 [key]: {
-                                  ...receiptData[
-                                    key as keyof typeof receiptData
+                                  ...invoiceData[
+                                    key as keyof typeof invoiceData
                                   ],
                                   services: newArray,
                                 },
@@ -171,11 +171,11 @@ const ReceiptInputs = (props: Props) => {
                                 Number(serviceValue.price) *
                                 Number(serviceValue.amount)
                               ).toFixed(2);
-                              setReceiptData({
-                                ...receiptData,
+                              setInvoiceData({
+                                ...invoiceData,
                                 [key]: {
-                                  ...receiptData[
-                                    key as keyof typeof receiptData
+                                  ...invoiceData[
+                                    key as keyof typeof invoiceData
                                   ],
                                   services: newArray,
                                 },
@@ -196,11 +196,11 @@ const ReceiptInputs = (props: Props) => {
                                 }
                                 removeService={() => {
                                   newArray.splice(Number(serviceKey), 1);
-                                  setReceiptData({
-                                    ...receiptData,
+                                  setInvoiceData({
+                                    ...invoiceData,
                                     [key]: {
-                                      ...receiptData[
-                                        key as keyof typeof receiptData
+                                      ...invoiceData[
+                                        key as keyof typeof invoiceData
                                       ],
                                       services: newArray,
                                     },
@@ -214,12 +214,12 @@ const ReceiptInputs = (props: Props) => {
                         <button
                           className="appearance-none p-3 border rounded-md bg-white hover:bg-gray-100 text-gray-700 leading-tight"
                           onClick={() => {
-                            setReceiptData({
-                              ...receiptData,
+                            setInvoiceData({
+                              ...invoiceData,
                               [key]: {
-                                ...receiptData[key as keyof typeof receiptData],
+                                ...invoiceData[key as keyof typeof invoiceData],
                                 services: [
-                                  ...receiptData["receiptData"]["services"],
+                                  ...invoiceData["invoiceData"]["services"],
                                   {
                                     name: "",
                                     amount: "",
@@ -240,21 +240,21 @@ const ReceiptInputs = (props: Props) => {
                   return (
                     <ImageInput
                       inputName={t(innerKey)}
-                      image={receiptData.apartmentData.image}
+                      image={invoiceData.apartmentData.image}
                       setImage={image => {
-                        setReceiptData({
-                          ...receiptData,
+                        setInvoiceData({
+                          ...invoiceData,
                           apartmentData: {
-                            ...receiptData.apartmentData,
+                            ...invoiceData.apartmentData,
                             image: image,
                           },
                         });
                       }}
                       clearImage={() => {
-                        setReceiptData({
-                          ...receiptData,
+                        setInvoiceData({
+                          ...invoiceData,
                           apartmentData: {
-                            ...receiptData.apartmentData,
+                            ...invoiceData.apartmentData,
                             image: "",
                           },
                         });
@@ -271,4 +271,4 @@ const ReceiptInputs = (props: Props) => {
   );
 };
 
-export default ReceiptInputs;
+export default InvoiceInputs;

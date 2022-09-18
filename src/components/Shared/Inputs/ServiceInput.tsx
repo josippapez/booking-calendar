@@ -21,27 +21,6 @@ const ServiceInput = (props: Props) => {
   } = props;
   const { t, i18n } = useTranslation("ServiceInput");
 
-  const handleServiceNameChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setServiceName(e.target.value);
-    },
-    [setServiceName]
-  );
-
-  const handleServiceAmountChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setServiceAmount(e.target.value);
-    },
-    [setServiceAmount]
-  );
-
-  const handleServicePriceChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setServicePrice(e.target.value);
-    },
-    [setServicePrice]
-  );
-
   const handleRemoveService = useCallback(() => {
     removeService();
   }, [removeService]);

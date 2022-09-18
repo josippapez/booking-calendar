@@ -5,15 +5,15 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { useAppSelector } from "../../../../../store/hooks";
 import PageLoader from "../../Loader/PageLoader";
 import PDFDownload from "../../PDFDownload/PDFDownload";
-import { TransactionReceiptData } from "../Receipt";
-import ReceiptTemplate from "../Templates/ReceiptTemplate";
-import style from "./ReceiptDisplay.module.scss";
+import { TransactionInvoiceData } from "../Invoice";
+import InvoiceTemplate from "../Templates/InvoiceTemplate";
+import style from "./InvoiceDisplay.module.scss";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 type Props = {
-  receiptData: TransactionReceiptData;
-  setReceiptData: (data: TransactionReceiptData) => void;
+  invoiceData: TransactionInvoiceData;
+  setInvoiceData: (data: TransactionInvoiceData) => void;
 };
 
 const options = {
@@ -21,8 +21,8 @@ const options = {
   cMapPacked: true,
 };
 
-const ReceiptDisplay = (props: Props) => {
-  const { receiptData, setReceiptData } = props;
+const InvoiceDisplay = (props: Props) => {
+  const { invoiceData, setInvoiceData } = props;
 
   const { i18n } = useTranslation();
 
@@ -35,10 +35,10 @@ const ReceiptDisplay = (props: Props) => {
   const [displayDownloadModal, setDisplayDownloadModal] = useState(false);
 
   const [instance, updateInstance] = usePDF({
-    document: ReceiptTemplate({
-      apartmentData: receiptData.apartmentData,
-      receiptData: receiptData.receiptData,
-      recepientData: receiptData.recepientData,
+    document: InvoiceTemplate({
+      apartmentData: invoiceData.apartmentData,
+      invoiceData: invoiceData.invoiceData,
+      recepientData: invoiceData.recepientData,
     }),
   });
 
@@ -52,12 +52,12 @@ const ReceiptDisplay = (props: Props) => {
     updateInstanceRef.current = setTimeout(() => {
       updateInstance();
     }, 500);
-  }, [i18n.language, receiptData]);
+  }, [i18n.language, invoiceData]);
 
   useEffect(() => {
     if (selectedApartment) {
-      setReceiptData({
-        ...receiptData,
+      setInvoiceData({
+        ...invoiceData,
         apartmentData: {
           name: selectedApartment.name,
           address: selectedApartment.address,
@@ -143,4 +143,4 @@ const ReceiptDisplay = (props: Props) => {
   );
 };
 
-export default ReceiptDisplay;
+export default InvoiceDisplay;

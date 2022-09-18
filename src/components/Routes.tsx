@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import useMobileView from "../checkForMobileView";
+import AlertModal from "./Shared/AlertModal/AlertModal";
 import Navbar from "./Shared/Navbar/Navbar";
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
@@ -24,7 +25,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
           "/apartments",
           "/apartments/[id]",
           "/[id]",
-          "/receipt",
+          "/invoice",
           "/guests",
         ].includes(router.route)
       ) {
@@ -54,6 +55,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
       >
         {displayPage ? <Component {...pageProps} /> : null}
       </div>
+      <AlertModal />
     </>
   );
 };

@@ -12,14 +12,14 @@ import { TFunction } from "react-i18next";
 import InterBold from "../../../../../public/Styles/Assets/Fonts/Inter-Bold.ttf";
 import InterLight from "../../../../../public/Styles/Assets/Fonts/Inter-Light.ttf";
 import InterRegular from "../../../../../public/Styles/Assets/Fonts/Inter-Regular.ttf";
-import { TransactionReceiptData } from "../Receipt";
+import { TransactionInvoiceData } from "../Invoice";
 
 type Props = {
   translate: TFunction;
   locale: string;
-  apartmentData: TransactionReceiptData["apartmentData"];
-  recepientData: TransactionReceiptData["recepientData"];
-  receiptData: TransactionReceiptData["receiptData"];
+  apartmentData: TransactionInvoiceData["apartmentData"];
+  recepientData: TransactionInvoiceData["recepientData"];
+  invoiceData: TransactionInvoiceData["invoiceData"];
 };
 
 Font.register({
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const TransactionReceipt = (props: Props): JSX.Element => {
-  const { translate, locale, apartmentData, receiptData, recepientData } =
+const TransactionInvoice = (props: Props): JSX.Element => {
+  const { translate, locale, apartmentData, invoiceData, recepientData } =
     props;
 
   return (
@@ -152,12 +152,12 @@ const TransactionReceipt = (props: Props): JSX.Element => {
                 },
               ]}
             >
-              {receiptData?.receiptName}
+              {invoiceData?.invoiceName}
             </Text>
             <Text>
-              {translate("date_of_receipt")}:{" "}
-              {receiptData.date
-                ? DateTime.fromISO(receiptData.date)
+              {translate("date_of_invoice")}:{" "}
+              {invoiceData.date
+                ? DateTime.fromISO(invoiceData.date)
                     .setLocale(locale)
                     .toLocaleString({
                       month: "long",
@@ -188,7 +188,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
               <Text style={[{ width: "20%" }]}>{translate("price")}</Text>
               <Text style={[{ width: "20%" }]}>{translate("total")}</Text>
             </View>
-            {receiptData?.services.map((service, index) => (
+            {invoiceData?.services.map((service, index) => (
               <View
                 key={index}
                 style={[
@@ -234,12 +234,12 @@ const TransactionReceipt = (props: Props): JSX.Element => {
           >
             <Text>{translate("total_price")}</Text>
             <Text>
-              {receiptData?.services
+              {invoiceData?.services
                 .reduce((a, b) => a + Number(b.total), 0)
                 .toLocaleString(locale, {
                   minimumFractionDigits: 2,
                 })}{" "}
-              {receiptData?.totalCurrency}
+              {invoiceData?.totalCurrency}
             </Text>
           </View>
         </View>
@@ -252,13 +252,13 @@ const TransactionReceipt = (props: Props): JSX.Element => {
               <Text>{translate(`free_of_vat_true`)}</Text>
             </View>
             <Text style={[{ fontSize: 10 }]}>
-              {translate("fiscalisation_receipt")}
+              {translate("fiscalisation_invoice")}
             </Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>
-                {translate("transaction_receipt")}{" "}
-                {receiptData.dateOfFiscalization !== ""
-                  ? DateTime.fromISO(receiptData.dateOfFiscalization)
+                {translate("transaction_invoice")}{" "}
+                {invoiceData.dateOfFiscalization !== ""
+                  ? DateTime.fromISO(invoiceData.dateOfFiscalization)
                       .setLocale(locale)
                       .toLocaleString({
                         month: "long",
@@ -270,7 +270,7 @@ const TransactionReceipt = (props: Props): JSX.Element => {
             </View>
             <Text style={[{ fontSize: 10 }]}>{translate("note")}:</Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
-              <Text>{receiptData?.note}</Text>
+              <Text>{invoiceData?.note}</Text>
             </View>
           </View>
         </View>
@@ -289,17 +289,17 @@ const TransactionReceipt = (props: Props): JSX.Element => {
             },
           ]}
         >
-          {receiptData?.contact_name && (
+          {invoiceData?.contact_name && (
             <Text style={[{ fontSize: 10 }]}>
-              {translate("contact")}: {receiptData?.contact}{" "}
-              {`(${receiptData?.contact_name})`}
+              {translate("contact")}: {invoiceData?.contact}{" "}
+              {`(${invoiceData?.contact_name})`}
             </Text>
           )}
-          <Text style={[{ fontSize: 10 }]}>{receiptData?.email}</Text>
+          <Text style={[{ fontSize: 10 }]}>{invoiceData?.email}</Text>
         </View>
       </Page>
     </Document>
   );
 };
 
-export default TransactionReceipt;
+export default TransactionInvoice;

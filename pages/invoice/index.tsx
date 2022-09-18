@@ -3,8 +3,8 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 
-const DynamicReceiptPage = dynamic(
-  () => import("../../src/components/Shared/Receipt/Receipt"),
+const DynamicInvoicePage = dynamic(
+  () => import("../../src/components/Shared/Invoice/Invoice"),
   {
     suspense: true
   }
@@ -12,13 +12,13 @@ const DynamicReceiptPage = dynamic(
 
 type Props = {};
 
-const Receipt: NextPage = (props: Props) => {
+const Invoice: NextPage = (props: Props) => {
   return (
     <Suspense fallback={<PageLoader />}>
-      <title>Receipt</title>
-      <DynamicReceiptPage />
+      <title>Invoice</title>
+      <DynamicInvoicePage />
     </Suspense>
   );
 };
 
-export default Receipt;
+export default Invoice;

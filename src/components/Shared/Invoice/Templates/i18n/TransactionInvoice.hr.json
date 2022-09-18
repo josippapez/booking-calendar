@@ -1,5 +1,5 @@
 {
-  "date_of_receipt": "Datum računa",
+  "date_of_invoice": "Datum računa",
   "service_name": "Naziv usluge",
   "amount": "Količina",
   "price": "Cijena",
@@ -8,8 +8,8 @@
   "user_is_free_of_vat": "Oslobođenje od PDV-a",
   "free_of_vat_true": "Davatelj usluge nije u sustavu PDV-a",
   "free_of_vat_false": "Davatelj usluge je u sustavu PDV-a",
-  "fiscalisation_receipt": "Fiskalizacija računa",
-  "transaction_receipt": "Transakcijski račun",
+  "fiscalisation_invoice": "Fiskalizacija računa",
+  "transaction_invoice": "Transakcijski račun",
   "iban": "IBAN",
   "pid": "OIB",
   "note": "Napomena",

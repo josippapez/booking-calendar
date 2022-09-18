@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { selectApartment } from "../../../../store/reducers/apartments";
 import Dropdown from "../Dropdown/Dropdown";
-import ReceiptDisplay from "./ReceiptDisplay/ReceiptDisplay";
-import ReceiptInputs from "./ReceiptInputs/ReceiptInputs";
+import InvoiceDisplay from "./InvoiceDisplay/InvoiceDisplay";
+import InvoiceInputs from "./InvoiceInputs/InvoiceInputs";
 
 type Props = {};
 
-export type TransactionReceiptData = {
+export type TransactionInvoiceData = {
   apartmentData: {
     name: string;
     address: string;
@@ -22,8 +22,8 @@ export type TransactionReceiptData = {
     recepientAddress: string;
     recepientPID: string;
   };
-  receiptData: {
-    receiptName: string;
+  invoiceData: {
+    invoiceName: string;
     dateOfFiscalization: string;
     date: string;
     VAT: boolean;
@@ -41,15 +41,15 @@ export type TransactionReceiptData = {
   };
 };
 
-const Receipt: NextPage = (props: Props) => {
+const Invoice: NextPage = (props: Props) => {
   const dispatch = useAppDispatch();
   const apartments = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
     state => state.apartments.selectedApartment
   );
 
-  const [transactionReceiptData, setTransactionReceiptData] =
-    useState<TransactionReceiptData>({
+  const [transactionInvoiceData, setTransactionInvoiceData] =
+    useState<TransactionInvoiceData>({
       apartmentData: {
         name: "",
         address: "",
@@ -63,8 +63,8 @@ const Receipt: NextPage = (props: Props) => {
         recepientAddress: "",
         recepientPID: "",
       },
-      receiptData: {
-        receiptName: "",
+      invoiceData: {
+        invoiceName: "",
         date: "",
         dateOfFiscalization: "",
         VAT: false,
@@ -84,7 +84,7 @@ const Receipt: NextPage = (props: Props) => {
       },
     });
 
-  const renderReceipt = () => {
+  const renderInvoice = () => {
     return (
       <div>
         <div className="w-56">
@@ -107,13 +107,13 @@ const Receipt: NextPage = (props: Props) => {
         </div>
         {selectedApartment && (
           <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
-            <ReceiptInputs
-              receiptData={transactionReceiptData}
-              setReceiptData={setTransactionReceiptData}
+            <InvoiceInputs
+              invoiceData={transactionInvoiceData}
+              setInvoiceData={setTransactionInvoiceData}
             />
-            <ReceiptDisplay
-              receiptData={transactionReceiptData}
-              setReceiptData={setTransactionReceiptData}
+            <InvoiceDisplay
+              invoiceData={transactionInvoiceData}
+              setInvoiceData={setTransactionInvoiceData}
             />
           </div>
         )}
@@ -121,7 +121,7 @@ const Receipt: NextPage = (props: Props) => {
     );
   };
 
-  return renderReceipt();
+  return renderInvoice();
 };
 
-export default Receipt;
+export default Invoice;

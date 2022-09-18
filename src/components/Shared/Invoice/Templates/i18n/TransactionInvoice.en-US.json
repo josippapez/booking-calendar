@@ -1,5 +1,5 @@
 {
-  "date_of_receipt": "Date of receipt",
+  "date_of_invoice": "Date of invoice",
   "service_name": "Service name",
   "amount": "Amount",
   "price": "Price",
@@ -8,8 +8,8 @@
   "user_is_free_of_vat": "VAT Exemption",
   "free_of_vat_true": "User is VAT exempt",
   "free_of_vat_false": "User is not VAT exempt",
-  "fiscalisation_receipt": "Fiscalisation of receipt",
-  "transaction_receipt": "Transaction Receipt",
+  "fiscalisation_invoice": "Fiscalisation of invoice",
+  "transaction_invoice": "Transaction Invoice",
   "iban": "IBAN",
   "pid": "PID",
   "note": "Note",
