@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { setApartments } from "../reducers/apartments";
+import { removeApartmentById, setApartments } from "../reducers/apartments";
 import { AppDispatch, AppState } from "../store";
 
 let imageUrl: string | ArrayBuffer | null = null;
@@ -89,25 +89,22 @@ export const editApartment = (
 
 export const removeApartment = (apartmentId: string) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
-    let tempApartments = [...getState().apartments.apartments];
-    const storage = getStorage();
-    const storageRef = ref(
-      storage,
-      `apartments/${
-        tempApartments.find(apartment => apartment.id === apartmentId)?.name
-      }`
-    );
-    tempApartments = tempApartments.filter(
-      apartment => apartment.id !== apartmentId
-    );
-
-    await axios.delete(`/apartments/${apartmentId}`, {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-    });
-
-    dispatch(setApartments(tempApartments));
+    await axios
+      .delete(`/apartments/${apartmentId}`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+      })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch(removeApartmentById(apartmentId));
+        } else {
+          return;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 };
 

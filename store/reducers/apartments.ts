@@ -34,6 +34,11 @@ export const apartments = createSlice({
     selectApartment: (state, action: PayloadAction<Apartment | null>) => {
       state.selectedApartment = action.payload;
     },
+    removeApartmentById: (state, action: PayloadAction<string>) => {
+      state.apartments = state.apartments.filter(
+        apartment => apartment.id !== action.payload
+      );
+    },
   },
   extraReducers(builder) {
     builder.addCase(PURGE, (state, action) => {
@@ -43,6 +48,7 @@ export const apartments = createSlice({
   },
 });
 
-export const { selectApartment, setApartments } = apartments.actions;
+export const { selectApartment, setApartments, removeApartmentById } =
+  apartments.actions;
 
 export default apartments.reducer;
