@@ -12,18 +12,19 @@ type Props = {
 const InvoiceTemplate = (props: Props): JSX.Element => {
   const { apartmentData, invoiceData, recepientData } = props;
   const { t, i18n } = useTranslation("TransactionInvoice");
-  const options = {
-    translate: t,
-    locale: i18n.language,
-    apartmentData,
-    invoiceData,
-    recepientData,
-  };
+  const options = useMemo(() => {
+    return {
+      translate: t,
+      locale: i18n.language,
+      apartmentData,
+      invoiceData,
+      recepientData,
+    };
+  }, [i18n.language, apartmentData, invoiceData, recepientData, t]);
 
-  return useMemo(
-    () => TransactionInvoice(options),
-    [i18n.language, apartmentData, invoiceData, recepientData]
-  );
+  return useMemo(() => {
+    return TransactionInvoice(options);
+  }, [options]);
 };
 
 export default InvoiceTemplate;
