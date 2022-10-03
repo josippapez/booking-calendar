@@ -87,44 +87,40 @@ const Invoice: NextPage = (props: Props) => {
       },
     });
 
-  const renderInvoice = () => {
-    return (
-      <div>
-        <div className="w-56">
-          <Dropdown
-            placeholder="Select apartment"
-            data={apartments?.apartments.map(apartment => {
-              return {
-                id: apartment.id,
-                name: apartment.name,
-                value: apartment,
-              };
-            })}
-            selected={selectedApartment?.id as string}
-            setData={item => {
-              if (item.id !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(item.value as Apartment));
-              }
-            }}
+  return (
+    <div>
+      <div className="w-56">
+        <Dropdown
+          placeholder="Select apartment"
+          data={apartments?.apartments.map(apartment => {
+            return {
+              id: apartment.id,
+              name: apartment.name,
+              value: apartment,
+            };
+          })}
+          selected={selectedApartment?.id as string}
+          setData={item => {
+            if (item.id !== (selectedApartment?.id as string)) {
+              dispatch(selectApartment(item.value as Apartment));
+            }
+          }}
+        />
+      </div>
+      {selectedApartment && (
+        <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
+          <InvoiceInputs
+            invoiceData={transactionInvoiceData}
+            setInvoiceData={setTransactionInvoiceData}
+          />
+          <InvoiceDisplay
+            invoiceData={transactionInvoiceData}
+            setInvoiceData={setTransactionInvoiceData}
           />
         </div>
-        {selectedApartment && (
-          <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
-            <InvoiceInputs
-              invoiceData={transactionInvoiceData}
-              setInvoiceData={setTransactionInvoiceData}
-            />
-            <InvoiceDisplay
-              invoiceData={transactionInvoiceData}
-              setInvoiceData={setTransactionInvoiceData}
-            />
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  return renderInvoice();
+      )}
+    </div>
+  );
 };
 
 export default Invoice;
