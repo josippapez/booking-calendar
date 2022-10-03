@@ -19,7 +19,7 @@ import {
 } from "../../../../store/reducers/apartments";
 import { setEvents } from "../../../../store/reducers/events";
 import { useAlert } from "../../../AlertModalProvider";
-import useMobileView from "../../../checkForMobileView";
+import { useMobileView } from "../../../checkForMobileView";
 
 type Props = {};
 
@@ -58,7 +58,7 @@ const Apartments: NextPage = (props: Props) => {
     const fetchedApartments = await axios
       .get(`/apartments`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get('accessToken')}`,
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
         },
       })
       .then(res => res.data)

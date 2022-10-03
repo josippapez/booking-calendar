@@ -12,7 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { Apartment, selectApartment } from "../../../store/reducers/apartments";
 import { setEvents } from "../../../store/reducers/events";
-import useMobileView from "../../checkForMobileView";
+import { useMobileView } from "../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
 import DatePickerHeader from "../Shared/DatePicker/Header/DatePickerHeader";
 import Dropdown from "../Shared/Dropdown/Dropdown";

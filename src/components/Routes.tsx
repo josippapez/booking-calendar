@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
-import useMobileView from "../checkForMobileView";
+import { useMobileView } from "../checkForMobileView";
 import { intercept } from "../interceptor";
 import AlertModal from "./Shared/AlertModal/AlertModal";
 import Navbar from "./Shared/Navbar/Navbar";
@@ -50,7 +50,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
 
   return (
     <>
-      <Navbar userAuthenticated={!!Cookies.get('accessToken')} />
+      <Navbar userAuthenticated={!!Cookies.get("accessToken")} />
       <div
         className={`min-w-screen w-full h-fit page-container ${
           mobileView

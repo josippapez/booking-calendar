@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import useMobileView from "../../checkForMobileView";
+import { useMobileView } from "../../checkForMobileView";
 import Login from "./Login";
 import style from "./LoginPage.module.scss";
 

@@ -6,7 +6,8 @@ import PageLoader from "../../src/components/Shared/Loader/PageLoader";
 const DynamicInvoicePage = dynamic(
   () => import("../../src/components/Shared/Invoice/Invoice"),
   {
-    suspense: true
+    suspense: true,
+    ssr: false,
   }
 );
 
