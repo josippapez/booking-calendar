@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getServerSideProps } from "../../../../pages/[id]";
 import Images from "../../../../public/Styles/Assets/Images/Images";
-import useMobileView from "../../../checkForMobileView";
+import { useMobileView } from "../../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
 import CreateNewReservation from "../../Calendar/CreateNewReservation/CreateNewReservation";
 import style from "./PublicCalendar.module.scss";

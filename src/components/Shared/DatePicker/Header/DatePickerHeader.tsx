@@ -1,4 +1,4 @@
-import useMobileView from "../../../../checkForMobileView";
+import { useMobileView } from "../../../../checkForMobileView";
 
 type Props = {
   setSelectedYear?: (year: number) => void;
