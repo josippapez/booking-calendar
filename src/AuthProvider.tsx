@@ -21,11 +21,13 @@ export function AuthProvider({ children }: any) {
   const router = useRouter();
   const user = useAppSelector(state => state.user.user);
 
+  const cookies = Cookies.get();
+
   useEffect(() => {
     axios.defaults.headers.common["Authorization"] =
       "Bearer " + Cookies.get("accessToken");
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_BE_API_URL;
-  }, [user, Cookies.get()]);
+  }, [user, cookies]);
 
   const refreshTokenIfNeeded = async () => {
     if (

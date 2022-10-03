@@ -1,8 +1,8 @@
-import { ChangeEvent, useCallback } from "react";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 type Props = {
-  key?: any;
+  inputKey?: any;
   serviceTotal: string;
   setServiceName: (serviceName: string) => void;
   setServiceAmount: (serviceAmount: string) => void;
@@ -12,7 +12,7 @@ type Props = {
 
 const ServiceInput = (props: Props) => {
   const {
-    key,
+    inputKey,
     setServiceName,
     setServiceAmount,
     setServicePrice,
@@ -26,7 +26,10 @@ const ServiceInput = (props: Props) => {
   }, [removeService]);
 
   return (
-    <div key={`service-${key}`} className="flex flex-row gap-2 w-full mb-2">
+    <div
+      key={`service-${inputKey}`}
+      className="flex flex-row gap-2 w-full mb-2"
+    >
       <input
         className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-2/6"
         type={"text"}

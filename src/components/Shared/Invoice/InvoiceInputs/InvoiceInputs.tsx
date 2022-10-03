@@ -185,6 +185,7 @@ const InvoiceInputs = (props: Props) => {
                             return (
                               <ServiceInput
                                 key={serviceKey}
+                                inputKey={serviceKey}
                                 setServiceAmount={value =>
                                   handleServiceChange(value, "amount")
                                 }

@@ -7,7 +7,6 @@ const DynamicInvoicePage = dynamic(
   () => import("../../src/components/Shared/Invoice/Invoice"),
   {
     suspense: true,
-    ssr: false,
   }
 );
 
