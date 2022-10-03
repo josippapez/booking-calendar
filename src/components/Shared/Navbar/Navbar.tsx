@@ -2,8 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { logout } from "../../../../store/firebaseActions/authActions";
-import { persistor } from "../../../../store/store";
+import { logout } from "../../../../store/authActions/authActions";
 import useMobileView from "../../../checkForMobileView";
 import useDarkMode from "../../../Hooks/useDarkMode";
 import style from "./Navbar.module.scss";
@@ -104,9 +103,7 @@ function Navbar(props: Props) {
                 className="hidden md:block bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-fit self-end"
                 type="button"
                 onClick={async () => {
-                  logout();
-                  await persistor.purge();
-                  await persistor.flush();
+                  await logout();
                   router.push("/");
                 }}
               >

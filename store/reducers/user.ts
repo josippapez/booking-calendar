@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PURGE } from 'redux-persist';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PURGE } from "redux-persist";
 
 type User = {
   id: string;
   email: string;
-  accessToken: string | null;
+  role: string;
 };
 export interface UserData {
   user: User;
@@ -12,14 +12,14 @@ export interface UserData {
 
 const initialState: UserData = {
   user: {
-    id: '',
-    email: '',
-    accessToken: null,
+    id: "",
+    email: "",
+    role: "",
   },
 };
 
 export const user = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
@@ -27,18 +27,18 @@ export const user = createSlice({
     },
     removeUser: state => {
       state.user = {
-        id: '',
-        email: '',
-        accessToken: null,
+        id: "",
+        email: "",
+        role: "",
       };
     },
   },
   extraReducers(builder) {
     builder.addCase(PURGE, (state, action) => {
       state.user = {
-        id: '',
-        email: '',
-        accessToken: null,
+        id: "",
+        email: "",
+        role: "",
       };
     });
   },

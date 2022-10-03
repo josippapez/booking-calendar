@@ -1,7 +1,10 @@
 import { NextPage } from "next";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import { selectApartment } from "../../../../store/reducers/apartments";
+import {
+  Apartment,
+  selectApartment,
+} from "../../../../store/reducers/apartments";
 import Dropdown from "../Dropdown/Dropdown";
 import InvoiceDisplay from "./InvoiceDisplay/InvoiceDisplay";
 import InvoiceInputs from "./InvoiceInputs/InvoiceInputs";
@@ -90,17 +93,17 @@ const Invoice: NextPage = (props: Props) => {
         <div className="w-56">
           <Dropdown
             placeholder="Select apartment"
-            data={Object.keys(apartments?.apartments).map(key => {
+            data={apartments?.apartments.map(apartment => {
               return {
-                id: apartments.apartments[key].id,
-                name: apartments.apartments[key].name,
-                value: apartments.apartments[key],
+                id: apartment.id,
+                name: apartment.name,
+                value: apartment,
               };
             })}
             selected={selectedApartment?.id as string}
             setData={item => {
               if (item.id !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item.id]));
+                dispatch(selectApartment(item.value as Apartment));
               }
             }}
           />

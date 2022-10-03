@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
 import { Day } from "../../Calendar/CalendarTypes";
@@ -39,6 +39,13 @@ const DatePicker = (props: Props) => {
     year: selectedYear,
     month: selectedMonth,
   });
+
+  useEffect(() => {
+    if (initialDate) {
+      setSelectedMonth(DateTime.fromISO(initialDate).month);
+      setSelectedYear(DateTime.fromISO(initialDate).year);
+    }
+  }, [initialDate]);
 
   return (
     <Modal

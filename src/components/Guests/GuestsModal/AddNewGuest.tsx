@@ -1,11 +1,12 @@
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   deleteGuestForApartment,
   saveGuestForApartment,
-} from "../../../../store/firebaseActions/guestsActions";
+} from "../../../../store/authActions/guestsActions";
 import { useAppDispatch } from "../../../../store/hooks";
+import { setGuests } from "../../../../store/reducers/guests";
 import { useAlert } from "../../../AlertModalProvider";
 import DatePicker from "../../Shared/DatePicker/DatePicker";
 import Modal from "../../Shared/Modal/Modal";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export type Guest = {
+  id?: string;
   name: string;
   PID: string;
   travelIdNumber: string;
@@ -36,21 +38,19 @@ const AddNewGuest = (props: Props) => {
   const { t, i18n } = useTranslation("AddNewGuest");
   const dispatch = useAppDispatch();
   const { show, closeModal, selectedGuest, selectedGuestId } = props;
-  const [guestInfo, setGuestInfo] = useState<Guest>(
-    selectedGuest || {
-      name: "",
-      PID: "",
-      dateOfBirth: "",
-      dateOfArrival: "",
-      dateOfDeparture: "",
-      country: "",
-      city: "",
-      address: "",
-      numberOfInvoice: "",
-      travelIdNumber: "",
-      note: "",
-    }
-  );
+  const [guestInfo, setGuestInfo] = useState<Guest>({
+    name: "",
+    PID: "",
+    dateOfBirth: "",
+    dateOfArrival: "",
+    dateOfDeparture: "",
+    country: "",
+    city: "",
+    address: "",
+    numberOfInvoice: "",
+    travelIdNumber: "",
+    note: "",
+  });
   const [errors, setErrors] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState<string>("");
 
@@ -87,13 +87,33 @@ const AddNewGuest = (props: Props) => {
     return 0;
   };
 
+  useEffect(() => {
+    if (selectedGuest) {
+      setGuestInfo(selectedGuest);
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      setGuestInfo({
+        name: "",
+        PID: "",
+        dateOfBirth: "",
+        dateOfArrival: "",
+        dateOfDeparture: "",
+        country: "",
+        city: "",
+        address: "",
+        numberOfInvoice: "",
+        travelIdNumber: "",
+        note: "",
+      });
+      setErrors([]);
+    };
+  }, [closeModal]);
+
   return (
-    <Modal
-      show={show}
-      closeModal={closeModal}
-      contentClassname="sm:w-10/12 md:w-1/2 lg:w-1/2 xl:w-1/3 w-10/12"
-      animation="fade"
-    >
+    <Modal show={show} width="40rem" closeModal={closeModal} animation="fade">
       <div className="bg-white rounded-md shadow-md">
         <h1 className="bg-gray-200 rounded-t-md font-semibold px-10 py-4 text-center">
           {t("title")}
@@ -199,8 +219,20 @@ const AddNewGuest = (props: Props) => {
                 showAlert(t("remove_guest"), false, () => async () => {
                   await dispatch(
                     deleteGuestForApartment(selectedGuestId, selectedGuest)
-                  );
-                  closeModal();
+                  ).then(res => {
+                    if (res.status === 200) {
+                      if (res.data.data) {
+                        dispatch(
+                          setGuests(
+                            res.data.data[guestInfo.dateOfArrival.split("-")[0]]
+                          )
+                        );
+                      } else {
+                        dispatch(setGuests({}));
+                      }
+                      closeModal();
+                    }
+                  });
                 });
               }}
             >
@@ -211,13 +243,26 @@ const AddNewGuest = (props: Props) => {
             className="bg-blue-700 hover:bg-blue-500 text-white p-2 rounded-md font-bold"
             onClick={async () => {
               if (checkForRequiredFields()) {
-                if (selectedGuest && selectedGuestId) {
-                  await dispatch(
-                    deleteGuestForApartment(selectedGuestId, selectedGuest)
-                  );
-                }
-                await dispatch(saveGuestForApartment(guestInfo));
-                closeModal();
+                await dispatch(
+                  saveGuestForApartment(
+                    guestInfo,
+                    selectedGuest
+                      ? {
+                          id: selectedGuestId,
+                          ...selectedGuest,
+                        }
+                      : undefined
+                  )
+                ).then(res => {
+                  if (res.status === 201) {
+                    dispatch(
+                      setGuests(
+                        res.data.data[guestInfo.dateOfArrival.split("-")[0]]
+                      )
+                    );
+                    closeModal();
+                  }
+                });
               }
             }}
           >

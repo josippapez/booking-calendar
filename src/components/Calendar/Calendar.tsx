@@ -1,17 +1,16 @@
-import { FirebaseError } from "firebase/app";
-import firebase from "firebase/compat/app";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import axios from "axios";
 import { DateTime, Info } from "luxon";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  editEventForApartment,
   removeEventForApartment,
   saveEventsForApartment,
-} from "../../../store/firebaseActions/eventActions";
+} from "../../../store/authActions/eventActions";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectApartment } from "../../../store/reducers/apartments";
+import { Apartment, selectApartment } from "../../../store/reducers/apartments";
 import { setEvents } from "../../../store/reducers/events";
 import useMobileView from "../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
@@ -94,21 +93,14 @@ const Calendar: NextPage = (props: Props) => {
   );
 
   const getEventsById = async (id: string) => {
-    try {
-      const event = await getDoc(
-        doc(getFirestore(firebase.app()), "events", `${id}/data/private`)
-      ).then(doc => doc.data());
-
-      if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
-        dispatch(setEvents(event as EventsByYear));
-      }
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        if (error.code === "permission-denied") {
-          navigate.push("/");
-        }
-      }
-    }
+    await axios
+      .get(`/events/${id}`)
+      .then(res => {
+        dispatch(setEvents(res.data.data as EventsByYear));
+      })
+      .catch(err => {
+        dispatch(setEvents({}));
+      });
   };
 
   useEffect(() => {
@@ -125,9 +117,11 @@ const Calendar: NextPage = (props: Props) => {
   const calculateBiggestIndexByWeekNumber = useCallback(() => {
     let biggestIndex = 0;
     for (const day of eachDayOfMonth) {
-      const eventsForDay = eventsData[day.year][day.date];
-      if (eventsForDay && eventsForDay.length > biggestIndex) {
-        biggestIndex = eventsForDay.length;
+      if (eventsData[day.year] && eventsData[day.year][day.date]) {
+        const eventsForDay = eventsData[day.year][day.date];
+        if (eventsForDay && eventsForDay.length > biggestIndex) {
+          biggestIndex = eventsForDay.length;
+        }
       }
     }
 
@@ -145,17 +139,17 @@ const Calendar: NextPage = (props: Props) => {
         <div className={`font-bold flex gap-3 ${mobileView && "mb-6"}`}>
           <Dropdown
             placeholder="Select apartment"
-            data={Object.keys(apartments?.apartments).map(key => {
+            data={apartments?.apartments.map(apartment => {
               return {
-                id: apartments.apartments[key].id,
-                name: apartments.apartments[key].name,
-                value: apartments.apartments[key],
+                id: apartment.id,
+                name: apartment.name,
+                value: apartment,
               };
             })}
             selected={navigate.query.id as string}
             setData={item => {
               if (item.id !== (navigate.query.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item.id]));
+                dispatch(selectApartment(item.value as Apartment));
                 navigate.push(`/apartments/${item.id}`);
               }
             }}
@@ -348,12 +342,14 @@ const Calendar: NextPage = (props: Props) => {
           setSelectedDay={setSelectedDay}
           setSelectedEventToEdit={setSelectedEventToEdit}
           events={
-            selectedDay
+            selectedDay && eventsData[selectedDay.split("-")[0]]
               ? eventsData[selectedDay.split("-")[0]][selectedDay]
               : []
           }
           isMobileView={mobileView}
-          removeEvent={event => dispatch(removeEventForApartment(event))}
+          removeEvent={async event =>
+            await dispatch(removeEventForApartment(event))
+          }
         />
         <CreateNewEvent
           show={addNewEvent}
@@ -361,8 +357,18 @@ const Calendar: NextPage = (props: Props) => {
           setShowEdit={setShowEditEvent}
           setShow={setAddNewEvent}
           selectedEventToEdit={selectedEventToEdit}
-          events={eventsData}
-          setEvents={events => dispatch(saveEventsForApartment(events))}
+          setEvents={event =>
+            dispatch(
+              selectedEventToEdit
+                ? editEventForApartment(event, selectedEventToEdit)
+                : saveEventsForApartment(event)
+            ).then(res => {
+              if (res.data && [201, 200].includes(res.status)) {
+                setShowEditEvent(false);
+                setAddNewEvent(false);
+              }
+            })
+          }
         />
       </div>
       <div className="fixed bottom-0 right-0 p-3 w-fit drop-shadow-md">

@@ -62,10 +62,15 @@ const DatePickerDates = (props: Props) => {
     );
   };
 
-  const daysHeader = (month: number) => {
-     return (
+  const daysHeader = (month: number, year: number) => {
+    return (
       <div>
-        <div className="font-extrabold text-xl px-2 pb-2 drop-shadow-md">{Info.months("long", { locale: i18n.language })[month - 1]}</div>
+        <div className="font-extrabold text-xl px-2 pb-2 drop-shadow-md flex gap-2">
+          {DateTime.local()
+            .set({ month, year })
+            .setLocale(i18n.language)
+            .toFormat("LLLL yyyy")}
+        </div>
         <div className={style.calendarGridHeader}>
           {Info.weekdaysFormat("short", { locale: i18n.language }).map(
             (day, index) => (
@@ -87,7 +92,7 @@ const DatePickerDates = (props: Props) => {
       <>
         {showPreviousMonth && (
           <div>
-            {daysHeader(dates.lastMonth)}
+            {daysHeader(dates.lastMonth, dates.lastMonthYear)}
             <div className={`${style.calendarGrid}`}>
               {dates.lastMonthDates.map((day, index) =>
                 displayDate(day, index)
@@ -96,14 +101,14 @@ const DatePickerDates = (props: Props) => {
           </div>
         )}
         <div>
-          {daysHeader(dates.month)}
+          {daysHeader(dates.month, dates.year)}
           <div className={`${style.calendarGrid}`}>
             {dates.dates.map((day, index) => displayDate(day, index))}
           </div>
         </div>
         {showNextMonth && (
           <div>
-            {daysHeader(dates.nextMonth)}
+            {daysHeader(dates.nextMonth, dates.nextMonthYear)}
             <div className={`${style.calendarGrid}`}>
               {dates.nextMonthDates.map((day, index) =>
                 displayDate(day, index)

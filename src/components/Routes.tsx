@@ -1,9 +1,13 @@
+import Cookies from "js-cookie";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import useMobileView from "../checkForMobileView";
+import { intercept } from "../interceptor";
 import AlertModal from "./Shared/AlertModal/AlertModal";
 import Navbar from "./Shared/Navbar/Navbar";
+
+intercept();
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const user = useAppSelector(state => state.user.user);
@@ -18,8 +22,13 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
     }
   }, [router, user, mobileView]);
 
-  const checkForAuthentication = () => {
-    if (user && user.accessToken) {
+  const checkForAuthentication = async () => {
+    if (!Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
+      if (!["/", "/[id]"].includes(router.route)) {
+        router.push("/");
+      }
+    }
+    if (Cookies.get("accessToken")) {
       if (
         ![
           "/apartments",
@@ -31,10 +40,6 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
       ) {
         router.push("/apartments");
       }
-    } else {
-      if (!["/", "/[id]"].includes(router.route)) {
-        router.push("/");
-      }
     }
     setDisplayPage(true);
   };
@@ -45,9 +50,9 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
 
   return (
     <>
-      <Navbar userAuthenticated={!!user.accessToken} />
+      <Navbar userAuthenticated={!!Cookies.get('accessToken')} />
       <div
-        className={`min-w-screen w-full overflow-x-hidden page-container ${
+        className={`min-w-screen w-full h-fit page-container ${
           mobileView
             ? window.location.pathname !== "/" && "py-10"
             : window.location.pathname !== "/" && "py-16"

@@ -1,6 +1,4 @@
-import { FirebaseError } from "firebase/app";
-import firebase from "firebase/compat/app";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import axios from "axios";
 import { DateTime, Info } from "luxon";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -8,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Images from "../../../public/Styles/Assets/Images/Images";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectApartment } from "../../../store/reducers/apartments";
+import { Apartment, selectApartment } from "../../../store/reducers/apartments";
 import { setGuests } from "../../../store/reducers/guests";
 import DatePickerHeader from "../Shared/DatePicker/Header/DatePickerHeader";
 import Dropdown from "../Shared/Dropdown/Dropdown";
@@ -18,7 +16,6 @@ type Props = {};
 
 const Guests = (props: Props) => {
   const { t, i18n } = useTranslation("Guests");
-  const navigate = useRouter();
   const dispatch = useAppDispatch();
   const apartments = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
@@ -36,29 +33,17 @@ const Guests = (props: Props) => {
   const [selectedGuestId, setSelectedGuestId] = useState<string>("");
 
   const getGuestsForApartment = async (id: string) => {
-    try {
-      const guestsForAppartment = await getDoc(
-        doc(
-          getFirestore(firebase.app()),
-          `guests/${id}/data`,
-          selectedYear.toString()
-        )
-      ).then(doc => {
-        if (doc.exists()) {
-          return doc.data();
+    const guests = await axios
+      .get(`/guests/${id}/${selectedYear}`)
+      .then(res => {
+        if (res.data.data && res.data.data[selectedYear]) {
+          return res.data.data[selectedYear];
         } else {
           return {};
         }
-      });
-
-      dispatch(setGuests(guestsForAppartment));
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        if (error.code === "permission-denied") {
-          navigate.push("/");
-        }
-      }
-    }
+      })
+      .catch(err => {});
+    dispatch(setGuests(guests));
   };
 
   useEffect(() => {
@@ -74,17 +59,17 @@ const Guests = (props: Props) => {
         <div className="flex justify-between items-center mt-7 mb-10">
           <Dropdown
             placeholder="Select apartment"
-            data={Object.keys(apartments?.apartments).map(key => {
+            data={apartments?.apartments.map(apartment => {
               return {
-                id: apartments.apartments[key].id,
-                name: apartments.apartments[key].name,
-                value: apartments.apartments[key],
+                id: apartment.id,
+                name: apartment.name,
+                value: apartment,
               };
             })}
             selected={selectedApartment?.id as string}
             setData={item => {
               if (item.id !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item.id]));
+                dispatch(selectApartment(item.value as Apartment));
               }
             }}
           />
@@ -124,131 +109,136 @@ const Guests = (props: Props) => {
                 setSelectedYear={setSelectedYear}
               />
             </div>
-            {Object.keys(guests)
-              .sort((a, b) =>
-                Number(a) > Number(b)
-                  ? sorting === "asc"
-                    ? -1
-                    : 1
-                  : sorting === "asc"
-                  ? 1
-                  : -1
-              )
-              .map(key => {
-                return (
-                  <div key={key}>
-                    <h1
-                      className={`font-extrabold text-3xl drop-shadow-md mb-3 cursor-pointer hover:bg-neutral-300 ${
-                        selectedMonth === parseInt(key) && "bg-neutral-200"
-                      } py-3 px-4 rounded-md`}
-                      onClick={() => {
-                        if (selectedMonth === parseInt(key)) {
-                          setSelectedMonth(null);
-                        } else {
-                          setSelectedMonth(parseInt(key));
-                        }
-                      }}
-                    >
-                      {
-                        Info.months("long", { locale: i18n.language })[
-                          Number(key) - 1
-                        ]
-                      }
-                    </h1>
-                    {selectedMonth === parseInt(key) && (
-                      <div
-                        className={`relative overflow-x-auto drop-shadow-md`}
+            {guests &&
+              Object.keys(guests)
+                .sort((a, b) =>
+                  Number(a) > Number(b)
+                    ? sorting === "asc"
+                      ? -1
+                      : 1
+                    : sorting === "asc"
+                    ? 1
+                    : -1
+                )
+                .map(key => {
+                  return (
+                    <div key={key}>
+                      <h1
+                        className={`font-extrabold text-3xl drop-shadow-md mb-3 cursor-pointer hover:bg-neutral-300 ${
+                          selectedMonth === parseInt(key) && "bg-neutral-200"
+                        } py-3 px-4 rounded-md`}
+                        onClick={() => {
+                          if (selectedMonth === parseInt(key)) {
+                            setSelectedMonth(null);
+                          } else {
+                            setSelectedMonth(parseInt(key));
+                          }
+                        }}
                       >
-                        <table className="w-full whitespace-nowrap border-separate border-spacing-x-4">
-                          <thead className="text-left text-lg">
-                            <tr className="h-16">
-                              <th className="font-semibold">{t("name")}</th>
-                              <th className="font-semibold">{t("PID")}</th>
-                              <th className="font-semibold">
-                                {t("dateOfBirth")}
-                              </th>
-                              <th className="font-semibold">{t("country")}</th>
-                              <th className="font-semibold">{t("address")}</th>
-                              <th className="font-semibold">
-                                {t("dateOfArrival")}
-                              </th>
-                              <th className="font-semibold">
-                                {t("dateOfDeparture")}
-                              </th>
-                              <th className="font-semibold">
-                                {t("numberOfInvoice")}
-                              </th>
-                              <th className="font-semibold">{t("note")}</th>
-                            </tr>
-                          </thead>
-                          <tbody className="text-lg">
-                            {Object.entries(guests[key])
-                              .sort(
-                                (
-                                  [firstKey, firstValue],
-                                  [secondKey, secondValue]
-                                ) =>
-                                  secondValue.dateOfArrival >
-                                  firstValue.dateOfArrival
-                                    ? 1
-                                    : -1
-                              )
-                              .map(([key, value]) => {
-                                return (
-                                  <tr
-                                    key={key}
-                                    className="h-16 hover:cursor-pointer"
-                                    onClick={() => {
-                                      setSelectedGuestId(key);
-                                      setSelectedGuest(value);
-                                      setShowAddNewGuestModal(true);
-                                    }}
-                                  >
-                                    <td className="font-medium">
-                                      {value.name}
-                                    </td>
-                                    <td>{value.PID}</td>
-                                    <td>
-                                      {DateTime.fromISO(value.dateOfBirth)
-                                        .setLocale(i18n.language)
-                                        .toLocaleString({
-                                          month: "long",
-                                          day: "2-digit",
-                                          year: "numeric",
-                                        })}
-                                    </td>
-                                    <td>{value.country}</td>
-                                    <td>{value.address}</td>
-                                    <td>
-                                      {DateTime.fromISO(value.dateOfArrival)
-                                        .setLocale(i18n.language)
-                                        .toLocaleString({
-                                          month: "long",
-                                          day: "2-digit",
-                                          year: "numeric",
-                                        })}
-                                    </td>
-                                    <td>
-                                      {DateTime.fromISO(value.dateOfDeparture)
-                                        .setLocale(i18n.language)
-                                        .toLocaleString({
-                                          month: "long",
-                                          day: "2-digit",
-                                          year: "numeric",
-                                        })}
-                                    </td>
-                                    <td>{value.numberOfInvoice}</td>
-                                    <td>{value.note}</td>
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                        {
+                          Info.months("long", { locale: i18n.language })[
+                            Number(key) - 1
+                          ]
+                        }
+                      </h1>
+                      {selectedMonth === parseInt(key) && (
+                        <div
+                          className={`relative overflow-x-auto drop-shadow-md`}
+                        >
+                          <table className="w-full whitespace-nowrap border-separate border-spacing-x-4">
+                            <thead className="text-left text-lg">
+                              <tr className="h-16">
+                                <th className="font-semibold">{t("name")}</th>
+                                <th className="font-semibold">{t("PID")}</th>
+                                <th className="font-semibold">
+                                  {t("dateOfBirth")}
+                                </th>
+                                <th className="font-semibold">
+                                  {t("country")}
+                                </th>
+                                <th className="font-semibold">
+                                  {t("address")}
+                                </th>
+                                <th className="font-semibold">
+                                  {t("dateOfArrival")}
+                                </th>
+                                <th className="font-semibold">
+                                  {t("dateOfDeparture")}
+                                </th>
+                                <th className="font-semibold">
+                                  {t("numberOfInvoice")}
+                                </th>
+                                <th className="font-semibold">{t("note")}</th>
+                              </tr>
+                            </thead>
+                            <tbody className="text-lg">
+                              {Object.entries(guests[key])
+                                .sort(
+                                  (
+                                    [firstKey, firstValue],
+                                    [secondKey, secondValue]
+                                  ) =>
+                                    secondValue.dateOfArrival >
+                                    firstValue.dateOfArrival
+                                      ? 1
+                                      : -1
+                                )
+                                .map(([key, value]) => {
+                                  return (
+                                    <tr
+                                      key={key}
+                                      className="h-16 hover:cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedGuestId(key);
+                                        setSelectedGuest(value);
+                                        setShowAddNewGuestModal(true);
+                                      }}
+                                    >
+                                      <td className="font-medium">
+                                        {value.name}
+                                      </td>
+                                      <td>{value.PID}</td>
+                                      <td>
+                                        {DateTime.fromISO(value.dateOfBirth)
+                                          .setLocale(i18n.language)
+                                          .toLocaleString({
+                                            month: "long",
+                                            day: "2-digit",
+                                            year: "numeric",
+                                          })}
+                                      </td>
+                                      <td>{value.country}</td>
+                                      <td>{value.address}</td>
+                                      <td>
+                                        {DateTime.fromISO(value.dateOfArrival)
+                                          .setLocale(i18n.language)
+                                          .toLocaleString({
+                                            month: "long",
+                                            day: "2-digit",
+                                            year: "numeric",
+                                          })}
+                                      </td>
+                                      <td>
+                                        {DateTime.fromISO(value.dateOfDeparture)
+                                          .setLocale(i18n.language)
+                                          .toLocaleString({
+                                            month: "long",
+                                            day: "2-digit",
+                                            year: "numeric",
+                                          })}
+                                      </td>
+                                      <td>{value.numberOfInvoice}</td>
+                                      <td>{value.note}</td>
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
           </>
         )}
       </>

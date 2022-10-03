@@ -1,11 +1,16 @@
 {
-  "header": "Sing in or register",
+  "header_login": "Sing in",
+  "header_register": "Sign up",
   "email": "Email",
   "password": "Password",
   "sign_in": "Sign in",
+  "register": "Sign up",
+  "OR": "OR",
   "auth": {
-    "weak-password": "Weak password",
-    "wrong-password": "Wrong password",
-    "too-many-requests": "Too many requests, try again later"
+    "USER_ALREADY_EXISTS": "User already exists",
+    "DOES_NOT_EXIST": "User with this email does not exist",
+    "WRONG_CREDENTIALS": "Wrong credentials",
+    "EMAIL_NOT_VALID": "Email is not valid",
+    "PASSWORD_TOO_SHORT": "Password has to be at least {{minimum_characters}} characters long"
   }
 }

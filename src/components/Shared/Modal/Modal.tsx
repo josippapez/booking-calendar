@@ -63,10 +63,10 @@ const Modal = (props: Props): JSX.Element => {
         if (el) {
           if (show) {
             setTimeout(() => {
-              el.style.overflowY = "auto";
+              el.style.overflow = "auto";
             }, 250);
           } else {
-            el.style.overflowY = "hidden";
+            el.style.overflow = "hidden";
           }
         }
       }}
@@ -94,11 +94,12 @@ const Modal = (props: Props): JSX.Element => {
           ${contentClassname}
           subpixel-antialiased
           flex flex-col
+          relative
         `}
         onMouseDown={e => e.stopPropagation()}
         style={{
           width: width === "screen" ? window.innerWidth + "px" : width,
-          maxHeight: `calc(${window.innerHeight}px / var(--scale-y))`,
+          // maxHeight: `calc(${window.innerHeight}px / var(--scale-y))`,
           aspectRatio: ratio,
         }}
       >
@@ -112,6 +113,7 @@ const Modal = (props: Props): JSX.Element => {
 Modal.defaultProps = {
   position: "center",
   width: "",
+  animation: "fade",
   ratio: "",
   closeModal: () => {
     return;

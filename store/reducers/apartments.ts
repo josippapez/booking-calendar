@@ -12,9 +12,7 @@ export type Apartment = {
   owner?: string;
 };
 
-type Apartments = {
-  [key: string]: Apartment;
-};
+type Apartments = Apartment[];
 
 export interface ApartmentsData {
   apartments: Apartments;
@@ -22,7 +20,7 @@ export interface ApartmentsData {
 }
 
 const initialState: ApartmentsData = {
-  apartments: {},
+  apartments: [],
   selectedApartment: null,
 };
 
@@ -39,7 +37,7 @@ export const apartments = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(PURGE, (state, action) => {
-      state.apartments = {};
+      state.apartments = [];
       state.selectedApartment = null;
     });
   },
