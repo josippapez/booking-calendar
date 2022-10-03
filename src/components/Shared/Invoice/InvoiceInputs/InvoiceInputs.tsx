@@ -239,6 +239,7 @@ const InvoiceInputs = (props: Props) => {
                 } else {
                   return (
                     <ImageInput
+                      key={innerKey}
                       inputName={t(innerKey)}
                       image={invoiceData.apartmentData.image}
                       setImage={image => {
