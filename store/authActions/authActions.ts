@@ -5,27 +5,6 @@ import { parseJwt } from "../../src/interceptor";
 import { setUser } from "../reducers/user";
 import { persistor, store } from "../store";
 
-export const signInWithGoogle = async () => {
-  return axios
-    .get("/authentication/google/login")
-    .then(res => {
-      Cookies.set("accessToken", res.data.accessToken, {
-        expires: DateTime.fromSeconds(
-          parseJwt(res.data.accessToken).exp
-        ).toJSDate(),
-      });
-      Cookies.set("refreshToken", res.data.refreshToken, {
-        expires: DateTime.fromSeconds(
-          parseJwt(res.data.refreshToken).exp
-        ).toJSDate(),
-      });
-      store.dispatch(setUser(res.data.user));
-    })
-    .catch(err => {
-      return err.response.data;
-    });
-};
-
 export const signUpWithEmailAndPasword = async (
   email: string,
   password: string

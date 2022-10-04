@@ -248,36 +248,20 @@ const Apartments: NextPage = (props: Props) => {
                   }
                   className="bg-blue-700 hover:bg-blue-500 text-white shadow-md font-bold py-2 px-4 rounded disabled:bg-gray-400"
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
                     if (
                       newApartment.address &&
                       newApartment.name &&
                       emailRegex.test(newApartment.email)
                     ) {
                       setDisabledButton(true);
-                      if (newApartment.id) {
-                        dispatch(
-                          editApartment(newApartment, setProgress, setError)
-                        ).then(res => {
-                          if (res.data && res.status === 200) {
-                            setNewApartment({
-                              id: "",
-                              name: "",
-                              address: "",
-                              email: "",
-                              image: "",
-                              pid: "",
-                              iban: "",
-                              owner: "",
-                            });
-                            setDisabledButton(false);
-                          }
-                        });
-                      }
-                      dispatch(
+                      await dispatch(
                         saveApartment(newApartment, setProgress, setError)
                       ).then(res => {
-                        if (res.data && res.status === 200) {
+                        if (
+                          res.data &&
+                          (res.status === 200 || res.status === 201)
+                        ) {
                           setNewApartment({
                             id: "",
                             name: "",

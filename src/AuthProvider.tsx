@@ -4,7 +4,8 @@ import { DateTime } from "luxon";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect } from "react";
 import { logout } from "../store/authActions/authActions";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setUser } from "../store/reducers/user";
 import { parseJwt } from "./interceptor";
 
 const AuthContext = createContext<{
@@ -20,6 +21,7 @@ export const useAuth = () => {
 export function AuthProvider({ children }: any) {
   const router = useRouter();
   const user = useAppSelector(state => state.user.user);
+  const dispatch = useAppDispatch();
 
   const cookies = Cookies.get();
 
@@ -56,8 +58,26 @@ export function AuthProvider({ children }: any) {
     }
   };
 
+  const getUserFromCurrentUrl = async () => {
+    if (!Cookies.get("accessToken") && router.query.user) {
+      dispatch(setUser(JSON.parse(router.query.user as string)));
+      Cookies.set("accessToken", router.query.accessToken as string, {
+        expires: DateTime.fromSeconds(
+          parseJwt(router.query.accessToken as string).exp
+        ).toJSDate(),
+      });
+      Cookies.set("refreshToken", router.query.refreshToken as string, {
+        expires: DateTime.fromSeconds(
+          parseJwt(router.query.refreshToken as string).exp
+        ).toJSDate(),
+      });
+      router.push("/");
+    }
+  };
+
   useEffect(() => {
     refreshTokenIfNeeded();
+    getUserFromCurrentUrl();
   }, [router]);
 
   return (

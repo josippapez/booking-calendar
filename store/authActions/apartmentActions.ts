@@ -68,25 +68,6 @@ export const saveApartment = (
   };
 };
 
-export const editApartment = (
-  apartment: {
-    name: string;
-    address: string;
-    id?: string;
-    email: string;
-    image: File | string;
-    pid?: string;
-    iban?: string;
-    owner?: string;
-  },
-  setProgress: (progress: number) => void,
-  setError: (error: string) => void
-) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
-    return await saveApartmentData(apartment, setProgress, setError, dispatch);
-  };
-};
-
 export const removeApartment = (apartmentId: string) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
     await axios
@@ -173,7 +154,8 @@ const editExistingApartment = (
   setProgress: (progress: number) => void
 ) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
-    if (typeof apartment.image !== "string") {
+    imageUrl = apartment.image as string;
+    if (typeof apartment.image !== "string" && apartment.image) {
       const result = await getBase64(apartment.image, error => {
         console.log(error, "error upload");
         // setError(error);

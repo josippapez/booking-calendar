@@ -209,14 +209,7 @@ const Login = (props: Props) => {
                 className={`p-6 bg-gray-200 hover:bg-gray-100 rounded focus:outline-none focus:shadow-outline ${style.google}`}
                 type="button"
                 onClick={() => {
-                  setLoginError("");
-                  signInWithGoogle().then(error => {
-                    if (error) {
-                      setLoginError(error.message);
-                    } else {
-                      router.push("/apartments");
-                    }
-                  });
+                  window.location.href = `${process.env.NEXT_PUBLIC_BE_API_URL}/authentication/google/login`;
                 }}
               />
             </div>
