@@ -42,7 +42,9 @@ const Guests = (props: Props) => {
           return {};
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        return {};
+      });
     dispatch(setGuests(guests));
   };
 

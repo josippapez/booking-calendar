@@ -210,17 +210,10 @@ const Login = (props: Props) => {
                 type="button"
                 onClick={() => {
                   setLoginError("");
-                  signInWithGoogle().then(res => {
-                    console.log(res);
-
-                    if (res && res.id && res.email && res.accessToken) {
-                      dispatch(
-                        setUser({
-                          id: res.id,
-                          email: res.email,
-                          role: res.accessToken,
-                        })
-                      );
+                  signInWithGoogle().then(error => {
+                    if (error) {
+                      setLoginError(error.message);
+                    } else {
                       router.push("/apartments");
                     }
                   });
