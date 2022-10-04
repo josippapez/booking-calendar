@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import { TFunction } from "react-i18next";
 import {
   logInWithEmailAndPasword,
-  signInWithGoogle,
   signUpWithEmailAndPasword,
 } from "../../../store/authActions/authActions";
 import { useAppDispatch } from "../../../store/hooks";
-import { setUser } from "../../../store/reducers/user";
 import Modal from "../Shared/Modal/Modal";
 import style from "./LoginPage.module.scss";
 

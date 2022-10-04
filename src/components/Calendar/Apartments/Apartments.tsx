@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  editApartment,
   removeApartment,
   saveApartment,
 } from "../../../../store/authActions/apartmentActions";
