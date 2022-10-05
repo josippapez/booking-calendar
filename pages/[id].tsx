@@ -59,12 +59,8 @@ const getApartmentEmail = async (
       return undefined;
     });
 
-  if (!apartment || apartment.length === 0) {
-    return {
-      apartmentEmail: "",
-      apartmentLogo: "",
-      apartmentName: "",
-    };
+  if (!apartment) {
+    return undefined;
   }
 
   return {

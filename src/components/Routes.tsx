@@ -52,7 +52,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
     <>
       <Navbar userAuthenticated={!!Cookies.get("accessToken")} />
       <div
-        className={`min-w-screen w-full h-fit page-container ${
+        className={`min-w-screen w-full overflow-x-hidden h-fit page-container ${
           mobileView
             ? window.location.pathname !== "/" && "py-10"
             : window.location.pathname !== "/" && "py-16"
