@@ -99,7 +99,7 @@ const Modal = (props: Props): JSX.Element => {
         onMouseDown={e => e.stopPropagation()}
         style={{
           width: width === "screen" ? window.innerWidth + "px" : width,
-          // maxHeight: `calc(${window.innerHeight}px / var(--scale-y))`,
+          maxHeight: window.innerHeight + "px",
           aspectRatio: ratio,
         }}
       >
