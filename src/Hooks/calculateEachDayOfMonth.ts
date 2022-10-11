@@ -12,18 +12,33 @@ const useCalculateEachDayOfMonth = (
 ): {
   month: number;
   year: number;
+  lastMonth: number;
+  lastMonthYear: number;
+  nextMonth: number;
+  nextMonthYear: number;
   dates: Day[];
   lastMonthDates: Day[];
   nextMonthDates: Day[];
 } => {
   const { month, year } = props;
-
+  let lastMonth = month - 1;
+  let lastMonthYear = year;
+  if (lastMonth === 0) {
+    lastMonthYear--;
+    lastMonth = 12;
+  }
+  let nextMonth = month + 1;
+  let nextMonthYear = year;
+  if (nextMonth === 13) {
+    nextMonthYear++;
+    nextMonth = 1;
+  }
   const calculateDates = (
     start: DateTime,
     end: DateTime,
-    monthDates: Day[],
     lastOrNextMonth: boolean
   ): Day[] => {
+    const monthDates: Day[] = [];
     const daysInMonth = end.diff(start, "days");
     for (let i = 0; i <= daysInMonth.days; i++) {
       const day = start.plus({ days: i });
@@ -56,39 +71,28 @@ const useCalculateEachDayOfMonth = (
   return {
     month,
     year,
+    lastMonth,
+    lastMonthYear,
+    nextMonth,
+    nextMonthYear,
     lastMonthDates: useMemo(() => {
-      let lastMonth = month - 1;
-      let lastMonthYear = year;
-      if (lastMonth === 0) {
-        lastMonthYear--;
-        lastMonth = 12;
-      }
-      const monthDates: Day[] = [];
       const start = DateTime.local(lastMonthYear, lastMonth).startOf("month");
       const end = DateTime.local(lastMonthYear, lastMonth).endOf("month");
 
-      return calculateDates(start, end, monthDates, true);
-    }, [month, year]),
+      return calculateDates(start, end, true);
+    }, [lastMonth, lastMonthYear]),
     dates: useMemo(() => {
-      const monthDates: Day[] = [];
       const start = DateTime.local(year, month).startOf("month");
       const end = DateTime.local(year, month).endOf("month");
 
-      return calculateDates(start, end, monthDates, false);
+      return calculateDates(start, end, false);
     }, [month, year]),
     nextMonthDates: useMemo(() => {
-      let nextMonth = month + 1;
-      let nextMonthYear = year;
-      if (nextMonth === 13) {
-        nextMonthYear++;
-        nextMonth = 1;
-      }
-      const monthDates: Day[] = [];
       const start = DateTime.local(nextMonthYear, nextMonth).startOf("month");
       const end = DateTime.local(nextMonthYear, nextMonth).endOf("month");
 
-      return calculateDates(start, end, monthDates, true);
-    }, [month, year]),
+      return calculateDates(start, end, true);
+    }, [nextMonth, nextMonthYear]),
   };
 };
 

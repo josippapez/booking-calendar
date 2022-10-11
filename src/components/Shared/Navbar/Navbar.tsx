@@ -2,9 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { logout } from "../../../../store/firebaseActions/authActions";
-import { persistor } from "../../../../store/store";
-import useMobileView from "../../../checkForMobileView";
+import { logout } from "../../../../store/authActions/authActions";
+import { useMobileView } from "../../../checkForMobileView";
 import useDarkMode from "../../../Hooks/useDarkMode";
 import style from "./Navbar.module.scss";
 
@@ -83,9 +82,16 @@ function Navbar(props: Props) {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/receipt">
+                    <Link href="/invoice">
                       <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                        {t("receipt_link_name")}
+                        {t("invoice_link_name")}
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/guests">
+                      <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                        {t("guests_link_name")}
                       </a>
                     </Link>
                   </li>
@@ -97,9 +103,7 @@ function Navbar(props: Props) {
                 className="hidden md:block bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-fit self-end"
                 type="button"
                 onClick={async () => {
-                  logout();
-                  await persistor.purge();
-                  await persistor.flush();
+                  await logout();
                   router.push("/");
                 }}
               >
@@ -148,9 +152,16 @@ function Navbar(props: Props) {
                 </Link>
               </li>
               <li>
-                <Link href="/receipt">
+                <Link href="/invoice">
                   <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                    {t("receipt_link_name")}
+                    {t("invoice_link_name")}
+                  </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/guests">
+                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                    {t("guests_link_name")}
                   </a>
                 </Link>
               </li>
@@ -159,9 +170,7 @@ function Navbar(props: Props) {
                   className="w-full text-left py-2 pr-4 pl-3 text-white bg-blue-900 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
                   type="button"
                   onClick={async () => {
-                    logout();
-                    await persistor.purge();
-                    await persistor.flush();
+                    await logout();
                     router.push("/");
                   }}
                 >
@@ -193,7 +202,7 @@ function Navbar(props: Props) {
                     i18n.changeLanguage(language.value);
                   }}
                 >
-                  {t(language.title)}
+                  {t(language.title, { ns: "Languages" })}
                 </div>
               ))}
             </div>

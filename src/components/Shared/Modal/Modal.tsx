@@ -7,8 +7,10 @@ interface Props {
   closeModal(): void;
   position?: "center" | "left" | "right" | "bottom" | "top";
   children: JSX.Element;
+  contentClassname?: string;
   show: boolean;
   width?: "screen" | string;
+  zindex?: number;
   animation?:
     | "fade"
     | "slide-left"
@@ -29,8 +31,17 @@ interface Props {
 let openned = 0;
 
 const Modal = (props: Props): JSX.Element => {
-  const { closeModal, position, children, show, width, animation, ratio } =
-    props;
+  const {
+    closeModal,
+    position,
+    children,
+    show,
+    width,
+    animation,
+    ratio,
+    contentClassname,
+    zindex,
+  } = props;
 
   useEffect(() => {
     if (openned === 0) {
@@ -52,16 +63,17 @@ const Modal = (props: Props): JSX.Element => {
         if (el) {
           if (show) {
             setTimeout(() => {
-              el.style.overflowY = "auto";
+              el.style.overflow = "auto";
             }, 250);
           } else {
-            el.style.overflowY = "hidden";
+            el.style.overflow = "hidden";
           }
         }
       }}
       id="modal-overlay"
       style={{
         display: !show ? "none" : "flex",
+        zIndex: zindex,
       }}
       aria-hidden="true"
       role="button"
@@ -79,13 +91,15 @@ const Modal = (props: Props): JSX.Element => {
         className={`
           ${style.children}
           ${style[`${animation}`]}
+          ${contentClassname}
           subpixel-antialiased
           flex flex-col
+          relative
         `}
         onMouseDown={e => e.stopPropagation()}
         style={{
           width: width === "screen" ? window.innerWidth + "px" : width,
-          maxHeight: `calc(${window.innerHeight}px / var(--scale-y))`,
+          maxHeight: window.innerHeight + "px",
           aspectRatio: ratio,
         }}
       >
@@ -99,6 +113,7 @@ const Modal = (props: Props): JSX.Element => {
 Modal.defaultProps = {
   position: "center",
   width: "",
+  animation: "fade",
   ratio: "",
   closeModal: () => {
     return;

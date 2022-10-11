@@ -1,8 +1,16 @@
-import nookies from "nookies";
-import firebase from "firebase/compat/app";
-import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { DateTime } from "luxon";
+import { useRouter } from "next/router";
+import { createContext, useContext, useEffect } from "react";
+import { logout } from "../store/authActions/authActions";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setUser } from "../store/reducers/user";
+import { parseJwt } from "./interceptor";
 
-const AuthContext = createContext<{ user: firebase.User | null }>({
+const AuthContext = createContext<{
+  user: null | { id: string; email: string; role: string };
+}>({
   user: null,
 });
 
@@ -11,33 +19,66 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: any) {
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const router = useRouter();
+  const user = useAppSelector(state => state.user.user);
+  const dispatch = useAppDispatch();
 
-  // listen for token changes
-  // call setUser and write new token as a cookie
+  const cookies = Cookies.get();
+
   useEffect(() => {
-    return firebase.auth().onIdTokenChanged(async user => {
-      if (!user) {
-        setUser(null);
-        nookies.set(undefined, "token", "", { path: "/" });
-      } else {
-        const token = await user.getIdToken();
-        setUser(user);
-        nookies.set(undefined, "token", token, { path: "/" });
+    axios.defaults.headers.common["Authorization"] =
+      "Bearer " + Cookies.get("accessToken");
+    axios.defaults.baseURL = process.env.NEXT_PUBLIC_BE_API_URL;
+  }, [user, cookies]);
+
+  const refreshTokenIfNeeded = async () => {
+    if (
+      !Cookies.get("accessToken") ||
+      Cookies.get("accessToken") === "undefined"
+    ) {
+      if (Cookies.get("refreshToken")) {
+        await axios
+          .get(`/authentication/refresh`, {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("refreshToken")}`,
+            },
+          })
+          .then(res => {
+            Cookies.set("accessToken", res.data.accessToken, {
+              expires: DateTime.fromSeconds(
+                parseJwt(res.data.accessToken).exp
+              ).toJSDate(),
+            });
+          })
+          .catch(async err => {
+            await logout();
+            router.push("/");
+          });
       }
-    });
-  }, []);
+    }
+  };
 
-  // force refresh the token every 10 minutes
+  const getUserFromCurrentUrl = async () => {
+    if (!Cookies.get("accessToken") && router.query.user) {
+      dispatch(setUser(JSON.parse(router.query.user as string)));
+      Cookies.set("accessToken", router.query.accessToken as string, {
+        expires: DateTime.fromSeconds(
+          parseJwt(router.query.accessToken as string).exp
+        ).toJSDate(),
+      });
+      Cookies.set("refreshToken", router.query.refreshToken as string, {
+        expires: DateTime.fromSeconds(
+          parseJwt(router.query.refreshToken as string).exp
+        ).toJSDate(),
+      });
+      router.push("/");
+    }
+  };
+
   useEffect(() => {
-    const handle = setInterval(async () => {
-      const user = firebase.auth().currentUser;
-      if (user) await user.getIdToken(true);
-    }, 10 * 60 * 1000);
-
-    // clean up setInterval
-    return () => clearInterval(handle);
-  }, []);
+    refreshTokenIfNeeded();
+    getUserFromCurrentUrl();
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>

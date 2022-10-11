@@ -1,30 +1,3 @@
-:root {
-  .overlay {
-    --scale-x: 1;
-    --scale-y: 1;
-    --scale-y-rem-negative: -1rem;
-    --scale-y-rem-positive: 1rem;
-    --scale-x-rem-negative: -1rem;
-    --scale-x-rem-positive: 1rem;
-    @media screen and (min-width: 1024px) {
-      --scale-x: 1.1;
-      --scale-y: 1.1;
-      --scale-y-rem-negative: -1.1rem;
-      --scale-y-rem-positive: 1.1rem;
-      --scale-x-rem-negative: -1.1rem;
-      --scale-x-rem-positive: 1.1rem;
-    }
-    @media screen and (min-width: 1921px) {
-      --scale-x: 1.25;
-      --scale-y: 1.25;
-      --scale-y-rem-negative: -1.8rem;
-      --scale-y-rem-positive: 1.8rem;
-      --scale-x-rem-negative: -2rem;
-      --scale-x-rem-positive: 0rem;
-    }
-  }
-}
-
 .overlay {
   user-select: none;
   position: fixed;
@@ -42,7 +15,7 @@
     justify-content: center;
   }
   &.right {
-    justify-content: center;
+    justify-content: end;
   }
   &.bottom {
     align-items: end;
@@ -56,7 +29,7 @@
     z-index: 2;
     cursor: default;
 
-    transform: scaleX(var(--scale-x)) scaleY(var(--scale-y));
+    // transform: scaleX(var(--scale-x)) scaleY(var(--scale-y));
   }
   .children > * {
     width: 100%;
@@ -102,46 +75,46 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(calc(var(--scale-x) - 0.05), calc(var(--scale-y) - 0.05));
+    transform: scale(0.95, 0.95);
   }
   to {
     opacity: 1;
-    transform: scale(var(--scale-x), var(--scale-y));
+    transform: scale(1, 1);
   }
 }
 
 @keyframes slide-left {
   from {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(-100%, 0);
+    transform: translate(-100%, 0);
   }
   to {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+    transform: translate(0, 0);
   }
 }
 
 @keyframes slide-right {
   from {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(100%, 0);
+    transform: translate(100%, 0);
   }
   to {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+    transform: translate(0, 0);
   }
 }
 
 @keyframes slide-top {
   from {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(0, -100vh);
+    transform: translate(0, -100vh);
   }
   to {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+    transform: translate(0, 0);
   }
 }
 
 @keyframes slide-bottom {
   from {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 100vh);
+    transform: translate(0, 100vh);
   }
   to {
-    transform: scale(var(--scale-x), var(--scale-y)) translate(0, 0);
+    transform: translate(0, 0);
   }
 }

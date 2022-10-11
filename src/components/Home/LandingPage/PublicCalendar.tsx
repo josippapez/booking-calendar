@@ -1,15 +1,12 @@
 import { DateTime, Info } from "luxon";
 import { InferGetServerSidePropsType, NextPage } from "next";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getServerSideProps } from "../../../../pages/[id]";
 import Images from "../../../../public/Styles/Assets/Images/Images";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import { setEvents } from "../../../../store/reducers/events";
-import useMobileView from "../../../checkForMobileView";
+import { useMobileView } from "../../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
-import { EventsByYear } from "../../Calendar/CalendarTypes";
 import CreateNewReservation from "../../Calendar/CreateNewReservation/CreateNewReservation";
 import style from "./PublicCalendar.module.scss";
 
@@ -18,9 +15,7 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const PublicCalendar: NextPage = (props: Props) => {
   const { events, apartmentEmail, apartmentLogo, apartmentName } = props;
   const { t, i18n } = useTranslation("PublicCalendar");
-  const dispatch = useAppDispatch();
 
-  const eventsData = useAppSelector(state => state.events.events);
   const [selectedMonth, setSelectedMonth] = useState<number>(
     DateTime.local().month
   );
@@ -41,10 +36,6 @@ const PublicCalendar: NextPage = (props: Props) => {
   let currentScrollPosition: null | number = null;
 
   const calendarGrid = useRef<null | HTMLDivElement>(null);
-
-  useEffect(() => {
-    dispatch(setEvents(events as EventsByYear));
-  }, []);
 
   return (
     <div>
@@ -283,20 +274,26 @@ const PublicCalendar: NextPage = (props: Props) => {
         <div className={style.calendarGrid}>
           {dates.map((day, index) => {
             const startingDay =
-              eventsData &&
-              eventsData[day.year] &&
-              eventsData[day.year][day.date]?.length &&
-              !eventsData[day.year][day.date].find(
-                event => event.start !== day.date
-              );
+              index > 0 &&
+              events &&
+              events[day.year] &&
+              events[day.year][day.date]?.length &&
+              !(index > 0
+                ? events[day.year][dates[index - 1].date]?.length ||
+                  events[Number(day.year) - 1]?.[dates[index - 1].date]?.length
+                : events[lastMonthDates[lastMonthDates.length - 1].year][
+                    lastMonthDates[lastMonthDates.length - 1].date
+                  ]?.length);
 
             const endingDay =
-              eventsData &&
-              eventsData[day.year] &&
-              eventsData[day.year][day.date]?.length &&
-              !eventsData[day.year][day.date].find(
-                event => event.end !== day.date
-              );
+              events &&
+              events[day.year] &&
+              events[day.year][day.date]?.length &&
+              !(index < dates.length - 1
+                ? events[day.year][dates[index + 1].date]?.length ||
+                  events[Number(day.year) + 1]?.[dates[index + 1].date]?.length
+                : events[nextMonthDates[0].year][nextMonthDates[0].date]
+                    ?.length);
 
             return DateTime.fromISO(day.date).diffNow("day").days > -1 ? (
               <div
@@ -315,18 +312,18 @@ const PublicCalendar: NextPage = (props: Props) => {
                       ? "opacity-30 font-normal"
                       : "opacity-100"
                   } ${
-                    eventsData &&
-                    eventsData[day.year] &&
-                    eventsData[day.year][day.date]?.length > 0 &&
+                    events &&
+                    events[day.year] &&
+                    events[day.year][day.date]?.length > 0 &&
                     "text-white"
                   } ${startingDay && "text-black"}`}
                 >
                   <div className="absolute top-0 left-0">{day.day}</div>
                   <div
                     className={`h-full ${
-                      eventsData &&
-                      eventsData[day.year] &&
-                      eventsData[day.year][day.date]?.length > 0 &&
+                      events &&
+                      events[day.year] &&
+                      events[day.year][day.date]?.length > 0 &&
                       "bg-red-600"
                     }
                     `}
@@ -368,7 +365,7 @@ const PublicCalendar: NextPage = (props: Props) => {
       <CreateNewReservation
         show={displayNewReservation}
         setShow={setDisplayNewReservation}
-        currentReservations={eventsData}
+        currentReservations={events}
         apartmentEmail={apartmentEmail}
       />
     </div>

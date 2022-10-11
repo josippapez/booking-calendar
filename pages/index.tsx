@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import PageLoader from "../src/components/Shared/Loader/PageLoader";
@@ -19,6 +19,12 @@ const LoginPage: NextPage = (props: Props) => {
       <DynamicLoginPage />
     </Suspense>
   );
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    props: {},
+  };
 };
 
 export default LoginPage;

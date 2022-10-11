@@ -1,0 +1,20 @@
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.25s ease-in-out;
+  height: calc(48px + 0.75rem);
+  &__show {
+    height: 600px;
+  }
+}
+.section {
+  height: 100%;
+}
+
+.removeButton {
+  background-image: url('/Styles/Assets/Images/xCircle.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}

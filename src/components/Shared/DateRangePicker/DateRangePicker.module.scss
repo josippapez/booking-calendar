@@ -1,0 +1,19 @@
+.dateRangeGrid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.dateRange-Day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: fit-content;
+  font-size: medium;
+}

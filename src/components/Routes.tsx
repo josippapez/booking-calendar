@@ -1,12 +1,18 @@
+import Cookies from "js-cookie";
 import type { AppProps } from "next/app";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
-import useMobileView from "../checkForMobileView";
+import { useMobileView } from "../checkForMobileView";
+import { intercept } from "../interceptor";
+import AlertModal from "./Shared/AlertModal/AlertModal";
 import Navbar from "./Shared/Navbar/Navbar";
+
+intercept();
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const user = useAppSelector(state => state.user.user);
   const mobileView = useMobileView();
+  const [displayPage, setDisplayPage] = useState(false);
 
   useEffect(() => {
     const element = document.getElementById("__next");
@@ -16,43 +22,45 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
     }
   }, [router, user, mobileView]);
 
-  const checkForAuthentication = () => {
-    if (user && user.accessToken) {
+  const checkForAuthentication = async () => {
+    if (!Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
+      if (!["/", "/[id]"].includes(router.route)) {
+        router.push("/");
+      }
+    }
+    if (Cookies.get("accessToken")) {
       if (
         ![
           "/apartments",
           "/apartments/[id]",
           "/[id]",
-          "/receipt",
-          "/guests"
+          "/invoice",
+          "/guests",
         ].includes(router.route)
       ) {
         router.push("/apartments");
-        return;
-      }
-    } else {
-      if (!["/", "/[id]"].includes(router.route)) {
-        router.push("/");
-        return false;
       }
     }
-    return true;
+    setDisplayPage(true);
   };
+
+  useEffect(() => {
+    checkForAuthentication();
+  }, [router]);
 
   return (
     <>
-      <Navbar userAuthenticated={!!user.accessToken} />
+      <Navbar userAuthenticated={!!Cookies.get("accessToken")} />
       <div
-        className={`${
-          user.accessToken ? "min-h-[calc(100%_-_60px)]" : "min-h-full"
-        } min-w-screen w-full overflow-x-hidden page-container ${
+        className={`min-w-screen w-full overflow-x-hidden h-fit page-container ${
           mobileView
             ? window.location.pathname !== "/" && "py-10"
             : window.location.pathname !== "/" && "py-16"
         } select-none`}
       >
-        {checkForAuthentication() ? <Component {...pageProps} /> : null}
+        {displayPage ? <Component {...pageProps} /> : null}
       </div>
+      <AlertModal />
     </>
   );
 };

@@ -1,0 +1,17 @@
+{
+  "guest_book": "Knjiga gostiju",
+  "add_new_guest": "Dodaj novog gosta",
+  "title": "Dodaj novog gosta",
+  "name": "Ime i prezime",
+  "PID": "OIB",
+  "address": "Adresa",
+  "country": "Država",
+  "dateOfBirth": "Datum rođenja",
+  "dateOfArrival": "Datum dolaska",
+  "dateOfDeparture": "Datum odlaska",
+  "numberOfInvoice": "Broj računa",
+  "note": "Napomena",
+  "cancel": "Odustani",
+  "save": "Spremi",
+  "sorting": "Sortiranje"
+}

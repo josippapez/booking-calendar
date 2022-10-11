@@ -1,9 +1,3 @@
-import firebase from "firebase/compat/app";
-import {
-  fetchAndActivate,
-  getRemoteConfig,
-  getValue,
-} from "firebase/remote-config";
 import { DateTime } from "luxon";
 import { AppDispatch, AppState } from "./../store";
 
@@ -18,10 +12,6 @@ export const sendEmail = (
   email: string
 ) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
-    const remoteConfig = getRemoteConfig(firebase.app());
-    await fetchAndActivate(remoteConfig);
-    const sendgrid_key = getValue(remoteConfig, "sendgrid_key").asString();
-
     fetch("api/sendEmail", {
       method: "POST",
       headers: {
@@ -43,10 +33,9 @@ export const sendEmail = (
             reservation_phone: reservation.phone,
           },
         },
-        sendgrid_key,
       }),
     }).then(res => {
-      console.log(res);
+      return res;
     });
   };
 };

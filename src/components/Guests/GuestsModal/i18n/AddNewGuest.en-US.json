@@ -1,4 +1,18 @@
 {
-  "guest_book": "Guest book",
-  "add_new_guest": "Add new guest"
+  "title": "Add new guest",
+  "name": "Name and surname",
+  "PID": "PID",
+  "address": "Address",
+  "country": "Country",
+  "city": "City",
+  "dateOfBirth": "Date of Birth",
+  "dateOfArrival": "Date of arrival",
+  "dateOfDeparture": "Date of departure",
+  "numberOfInvoice": "Invoice number",
+  "travelIdNumber": "Travel ID number",
+  "note": "Note",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "remove_guest": "Are you sure you want to delete this guest?"
 }

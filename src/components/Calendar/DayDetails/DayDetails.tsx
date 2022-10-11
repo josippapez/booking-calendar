@@ -12,7 +12,7 @@ type Props = {
   setSelectedDay: (day: string | null) => void;
   events: Event[];
   isMobileView: boolean;
-  removeEvent: (eventId: string) => void;
+  removeEvent: (event: Event) => void;
 };
 
 const DayDetails = (props: Props) => {
@@ -102,7 +102,7 @@ const DayDetails = (props: Props) => {
                     className={`hover:bg-neutral-200 py-2 px-4 rounded-md ${style.removeButton}`}
                     onClick={e => {
                       e.stopPropagation();
-                      removeEvent(event.id);
+                      removeEvent(event);
                     }}
                   />
                 </div>

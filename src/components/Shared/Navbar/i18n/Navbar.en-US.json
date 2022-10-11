@@ -2,5 +2,6 @@
   "navbar_title": "Booking Calendar",
   "sign_out": "Sign Out",
   "apartments_link_name": "Apartments",
-  "receipt_link_name": "Receipt"
+  "invoice_link_name": "Invoice",
+  "guests_link_name": "Guests"
 }

@@ -1,11 +1,9 @@
-import { groupBy, uniq } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Images from "../../../../public/Styles/Assets/Images/Images";
+import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
 import Modal from "../../Shared/Modal/Modal";
-import { Day, Event, EventsByYear } from "../CalendarTypes";
-import DateRangePicker from "../DateRangePicker/DateRangePicker";
+import { Day, Event } from "../CalendarTypes";
 import style from "./CreateNewEvent.module.scss";
 
 type Props = {
@@ -14,15 +12,13 @@ type Props = {
   showEdit: boolean;
   setShowEdit: (state: boolean) => void;
   selectedEventToEdit: Event | null;
-  setEvents: (events: EventsByYear) => void;
-  events: EventsByYear;
+  setEvents: (events: Event) => void;
 };
 
 const CreateNewEvent = (props: Props) => {
   const {
     show,
     setShow,
-    events,
     setEvents,
     setShowEdit,
     showEdit,
@@ -38,35 +34,13 @@ const CreateNewEvent = (props: Props) => {
     end: "",
     color: "",
     description: "",
+    price: "",
     phone: "",
     booking: false,
     weekNumber: 0,
   });
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [openedDropdown, setOpenedDropdown] = useState(false);
-
-  const eachDayOfRange = (startDate: string, endDate: string) => {
-    const start = DateTime.fromISO(startDate);
-    const end = DateTime.fromISO(endDate);
-    const monthDates: Day[] = [];
-
-    const daysInMonth = end.diff(start, "days");
-    for (let i = 0; i <= daysInMonth.days; i++) {
-      const day = start.plus({ days: i });
-      monthDates.push({
-        day: day.day,
-        date: day.toFormat("yyyy-MM-dd"),
-        name: day.toFormat("EEEE"),
-        year: day.year.toString(),
-        lastMonth: false,
-        weekNumber: day.weekNumber,
-        startingDay: i === 0,
-        endingDay: i === daysInMonth.days,
-      });
-    }
-
-    return monthDates;
-  };
 
   useEffect(() => {
     if (showEdit && selectedEventToEdit && selectedEventToEdit.id) {
@@ -80,6 +54,7 @@ const CreateNewEvent = (props: Props) => {
           start: "",
           end: "",
           color: "",
+          price: "",
           description: "",
           phone: "",
           booking: false,
@@ -114,7 +89,7 @@ const CreateNewEvent = (props: Props) => {
     <>
       <Modal
         animation="fade"
-        width="20rem"
+        width="22rem"
         show={show || showEdit}
         closeModal={() => {
           setShow(false);
@@ -164,6 +139,17 @@ const CreateNewEvent = (props: Props) => {
                 />
               </div>
               <div className="flex flex-col justify-center">
+                <label className="text-sm font-bold">{t("price")}</label>
+                <input
+                  className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
+                  type="text"
+                  value={newEvent.price}
+                  onChange={e =>
+                    setNewEvent({ ...newEvent, price: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex flex-col justify-center">
                 <label className="text-sm font-bold">{t("phone")}</label>
                 <input
                   className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
@@ -178,7 +164,7 @@ const CreateNewEvent = (props: Props) => {
                 <label className="text-sm font-bold">{t("color")}</label>
                 <div className="flex flex-col justify-center relative">
                   <input
-                    type={"button"}
+                    type="button"
                     placeholder="Color"
                     className={`${style.dropdownInput} cursor-pointer border focus:border-blue-500 rounded-md placeholder:text-sm`}
                     onClick={() => {
@@ -239,56 +225,7 @@ const CreateNewEvent = (props: Props) => {
                 className="font-bold"
                 onClick={() => {
                   if (newEvent.start && newEvent.end && newEvent.color) {
-                    let editedEvents = { ...events };
-                    if (showEdit && selectedEventToEdit) {
-                      const datesToEdit = eachDayOfRange(
-                        selectedEventToEdit.start,
-                        selectedEventToEdit.end
-                      );
-                      datesToEdit.map(date => {
-                        if (editedEvents[date.year][date.date]) {
-                          const eventForDayIndex = editedEvents[date.year][
-                            date.date
-                          ].findIndex(event => event.id === newEvent.id);
-
-                          if (eventForDayIndex !== -1) {
-                            editedEvents[date.year] = {
-                              ...editedEvents[date.year],
-                              [date.date]: [
-                                ...editedEvents[date.year][date.date].filter(
-                                  event => event.id !== newEvent.id
-                                ),
-                              ],
-                            };
-                          }
-                        }
-                      });
-                    }
-                    const dates = eachDayOfRange(newEvent.start, newEvent.end);
-                    const newDates = dates.reduce(
-                      (acc: EventsByYear, date: Day) => ({
-                        ...acc,
-                        [date.year]: {
-                          ...acc[date.year],
-                          [date.date]: [
-                            ...((editedEvents[date.year] &&
-                              editedEvents[date.year][date.date]) ||
-                              []),
-                            { ...newEvent, weekNumber: date.weekNumber },
-                          ],
-                        },
-                      }),
-                      {}
-                    );
-                    Object.keys(newDates).map(year => {
-                      editedEvents[year] = {
-                        ...editedEvents[year],
-                        ...newDates[year],
-                      };
-                    });
-                    setEvents(editedEvents);
-                    setShow(false);
-                    setShowEdit(false);
+                    setEvents(newEvent);
                   }
                 }}
                 style={{

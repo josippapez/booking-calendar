@@ -6,7 +6,7 @@
   "apartment_image": "Apartment Logo",
   "apartment_pid": "Apartment PID",
   "apartment_owner": "Apartment Owner",
-  "apartment_IBAN": "IBAN for Payments (used on receipt)",
+  "apartment_IBAN": "IBAN for Payments (used on invoice)",
   "add_apartment": "Add Apartment",
   "edit_apartment": "Save changes",
   "edit": "Edit",
@@ -16,5 +16,6 @@
   "name": "Name",
   "address": "Address",
   "email": "Email",
-  "image_size_error": "Image size should be less than {{size}} MB"
+  "image_size_error": "Image size should be less than {{size}} MB",
+  "remove_apartment": "Are you sure you want to remove this apartment?"
 }

@@ -2,5 +2,6 @@
   "navbar_title": "Booking Kalendar",
   "sign_out": "Odjava",
   "apartments_link_name": "Apartmani",
-  "receipt_link_name": "Računi"
+  "invoice_link_name": "Računi",
+  "guests_link_name": "Gosti"
 }
