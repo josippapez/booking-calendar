@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { removeApartmentById, setApartments } from "../reducers/apartments";
-import { AppDispatch, AppState } from "../store";
+import { AppDispatch, AppGetState } from "../store";
 
 let imageUrl: string | ArrayBuffer | null = null;
 
@@ -63,13 +63,13 @@ export const saveApartment = (
   setProgress: (progress: number) => void,
   setError: (error: string) => void
 ) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     return await saveApartmentData(apartment, setProgress, setError, dispatch);
   };
 };
 
 export const removeApartment = (apartmentId: string) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     await axios
       .delete(`/apartments/${apartmentId}`, {
         headers: {
@@ -102,7 +102,7 @@ const createNewApartment = (
   },
   setProgress: (progress: number) => void
 ) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     if (typeof apartment.image !== "string") {
       const result = await getBase64(apartment.image, error => {
         console.log(error, "error upload");
@@ -153,7 +153,7 @@ const editExistingApartment = (
   },
   setProgress: (progress: number) => void
 ) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     imageUrl = apartment.image as string;
     if (typeof apartment.image !== "string" && apartment.image) {
       const result = await getBase64(apartment.image, error => {

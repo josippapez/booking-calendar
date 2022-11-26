@@ -1,10 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import isEqual from "lodash/fp/isEqual";
-import { NextPage } from "next";
+import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { NextPage } from "next/types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {

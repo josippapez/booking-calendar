@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import type { AppProps } from "next/app";
+import { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import { useMobileView } from "../checkForMobileView";
