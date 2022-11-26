@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { DateTime } from "luxon";
-import { useRouter } from "next/router";
+import { useRouter } from "next/dist/client/router";
 import { createContext, useContext, useEffect } from "react";
 import { logout } from "../store/authActions/authActions";
 import { useAppDispatch, useAppSelector } from "../store/hooks";

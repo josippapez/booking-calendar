@@ -10,5 +10,3 @@ export const reducers = combineReducers({
   user,
   guests,
 });
-
-export type RootState = ReturnType<typeof reducers>;

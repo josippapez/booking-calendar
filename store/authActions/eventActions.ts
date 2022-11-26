@@ -1,10 +1,10 @@
 import axios from "axios";
 import { Event } from "../../src/components/Calendar/CalendarTypes";
 import { setEvents } from "../reducers/events";
-import { AppDispatch, AppState } from "../store";
+import { AppDispatch, AppGetState } from "../store";
 
 export const saveEventsForApartment = (event: Event) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     const selectedApartment = getState().apartments.selectedApartment;
     return await axios
       .post(`/events/${selectedApartment?.id}`, event)
@@ -19,7 +19,7 @@ export const saveEventsForApartment = (event: Event) => {
 };
 
 export const editEventForApartment = (event: Event, eventToEdit: Event) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     const selectedApartment = getState().apartments.selectedApartment;
     return await axios
       .patch(`/events/${selectedApartment?.id}`, {
@@ -37,7 +37,7 @@ export const editEventForApartment = (event: Event, eventToEdit: Event) => {
 };
 
 export const removeEventForApartment = (event: Event) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     const selectedApartment = getState().apartments.selectedApartment;
     return await axios
       .patch(`/events/${selectedApartment?.id}/${event.id}`, event)

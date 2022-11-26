@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Guest } from "../../src/components/Guests/GuestsModal/AddNewGuest";
-import { AppDispatch, AppState } from "../store";
+import { AppDispatch, AppGetState } from "../store";
 
 export const saveGuestForApartment = (
   guest: Guest,
   oldGuest: Guest | undefined
 ) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     const selectedApartment = getState().apartments.selectedApartment;
     return await axios
       .post(`/guests/${selectedApartment?.id}`, {
@@ -23,7 +23,7 @@ export const saveGuestForApartment = (
 };
 
 export const deleteGuestForApartment = (guestId: string, guest: Guest) => {
-  return async (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppGetState) => {
     const selectedApartment = getState().apartments.selectedApartment;
     return await axios
       .patch(`/guests/${selectedApartment?.id}`, {
