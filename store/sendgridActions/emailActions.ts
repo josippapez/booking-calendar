@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { AppDispatch, AppGetState } from "./../store";
+import { AppDispatch, AppState } from "./../store";
 
 export const sendEmail = (
   reservation: {
@@ -11,7 +11,7 @@ export const sendEmail = (
   },
   email: string
 ) => {
-  return async (dispatch: AppDispatch, getState: AppGetState) => {
+  return async (dispatch: AppDispatch, getState: AppState) => {
     fetch("api/sendEmail", {
       method: "POST",
       headers: {

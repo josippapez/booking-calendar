@@ -1,16 +1,9 @@
-import axios from "axios";
+import firebase from "firebase/compat/app";
+import i18next from "i18next";
 import Cookies from "js-cookie";
-import { DateTime } from "luxon";
-import { useRouter } from "next/dist/client/router";
-import { createContext, useContext, useEffect } from "react";
-import { logout } from "../store/authActions/authActions";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setUser } from "../store/reducers/user";
-import { parseJwt } from "./interceptor";
+import { createContext, useContext, useEffect, useState } from "react";
 
-const AuthContext = createContext<{
-  user: null | { id: string; email: string; role: string };
-}>({
+const AuthContext = createContext<{ user: firebase.User | null }>({
   user: null,
 });
 
@@ -19,66 +12,36 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: any) {
-  const router = useRouter();
-  const user = useAppSelector(state => state.user.user);
-  const dispatch = useAppDispatch();
+  const [user, setUser] = useState<firebase.User | null>(null);
 
-  const cookies = Cookies.get();
-
+  // listen for token changes
+  // call setUser and write new token as a cookie
   useEffect(() => {
-    axios.defaults.headers.common["Authorization"] =
-      "Bearer " + Cookies.get("accessToken");
-    axios.defaults.baseURL = process.env.NEXT_PUBLIC_BE_API_URL;
-  }, [user, cookies]);
-
-  const refreshTokenIfNeeded = async () => {
-    if (
-      !Cookies.get("accessToken") ||
-      Cookies.get("accessToken") === "undefined"
-    ) {
-      if (Cookies.get("refreshToken")) {
-        await axios
-          .get(`/authentication/refresh`, {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("refreshToken")}`,
-            },
-          })
-          .then(res => {
-            Cookies.set("accessToken", res.data.accessToken, {
-              expires: DateTime.fromSeconds(
-                parseJwt(res.data.accessToken).exp
-              ).toJSDate(),
-            });
-          })
-          .catch(async err => {
-            await logout();
-            router.push("/");
-          });
+    return firebase.auth().onIdTokenChanged(async user => {
+      if (!user) {
+        setUser(null);
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
+      } else {
+        const token = await user.getIdToken();
+        const refreshToken = user.refreshToken;
+        setUser(user);
+        Cookies.set("accessToken", token, { expires: 14 });
+        Cookies.set("refreshToken", refreshToken, { expires: 14 });
       }
-    }
-  };
+    });
+  }, []);
 
-  const getUserFromCurrentUrl = async () => {
-    if (!Cookies.get("accessToken") && router.query.user) {
-      dispatch(setUser(JSON.parse(router.query.user as string)));
-      Cookies.set("accessToken", router.query.accessToken as string, {
-        expires: DateTime.fromSeconds(
-          parseJwt(router.query.accessToken as string).exp
-        ).toJSDate(),
-      });
-      Cookies.set("refreshToken", router.query.refreshToken as string, {
-        expires: DateTime.fromSeconds(
-          parseJwt(router.query.refreshToken as string).exp
-        ).toJSDate(),
-      });
-      router.push("/");
-    }
-  };
-
+  // force refresh the token every 10 minutes
   useEffect(() => {
-    refreshTokenIfNeeded();
-    getUserFromCurrentUrl();
-  }, [router]);
+    const handle = setInterval(async () => {
+      const user = firebase.auth().currentUser;
+      if (user) await user.getIdToken(true);
+    }, 10 * 60 * 1000);
+
+    // clean up setInterval
+    return () => clearInterval(handle);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>

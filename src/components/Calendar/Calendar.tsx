@@ -1,16 +1,17 @@
-import axios from "axios";
+import { FirebaseError } from "firebase/app";
+import firebase from "firebase/compat/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { DateTime, Info } from "luxon";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  editEventForApartment,
   removeEventForApartment,
   saveEventsForApartment,
-} from "../../../store/authActions/eventActions";
+} from "../../../store/firebaseActions/eventActions";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { Apartment, selectApartment } from "../../../store/reducers/apartments";
+import { selectApartment } from "../../../store/reducers/apartments";
 import { setEvents } from "../../../store/reducers/events";
 import { useMobileView } from "../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
@@ -39,19 +40,13 @@ const Calendar: NextPage = (props: Props) => {
     null
   );
   const [selectedDay, setSelectedDay] = useState<null | string>(null);
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    DateTime.local().month
-  );
-  const [selectedYear, setSelectedYear] = useState<number>(
-    DateTime.local().year
-  );
 
   const mobileView = useMobileView();
 
-  const eachDayOfMonth = useCalculateEachDayOfMonth({
-    year: selectedYear,
-    month: selectedMonth,
-  }).dates;
+  const { dates, setmonth, setyear, year, month } = useCalculateEachDayOfMonth({
+    startYear: DateTime.local().year,
+    startMonth: DateTime.local().month,
+  });
 
   const calendarGrid = useRef<null | HTMLDivElement>(null);
 
@@ -62,21 +57,49 @@ const Calendar: NextPage = (props: Props) => {
     (event: Event) => {
       let biggestIndex = 0;
       let smallestIndex = 999;
+      const eventStartSplit = event.start.split("-");
+      const eventEndSplit = event.end.split("-");
+      let endDate = event.end;
+      let startDate = event.start;
+
+      if (
+        Number(eventEndSplit[0]) > year ||
+        (Number(eventEndSplit[0]) === year && Number(eventEndSplit[1]) > month)
+      ) {
+        endDate = DateTime.fromObject({
+          month,
+        })
+          .endOf("month")
+          .toFormat("yyyy-MM-dd");
+      }
+
+      if (
+        Number(eventStartSplit[0]) > year ||
+        (Number(eventStartSplit[0]) === year &&
+          Number(eventStartSplit[1]) > month)
+      ) {
+        startDate = DateTime.fromObject({
+          month,
+        })
+          .startOf("month")
+          .toFormat("yyyy-MM-dd");
+      }
+
       for (
         let index = 0;
         index <=
-        DateTime.fromISO(event.end).diff(DateTime.fromISO(event.start), "days")
+        DateTime.fromISO(endDate).diff(DateTime.fromISO(startDate), "days")
           .days;
         index++
       ) {
-        const tempDate = DateTime.fromISO(event.start)
+        const tempDate = DateTime.fromISO(startDate)
           .plus({ days: index })
           .toFormat("yyyy-MM-dd");
         if (
-          eventsData[DateTime.fromISO(event.start).year] &&
-          eventsData[DateTime.fromISO(event.start).year][tempDate]
+          eventsData[DateTime.fromISO(startDate).year] &&
+          eventsData[DateTime.fromISO(startDate).year][tempDate]
         ) {
-          const newIndex = eventsData[DateTime.fromISO(event.start).year][
+          const newIndex = eventsData[DateTime.fromISO(startDate).year][
             tempDate
           ].findIndex(e => e.id === event.id);
           if (newIndex > biggestIndex) {
@@ -93,14 +116,21 @@ const Calendar: NextPage = (props: Props) => {
   );
 
   const getEventsById = async (id: string) => {
-    await axios
-      .get(`/events/${id}`)
-      .then(res => {
-        dispatch(setEvents(res.data.data as EventsByYear));
-      })
-      .catch(err => {
-        dispatch(setEvents({}));
-      });
+    try {
+      const event = await getDoc(
+        doc(getFirestore(firebase.app()), "events", `${id}/data/private`)
+      ).then(doc => doc.data());
+
+      if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
+        dispatch(setEvents(event as EventsByYear));
+      }
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        if (error.code === "permission-denied") {
+          navigate.push("/");
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -116,7 +146,7 @@ const Calendar: NextPage = (props: Props) => {
 
   const calculateBiggestIndexByWeekNumber = useCallback(() => {
     let biggestIndex = 0;
-    for (const day of eachDayOfMonth) {
+    for (const day of dates) {
       if (eventsData[day.year] && eventsData[day.year][day.date]) {
         const eventsForDay = eventsData[day.year][day.date];
         if (eventsForDay && eventsForDay.length > biggestIndex) {
@@ -126,7 +156,7 @@ const Calendar: NextPage = (props: Props) => {
     }
 
     return biggestIndex;
-  }, [eventsData, eachDayOfMonth]);
+  }, [eventsData, dates]);
 
   return (
     <>
@@ -139,17 +169,17 @@ const Calendar: NextPage = (props: Props) => {
         <div className={`font-bold flex gap-3 ${mobileView && "mb-6"}`}>
           <Dropdown
             placeholder="Select apartment"
-            data={apartments?.apartments.map(apartment => {
+            data={Object.keys(apartments?.apartments).map(key => {
               return {
-                id: apartment.id,
-                name: apartment.name,
-                value: apartment,
+                id: apartments.apartments[key].id,
+                name: apartments.apartments[key].name,
+                value: apartments.apartments[key],
               };
             })}
             selected={navigate.query.id as string}
             setData={item => {
               if (item.id !== (navigate.query.id as string)) {
-                dispatch(selectApartment(item.value as Apartment));
+                dispatch(selectApartment(apartments.apartments[item.id]));
                 navigate.push(`/apartments/${item.id}`);
               }
             }}
@@ -162,10 +192,10 @@ const Calendar: NextPage = (props: Props) => {
           </button>
         </div>
         <DatePickerHeader
-          selectedMonth={selectedMonth}
-          selectedYear={selectedYear}
-          setSelectedMonth={setSelectedMonth}
-          setSelectedYear={setSelectedYear}
+          selectedMonth={month}
+          selectedYear={year}
+          setSelectedMonth={setmonth}
+          setSelectedYear={setyear}
           className={style.dateNavigation}
         />
       </div>
@@ -205,23 +235,23 @@ const Calendar: NextPage = (props: Props) => {
             touchMoveHorizontal - e.changedTouches.item(0).clientX > 50
           ) {
             touchMoveHorizontal = null;
-            if (selectedMonth === 12) {
-              setSelectedMonth(1);
-              setSelectedYear(selectedYear + 1);
+            if (month === 12) {
+              setmonth(1);
+              setyear(year + 1);
               return;
             }
-            setSelectedMonth(selectedMonth + 1);
+            setmonth(month + 1);
           } else if (
             touchMoveHorizontal &&
             touchMoveHorizontal - e.changedTouches.item(0).clientX < -50
           ) {
             touchMoveHorizontal = null;
-            if (selectedMonth === 1) {
-              setSelectedMonth(12);
-              setSelectedYear(selectedYear - 1);
+            if (month === 1) {
+              setmonth(12);
+              setyear(year - 1);
               return;
             }
-            setSelectedMonth(selectedMonth - 1);
+            setmonth(month - 1);
           }
         }}
       >
@@ -238,7 +268,7 @@ const Calendar: NextPage = (props: Props) => {
           )}
         </div>
         <div className={style.calendarGrid}>
-          {eachDayOfMonth.map((day, index) => {
+          {dates.map((day, index) => {
             const objectOfDivs: ReactElement[] = [];
             if (
               eventsData &&
@@ -347,9 +377,7 @@ const Calendar: NextPage = (props: Props) => {
               : []
           }
           isMobileView={mobileView}
-          removeEvent={async event =>
-            await dispatch(removeEventForApartment(event))
-          }
+          removeEvent={event => dispatch(removeEventForApartment(event.id))}
         />
         <CreateNewEvent
           show={addNewEvent}
@@ -357,18 +385,8 @@ const Calendar: NextPage = (props: Props) => {
           setShowEdit={setShowEditEvent}
           setShow={setAddNewEvent}
           selectedEventToEdit={selectedEventToEdit}
-          setEvents={event =>
-            dispatch(
-              selectedEventToEdit
-                ? editEventForApartment(event, selectedEventToEdit)
-                : saveEventsForApartment(event)
-            ).then(res => {
-              if (res.data && [201, 200].includes(res.status)) {
-                setShowEditEvent(false);
-                setAddNewEvent(false);
-              }
-            })
-          }
+          events={eventsData}
+          setEvents={events => dispatch(saveEventsForApartment(events))}
         />
       </div>
       <div className="fixed bottom-0 right-0 p-3 w-fit drop-shadow-md">

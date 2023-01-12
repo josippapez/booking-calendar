@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { logout } from "../../../../store/authActions/authActions";
+import { logout } from "../../../../store/firebaseActions/authActions";
 import { useMobileView } from "../../../checkForMobileView";
 import useDarkMode from "../../../Hooks/useDarkMode";
 import style from "./Navbar.module.scss";

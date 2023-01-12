@@ -1,10 +1,7 @@
 import { NextPage } from "next";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import {
-  Apartment,
-  selectApartment,
-} from "../../../../store/reducers/apartments";
+import { selectApartment } from "../../../../store/reducers/apartments";
 import Dropdown from "../Dropdown/Dropdown";
 import InvoiceDisplay from "./InvoiceDisplay/InvoiceDisplay";
 import InvoiceInputs from "./InvoiceInputs/InvoiceInputs";
@@ -87,40 +84,44 @@ const Invoice: NextPage = (props: Props) => {
       },
     });
 
-  return (
-    <div>
-      <div className="w-56">
-        <Dropdown
-          placeholder="Select apartment"
-          data={apartments?.apartments.map(apartment => {
-            return {
-              id: apartment.id,
-              name: apartment.name,
-              value: apartment,
-            };
-          })}
-          selected={selectedApartment?.id as string}
-          setData={item => {
-            if (item.id !== (selectedApartment?.id as string)) {
-              dispatch(selectApartment(item.value as Apartment));
-            }
-          }}
-        />
-      </div>
-      {selectedApartment && (
-        <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
-          <InvoiceInputs
-            invoiceData={transactionInvoiceData}
-            setInvoiceData={setTransactionInvoiceData}
-          />
-          <InvoiceDisplay
-            invoiceData={transactionInvoiceData}
-            setInvoiceData={setTransactionInvoiceData}
+  const renderInvoice = () => {
+    return (
+      <div>
+        <div className="w-56">
+          <Dropdown
+            placeholder="Select apartment"
+            data={Object.keys(apartments?.apartments).map(key => {
+              return {
+                id: apartments.apartments[key].id,
+                name: apartments.apartments[key].name,
+                value: apartments.apartments[key],
+              };
+            })}
+            selected={selectedApartment?.id as string}
+            setData={item => {
+              if (item.id !== (selectedApartment?.id as string)) {
+                dispatch(selectApartment(apartments.apartments[item.id]));
+              }
+            }}
           />
         </div>
-      )}
-    </div>
-  );
+        {selectedApartment && (
+          <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
+            <InvoiceInputs
+              invoiceData={transactionInvoiceData}
+              setInvoiceData={setTransactionInvoiceData}
+            />
+            <InvoiceDisplay
+              invoiceData={transactionInvoiceData}
+              setInvoiceData={setTransactionInvoiceData}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return renderInvoice();
 };
 
 export default Invoice;

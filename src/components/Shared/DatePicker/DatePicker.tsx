@@ -28,22 +28,17 @@ const DatePicker = (props: Props) => {
   } = props;
   const { t } = useTranslation("DatePicker");
 
-  const [selectedYear, setSelectedYear] = useState<number>(
-    DateTime.local().year
-  );
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    DateTime.local().month
-  );
-
   const eachDayOfMonth = useCalculateEachDayOfMonth({
-    year: selectedYear,
-    month: selectedMonth,
+    startYear: DateTime.local().year,
+    startMonth: DateTime.local().month,
   });
+
+  const { month, year, setmonth, setyear } = eachDayOfMonth;
 
   useEffect(() => {
     if (initialDate) {
-      setSelectedMonth(DateTime.fromISO(initialDate).month);
-      setSelectedYear(DateTime.fromISO(initialDate).year);
+      setmonth(DateTime.fromISO(initialDate).month);
+      setyear(DateTime.fromISO(initialDate).year);
     }
   }, [initialDate]);
 
@@ -56,10 +51,10 @@ const DatePicker = (props: Props) => {
     >
       <div className="p-4 bg-white rounded-md relative">
         <DatePickerHeader
-          selectedMonth={selectedMonth}
-          selectedYear={selectedYear}
-          setSelectedMonth={setSelectedMonth}
-          setSelectedYear={setSelectedYear}
+          selectedMonth={month}
+          selectedYear={year}
+          setSelectedMonth={setmonth}
+          setSelectedYear={setyear}
         />
         <div className="my-4">
           <DatePickerDates

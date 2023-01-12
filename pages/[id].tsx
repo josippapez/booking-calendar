@@ -1,11 +1,9 @@
-import axios from "axios";
+import firebase from "firebase/compat/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { EventsByYear } from "../src/components/Calendar/CalendarTypes";
 import PageLoader from "../src/components/Shared/Loader/PageLoader";
-
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_BE_API_URL;
 
 const DynamicPublicCalendar = dynamic(
   () => import("../src/components/Home/LandingPage/PublicCalendar"),
@@ -24,21 +22,18 @@ const PublicCalendar: NextPage = (props: Props) => {
   );
 };
 
-const getEventsById = async (id: string): Promise<EventsByYear> => {
-  const event = await axios
-    .get(`/publicEvents/${id}`)
-    .then(res => {
-      if (res.data) {
-        return res.data.data;
-      }
-      return {};
-    })
-    .catch(err => {
-      return {};
-    });
+// const getEventsById = async (id: string): Promise<EventsByYear> => {
+//   const document = await getDoc(
+//     doc(getFirestore(firebase.app()), "events", `${id}/data/public`)
+//   );
 
-  return event as EventsByYear;
-};
+//   if (!document.exists()) {
+//     return {};
+//   }
+//   const event = document.data();
+
+//   return event as EventsByYear;
+// };
 
 const getApartmentEmail = async (
   id: string
@@ -50,24 +45,37 @@ const getApartmentEmail = async (
     }
   | undefined
 > => {
-  const apartment = await axios
-    .get(`/apartments/${id}`)
-    .then(res => {
-      return res.data;
-    })
-    .catch(err => {
-      return undefined;
-    });
-
-  if (!apartment) {
-    return undefined;
+  const document = await getDoc(
+    doc(getFirestore(firebase.app()), "events", `${id}`)
+  );
+  if (!document.exists()) {
+    return {
+      apartmentEmail: "",
+      apartmentLogo: "",
+      apartmentName: "",
+    };
   }
+  const eventsUserId = document.data();
 
-  return {
-    apartmentEmail: apartment.email,
-    apartmentLogo: apartment.image,
-    apartmentName: apartment.name,
-  };
+  if (eventsUserId) {
+    const apartmentData = await getDoc(
+      doc(getFirestore(firebase.app()), "apartments", `${eventsUserId.userId}`)
+    );
+    if (!apartmentData.exists()) {
+      return {
+        apartmentLogo: "",
+        apartmentEmail: "",
+        apartmentName: "",
+      };
+    }
+    const apartment = apartmentData.data();
+
+    return {
+      apartmentLogo: apartment[id].image,
+      apartmentEmail: apartment[id].email,
+      apartmentName: apartment[id].name,
+    };
+  }
 };
 
 export const getServerSideProps: GetServerSideProps = async (
@@ -75,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const navigate = context.params;
   if (navigate && navigate.id && typeof navigate.id === "string") {
-    const events: EventsByYear | {} = await getEventsById(navigate.id);
+    // const events = await getEventsById(navigate.id);
     const apartmentData = await getApartmentEmail(navigate.id);
 
     if (apartmentData === undefined) {
@@ -88,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (
     }
     return {
       props: {
-        events,
+        // events,
         apartmentName: apartmentData.apartmentName,
         apartmentEmail: apartmentData.apartmentEmail,
         apartmentLogo: apartmentData.apartmentLogo,

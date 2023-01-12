@@ -30,17 +30,12 @@ const DateRangePicker = (props: Props) => {
 
   const { t } = useTranslation("DateRangePicker");
 
-  const [selectedYear, setSelectedYear] = useState<number>(
-    DateTime.local().year
-  );
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    DateTime.local().month
-  );
-
   const eachDayOfMonth = useCalculateEachDayOfMonth({
-    year: selectedYear,
-    month: selectedMonth,
+    startYear: DateTime.local().year,
+    startMonth: DateTime.local().month,
   });
+
+  const { month, year, setmonth, setyear } = eachDayOfMonth;
 
   const [currentDate, setCurrentDate] = useState("");
 
@@ -200,10 +195,10 @@ const DateRangePicker = (props: Props) => {
     >
       <div className="p-4 bg-white rounded-md relative">
         <DatePickerHeader
-          selectedMonth={selectedMonth}
-          selectedYear={selectedYear}
-          setSelectedMonth={setSelectedMonth}
-          setSelectedYear={setSelectedYear}
+          selectedMonth={month}
+          selectedYear={year}
+          setSelectedMonth={setmonth}
+          setSelectedYear={setyear}
         />
         <div className={`${style.dateRangeGrid} my-4`}>
           <DatePickerDates

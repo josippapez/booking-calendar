@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
 import Modal from "../../Shared/Modal/Modal";
-import { Day, Event } from "../CalendarTypes";
+import { Day, Event, EventsByYear } from "../CalendarTypes";
 import style from "./CreateNewEvent.module.scss";
 
 type Props = {
@@ -12,13 +12,15 @@ type Props = {
   showEdit: boolean;
   setShowEdit: (state: boolean) => void;
   selectedEventToEdit: Event | null;
-  setEvents: (events: Event) => void;
+  setEvents: (events: EventsByYear) => void;
+  events: EventsByYear;
 };
 
 const CreateNewEvent = (props: Props) => {
   const {
     show,
     setShow,
+    events,
     setEvents,
     setShowEdit,
     showEdit,
@@ -42,6 +44,29 @@ const CreateNewEvent = (props: Props) => {
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [openedDropdown, setOpenedDropdown] = useState(false);
 
+  const eachDayOfRange = (startDate: string, endDate: string) => {
+    const start = DateTime.fromISO(startDate);
+    const end = DateTime.fromISO(endDate);
+    const monthDates: Day[] = [];
+
+    const daysInMonth = end.diff(start, "days");
+    for (let i = 0; i <= daysInMonth.days; i++) {
+      const day = start.plus({ days: i });
+      monthDates.push({
+        day: day.day,
+        date: day.toFormat("yyyy-MM-dd"),
+        name: day.toFormat("EEEE"),
+        year: day.year.toString(),
+        lastMonth: false,
+        weekNumber: day.weekNumber,
+        startingDay: i === 0,
+        endingDay: i === daysInMonth.days,
+      });
+    }
+
+    return monthDates;
+  };
+
   useEffect(() => {
     if (showEdit && selectedEventToEdit && selectedEventToEdit.id) {
       setNewEvent(selectedEventToEdit);
@@ -54,7 +79,6 @@ const CreateNewEvent = (props: Props) => {
           start: "",
           end: "",
           color: "",
-          price: "",
           description: "",
           phone: "",
           booking: false,
@@ -89,7 +113,7 @@ const CreateNewEvent = (props: Props) => {
     <>
       <Modal
         animation="fade"
-        width="22rem"
+        width="20rem"
         show={show || showEdit}
         closeModal={() => {
           setShow(false);
@@ -225,7 +249,56 @@ const CreateNewEvent = (props: Props) => {
                 className="font-bold"
                 onClick={() => {
                   if (newEvent.start && newEvent.end && newEvent.color) {
-                    setEvents(newEvent);
+                    let editedEvents = { ...events };
+                    if (showEdit && selectedEventToEdit) {
+                      const datesToEdit = eachDayOfRange(
+                        selectedEventToEdit.start,
+                        selectedEventToEdit.end
+                      );
+                      datesToEdit.map(date => {
+                        if (editedEvents[date.year][date.date]) {
+                          const eventForDayIndex = editedEvents[date.year][
+                            date.date
+                          ].findIndex(event => event.id === newEvent.id);
+
+                          if (eventForDayIndex !== -1) {
+                            editedEvents[date.year] = {
+                              ...editedEvents[date.year],
+                              [date.date]: [
+                                ...editedEvents[date.year][date.date].filter(
+                                  event => event.id !== newEvent.id
+                                ),
+                              ],
+                            };
+                          }
+                        }
+                      });
+                    }
+                    const dates = eachDayOfRange(newEvent.start, newEvent.end);
+                    const newDates = dates.reduce(
+                      (acc: EventsByYear, date: Day) => ({
+                        ...acc,
+                        [date.year]: {
+                          ...acc[date.year],
+                          [date.date]: [
+                            ...((editedEvents[date.year] &&
+                              editedEvents[date.year][date.date]) ||
+                              []),
+                            { ...newEvent, weekNumber: date.weekNumber },
+                          ],
+                        },
+                      }),
+                      {}
+                    );
+                    Object.keys(newDates).map(year => {
+                      editedEvents[year] = {
+                        ...editedEvents[year],
+                        ...newDates[year],
+                      };
+                    });
+                    setEvents(editedEvents);
+                    setShow(false);
+                    setShowEdit(false);
                   }
                 }}
                 style={{

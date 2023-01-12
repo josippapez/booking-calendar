@@ -1,10 +1,10 @@
 import { DateTime } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Day } from "../components/Calendar/CalendarTypes";
 
 type Props = {
-  month: number;
-  year: number;
+  startMonth: number;
+  startYear: number;
 };
 
 const useCalculateEachDayOfMonth = (
@@ -12,6 +12,8 @@ const useCalculateEachDayOfMonth = (
 ): {
   month: number;
   year: number;
+  setmonth: (month: number) => void;
+  setyear: (year: number) => void;
   lastMonth: number;
   lastMonthYear: number;
   nextMonth: number;
@@ -20,7 +22,10 @@ const useCalculateEachDayOfMonth = (
   lastMonthDates: Day[];
   nextMonthDates: Day[];
 } => {
-  const { month, year } = props;
+  const { startMonth, startYear } = props;
+  const [month, setmonth] = useState(startMonth);
+  const [year, setyear] = useState(startYear);
+
   let lastMonth = month - 1;
   let lastMonthYear = year;
   if (lastMonth === 0) {
@@ -71,6 +76,8 @@ const useCalculateEachDayOfMonth = (
   return {
     month,
     year,
+    setmonth,
+    setyear,
     lastMonth,
     lastMonthYear,
     nextMonth,

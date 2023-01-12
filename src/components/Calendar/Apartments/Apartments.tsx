@@ -1,16 +1,17 @@
-import axios from "axios";
-import Cookies from "js-cookie";
+import firebase from "firebase/compat/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import isEqual from "lodash/fp/isEqual";
-import { useRouter } from "next/dist/client/router";
+import { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { NextPage } from "next/types";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  editApartment,
   removeApartment,
   saveApartment,
-} from "../../../../store/authActions/apartmentActions";
+} from "../../../../store/firebaseActions/apartmentActions";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
   selectApartment,
@@ -28,20 +29,21 @@ const Apartments: NextPage = (props: Props) => {
   const dispatch = useAppDispatch();
   const mobileView = useMobileView();
   const navigate = useRouter();
+  const user = useAppSelector(state => state.user.user);
   const apartments = useAppSelector(state => state.apartments);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<null | string>(null);
-  const [disabledButton, setDisabledButton] = useState(false);
   const [newApartment, setNewApartment] = useState<{
     name: string;
     address: string;
-    id?: string;
+    id: string;
     email: string;
     image: File | string;
     pid: string;
     iban: string;
     owner: string;
   }>({
+    id: "",
     name: "",
     address: "",
     email: "",
@@ -53,26 +55,33 @@ const Apartments: NextPage = (props: Props) => {
   const emailRegex =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
-  const getApartments = async () => {
-    const fetchedApartments = await axios
-      .get(`/apartments`, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-      })
-      .then(res => res.data)
-      .catch(err => {
-        if (err.response.status === 401) {
-          navigate.push("/");
-        }
-      });
-    if (!isEqual(fetchedApartments, apartments.apartments)) {
-      dispatch(setApartments(fetchedApartments));
+  const getApartmentsForuser = async (id: string) => {
+    const apartmentsData = await getDoc(
+      doc(getFirestore(firebase.app()), "apartments", `${id}`)
+    );
+
+    if (!isEqual(apartmentsData.data(), apartments.apartments)) {
+      dispatch(
+        setApartments(
+          apartmentsData.data() as {
+            [key: string]: {
+              id: string;
+              name: string;
+              address: string;
+              email: string;
+              image: string;
+              pid: string;
+              iban: string;
+              owner: string;
+            };
+          }
+        )
+      );
     }
   };
 
   useEffect(() => {
-    getApartments();
+    getApartmentsForuser(user.id);
   }, []);
 
   return (
@@ -219,7 +228,7 @@ const Apartments: NextPage = (props: Props) => {
                   {t("apartment_email")}
                 </label>
                 <input
-                  className={`appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500 mb-3 ${
+                  className={`appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500 mb-3  ${
                     newApartment.email
                       ? emailRegex.test(newApartment.email)
                         ? "!border-green-500"
@@ -242,37 +251,53 @@ const Apartments: NextPage = (props: Props) => {
                   disabled={
                     !newApartment.address ||
                     !newApartment.name ||
-                    !emailRegex.test(newApartment.email) ||
-                    disabledButton
+                    !emailRegex.test(newApartment.email)
                   }
                   className="bg-blue-700 hover:bg-blue-500 text-white shadow-md font-bold py-2 px-4 rounded disabled:bg-gray-400"
                   type="button"
-                  onClick={async () => {
+                  onClick={() => {
                     if (
                       newApartment.address &&
                       newApartment.name &&
                       emailRegex.test(newApartment.email)
                     ) {
-                      setDisabledButton(true);
-                      await dispatch(
-                        saveApartment(newApartment, setProgress, setError)
-                      ).then(res => {
-                        if (
-                          res.data &&
-                          (res.status === 200 || res.status === 201)
-                        ) {
-                          setNewApartment({
-                            id: "",
-                            name: "",
-                            address: "",
-                            email: "",
-                            image: "",
-                            pid: "",
-                            iban: "",
-                            owner: "",
-                          });
-                          setDisabledButton(false);
-                        }
+                      if (newApartment.id) {
+                        dispatch(
+                          editApartment(newApartment, setProgress, setError)
+                        );
+                        setNewApartment({
+                          id: "",
+                          name: "",
+                          address: "",
+                          email: "",
+                          image: "",
+                          pid: "",
+                          iban: "",
+                          owner: "",
+                        });
+                        return;
+                      }
+                      dispatch(
+                        saveApartment(
+                          {
+                            ...newApartment,
+                            id: crypto
+                              .getRandomValues(new Uint8Array(16))
+                              .join(""),
+                          },
+                          setProgress,
+                          setError
+                        )
+                      );
+                      setNewApartment({
+                        id: "",
+                        name: "",
+                        address: "",
+                        email: "",
+                        image: "",
+                        pid: "",
+                        iban: "",
+                        owner: "",
                       });
                     }
                   }}
@@ -403,23 +428,32 @@ const Apartments: NextPage = (props: Props) => {
           <tbody>
             {apartments &&
               apartments?.apartments &&
-              apartments.apartments.map(apartment => (
+              Object.keys(apartments.apartments).map(apartment => (
                 <tr
                   className="bg-white border-b cursor-pointer hover:bg-blue-50 hover:transition-colors duration-150 first:rounded-t-lg"
-                  key={apartment.id}
+                  key={apartments.apartments[apartment].id}
                   onClick={() => {
-                    if (apartments.selectedApartment?.id !== apartment.id) {
+                    if (
+                      apartments.selectedApartment?.id !==
+                      apartments.apartments[apartment].id
+                    ) {
                       dispatch(setEvents({}));
                     }
-                    dispatch(selectApartment(apartment));
-                    navigate.push(`/apartments/${apartment.id}`);
+                    dispatch(selectApartment(apartments.apartments[apartment]));
+                    navigate.push(
+                      `/apartments/${apartments.apartments[apartment].id}`
+                    );
                   }}
                 >
                   <td className="font-bold px-6 py-4 text-gray-900 dark:text-white whitespace-nowrap">
-                    {apartment.name}
+                    {apartments.apartments[apartment].name}
                   </td>
-                  <td className="font-bold px-6 py-4">{apartment.address}</td>
-                  <td className="font-bold px-6 py-4">{apartment.email}</td>
+                  <td className="font-bold px-6 py-4">
+                    {apartments.apartments[apartment].address}
+                  </td>
+                  <td className="font-bold px-6 py-4">
+                    {apartments.apartments[apartment].email}
+                  </td>
                   <td
                     className={`px-6 py-4 text-right ${
                       mobileView ? "flex" : ""
@@ -432,7 +466,12 @@ const Apartments: NextPage = (props: Props) => {
                         showAlert(
                           t("remove_apartment"),
                           false,
-                          () => () => dispatch(removeApartment(apartment.id))
+                          () => () =>
+                            dispatch(
+                              removeApartment(
+                                apartments.apartments[apartment].id
+                              )
+                            )
                         );
                       }}
                     >
@@ -443,10 +482,10 @@ const Apartments: NextPage = (props: Props) => {
                       onClick={e => {
                         e.stopPropagation();
                         setNewApartment({
-                          pid: apartment?.pid || "",
-                          iban: apartment?.iban || "",
-                          owner: apartment?.owner || "",
-                          ...apartment,
+                          pid: apartments.apartments[apartment]?.pid || "",
+                          iban: apartments.apartments[apartment]?.iban || "",
+                          owner: apartments.apartments[apartment]?.owner || "",
+                          ...apartments.apartments[apartment],
                         });
                       }}
                     >
@@ -454,18 +493,21 @@ const Apartments: NextPage = (props: Props) => {
                     </button>
                     {!mobileView && (
                       <Link
-                        key={apartment.id}
-                        href={`/apartments/${apartment.id}`}
+                        key={apartments.apartments[apartment].id}
+                        href={`/apartments/${apartments.apartments[apartment].id}`}
                       >
                         <a
                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4"
                           onClick={() => {
                             if (
-                              apartments.selectedApartment?.id !== apartment.id
+                              apartments.selectedApartment?.id !==
+                              apartments.apartments[apartment].id
                             ) {
                               dispatch(setEvents({}));
                             }
-                            dispatch(selectApartment(apartment));
+                            dispatch(
+                              selectApartment(apartments.apartments[apartment])
+                            );
                           }}
                         >
                           {t("select")}

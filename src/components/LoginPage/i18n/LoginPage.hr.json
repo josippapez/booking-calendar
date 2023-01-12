@@ -1,4 +1,5 @@
 {
+  "header": "Prijavite se ili registrirajte",
   "header_login": "Prijavite se",
   "header_register": "Registrirajte se",
   "email": "Email",
@@ -7,10 +8,8 @@
   "register": "Registriraj se",
   "OR": "ILI",
   "auth": {
-    "USER_ALREADY_EXISTS": "Korisnik već postoji.",
-    "DOES_NOT_EXIST": "Korisnik s ovom email adresom ne postoji.",
-    "WRONG_CREDENTIALS": "Pogrešna email adresa ili lozinka.",
-    "EMAIL_NOT_VALID": "Email adresa nije valjana.",
-    "PASSWORD_TOO_SHORT": "Lozinka mora sadržavati najmanje {{minimum_characters}} znakova."
+    "weak-password": "Lozinka je slaba. Molimo Vas da koristite lozinku koja sadrži najmanje 6 znakova.",
+    "wrong-password": "Pogrešna lozinka",
+    "too-many-requests": "Previše pokušaja prijave. Molimo Vas da pokušate ponovo kasnije."
   }
 }

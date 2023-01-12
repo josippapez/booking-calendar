@@ -1,13 +1,12 @@
 import Cookies from "js-cookie";
 import { AppProps } from "next/app";
 import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAppSelector } from "../../store/hooks";
 import { useMobileView } from "../checkForMobileView";
-import { intercept } from "../interceptor";
 import AlertModal from "./Shared/AlertModal/AlertModal";
 import Navbar from "./Shared/Navbar/Navbar";
-
-intercept();
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const user = useAppSelector(state => state.user.user);
@@ -48,7 +47,7 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
     checkForAuthentication();
   }, [router]);
 
-  return (
+  return displayPage ? (
     <>
       <Navbar userAuthenticated={!!Cookies.get("accessToken")} />
       <div
@@ -58,9 +57,10 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
             : window.location.pathname !== "/" && "py-16"
         } select-none`}
       >
-        {displayPage ? <Component {...pageProps} /> : null}
+        <ToastContainer />
+        <Component {...pageProps} />
       </div>
       <AlertModal />
     </>
-  );
+  ) : null;
 };
