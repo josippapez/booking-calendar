@@ -1,6 +1,8 @@
 import { usePDF } from "@react-pdf/renderer";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useAppSelector } from "../../../../../store/hooks";
 import PageLoader from "../../Loader/PageLoader";
@@ -82,8 +84,8 @@ const InvoiceDisplay = (props: Props) => {
   );
 
   const onItemClick = useCallback(
-    ({ pageNumber: nextPageNumber }: { pageNumber: number }) => {
-      setPageNumber(nextPageNumber);
+    ({ pageNumber: nextPageNumber }: { pageNumber: string }) => {
+      setPageNumber(Number(nextPageNumber));
     },
     []
   );
@@ -99,6 +101,8 @@ const InvoiceDisplay = (props: Props) => {
           onItemClick={onItemClick}
           onLoadSuccess={onDocumentLoadSuccess}
         >
+          {/* //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore */}
           <Page renderMode="canvas" pageNumber={pageNumber || 1}>
             {pageNumber && numPages && (
               <div className={`${style["document-controls"]}`}>

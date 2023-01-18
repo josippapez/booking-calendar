@@ -1,41 +1,55 @@
+import { Unsubscribe } from "firebase/firestore";
 import { DateTime, Info } from "luxon";
 import { InferGetServerSidePropsType, NextPage } from "next";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getServerSideProps } from "../../../../pages/[id]";
 import Images from "../../../../public/Styles/Assets/Images/Images";
 import { useMobileView } from "../../../checkForMobileView";
 import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
+import { FirebaseCollectionActions } from "../../../Hooks/FirebaseCollectionActions";
+import { EventsByYear } from "../../Calendar/CalendarTypes";
 import CreateNewReservation from "../../Calendar/CreateNewReservation/CreateNewReservation";
 import style from "./PublicCalendar.module.scss";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const PublicCalendar: NextPage = (props: Props) => {
-  const { events, apartmentEmail, apartmentLogo, apartmentName } = props;
+  const { apartmentEmail, apartmentLogo, apartmentName } = props;
   const { t, i18n } = useTranslation("PublicCalendar");
+  const mobileView = useMobileView();
+  const router = useRouter();
 
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    DateTime.local().month
-  );
-  const [selectedYear, setSelectedYear] = useState<number>(
-    DateTime.local().year
-  );
+  const [events, setEvents] = useState<EventsByYear>({});
   const [displayNewReservation, setDisplayNewReservation] =
     useState<boolean>(false);
 
-  const mobileView = useMobileView();
-
-  const { lastMonthDates, dates, nextMonthDates } = useCalculateEachDayOfMonth({
-    year: selectedYear,
-    month: selectedMonth,
+  const { lastMonthDates, dates, nextMonthDates, year, month, setyear, setmonth } = useCalculateEachDayOfMonth({
+    startYear: DateTime.local().year,
+    startMonth: DateTime.local().month,
   });
 
   let touchMoveHorizontal: null | number = null;
   let currentScrollPosition: null | number = null;
 
   const calendarGrid = useRef<null | HTMLDivElement>(null);
+  const unsubscribe = useRef<Unsubscribe | undefined>(undefined);
+
+  useEffect(() => {
+    const { listenById } = FirebaseCollectionActions("events");
+
+    unsubscribe.current = listenById(`${router.query.id}/data/public`, data => {
+      setEvents(data as EventsByYear);
+    });
+
+    return () => {
+      if (unsubscribe.current) {
+        unsubscribe.current();
+      }
+    };
+  }, [router.query.id]);
 
   return (
     <div>
@@ -69,17 +83,17 @@ const PublicCalendar: NextPage = (props: Props) => {
           >
             <button
               disabled={
-                DateTime.local(selectedYear, selectedMonth)
+                DateTime.local(year, month)
                   .diffNow()
                   .as("months") < 0
               }
               onClick={() => {
-                if (selectedMonth === 1) {
-                  setSelectedMonth(12);
-                  setSelectedYear(selectedYear - 1);
+                if (month === 1) {
+                  setmonth(12);
+                  setyear(year - 1);
                   return;
                 }
-                setSelectedMonth(selectedMonth - 1);
+                setmonth(month - 1);
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/left-arrow.svg)`,
@@ -90,16 +104,16 @@ const PublicCalendar: NextPage = (props: Props) => {
               className={`hover:bg-neutral-100 p-5 rounded-l-md disabled:bg-neutral-300`}
             />
             <h2 className="w-full text-center px-5 select-none font-bold">
-              {selectedMonth}
+              {month}
             </h2>
             <button
               onClick={() => {
-                if (selectedMonth === 12) {
-                  setSelectedMonth(1);
-                  setSelectedYear(selectedYear + 1);
+                if (month === 12) {
+                  setmonth(1);
+                  setyear(year + 1);
                   return;
                 }
-                setSelectedMonth(selectedMonth + 1);
+                setmonth(month + 1);
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/right-arrow.svg)`,
@@ -112,16 +126,11 @@ const PublicCalendar: NextPage = (props: Props) => {
           </div>
           <div className={`flex items-center rounded-md h-10 w-[165px]`}>
             <button
-              disabled={DateTime.local(selectedYear).diffNow().as("year") < 0}
+              disabled={DateTime.local(year).diffNow().as("year") < 0}
               onClick={() => {
-                setSelectedYear(selectedYear - 1);
-                if (
-                  DateTime.local(selectedYear - 1, selectedMonth)
-                    .diffNow()
-                    .as("year") < 0
-                ) {
-                  setSelectedMonth(DateTime.now().month);
-                }
+                setyear(year - 1);
+
+                setmonth(DateTime.now().month);
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/left-arrow.svg)`,
@@ -132,11 +141,11 @@ const PublicCalendar: NextPage = (props: Props) => {
               className={`hover:bg-neutral-100 p-5 rounded-l-md disabled:bg-neutral-300`}
             />
             <h2 className="w-full text-center px-5 select-none font-bold">
-              {selectedYear}
+              {year}
             </h2>
             <button
               onClick={() => {
-                setSelectedYear(selectedYear + 1);
+                setyear(year + 1);
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/right-arrow.svg)`,
@@ -239,23 +248,23 @@ const PublicCalendar: NextPage = (props: Props) => {
             touchMoveHorizontal - e.changedTouches.item(0).clientX > 50
           ) {
             touchMoveHorizontal = null;
-            if (selectedMonth === 12) {
-              setSelectedMonth(1);
-              setSelectedYear(selectedYear + 1);
+            if (month === 12) {
+              setmonth(1);
+              setyear(year + 1);
               return;
             }
-            setSelectedMonth(selectedMonth + 1);
+            setmonth(month + 1);
           } else if (
             touchMoveHorizontal &&
             touchMoveHorizontal - e.changedTouches.item(0).clientX < -50
           ) {
             touchMoveHorizontal = null;
-            if (selectedMonth === 1) {
-              setSelectedMonth(12);
-              setSelectedYear(selectedYear - 1);
+            if (month === 1) {
+              setmonth(12);
+              setyear(year - 1);
               return;
             }
-            setSelectedMonth(selectedMonth - 1);
+            setmonth(month - 1);
           }
         }}
       >

@@ -1,4 +1,4 @@
-### Booking calendar app for reservation/event tracking created with React (NextJS) (Typescript), NestJS, Tailwindcss
+### Booking calendar app for reservation/event tracking created with React (NextJS) (Typescript), Firebase, Tailwindcss
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
