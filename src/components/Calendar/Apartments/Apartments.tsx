@@ -1,6 +1,3 @@
-import firebase from "firebase/compat/app";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import isEqual from "lodash/fp/isEqual";
 import { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   editApartment,
+  getApartmentsForuser,
   removeApartment,
   saveApartment,
 } from "../../../../store/firebaseActions/apartmentActions";
@@ -29,7 +27,6 @@ const Apartments: NextPage = (props: Props) => {
   const dispatch = useAppDispatch();
   const mobileView = useMobileView();
   const navigate = useRouter();
-  const user = useAppSelector(state => state.user.user);
   const apartments = useAppSelector(state => state.apartments);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<null | string>(null);
@@ -55,33 +52,12 @@ const Apartments: NextPage = (props: Props) => {
   const emailRegex =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
-  const getApartmentsForuser = async (id: string) => {
-    const apartmentsData = await getDoc(
-      doc(getFirestore(firebase.app()), "apartments", `${id}`)
-    );
-
-    if (!isEqual(apartmentsData.data(), apartments.apartments)) {
-      dispatch(
-        setApartments(
-          apartmentsData.data() as {
-            [key: string]: {
-              id: string;
-              name: string;
-              address: string;
-              email: string;
-              image: string;
-              pid: string;
-              iban: string;
-              owner: string;
-            };
-          }
-        )
-      );
-    }
-  };
-
   useEffect(() => {
-    getApartmentsForuser(user.id);
+    dispatch(getApartmentsForuser()).then(data => {
+      if (data) {
+        setApartments(data);
+      }
+    });
   }, []);
 
   return (

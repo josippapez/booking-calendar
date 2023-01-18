@@ -10,7 +10,11 @@ import {
 } from "firebase/storage";
 import { t } from "i18next";
 import { toast } from "react-toastify";
-import { selectApartment, setApartments } from "../reducers/apartments";
+import {
+  Apartments,
+  selectApartment,
+  setApartments,
+} from "../reducers/apartments";
 import { FirebaseCollectionActions } from "./../../src/Hooks/FirebaseCollectionActions";
 import { AppDispatch, AppState } from "./../store";
 
@@ -209,5 +213,14 @@ const setApartmentDataTofirebase = (
         apartmentName: apartment.name,
       })
     );
+  };
+};
+
+export const getApartmentsForuser = () => {
+  return async (dispatch: AppDispatch, getState: AppState) => {
+    const { getById } = FirebaseCollectionActions("apartments");
+    const apartments = await getById(getState().user.user.id);
+    dispatch(setApartments(apartments as Apartments));
+    return apartments;
   };
 };

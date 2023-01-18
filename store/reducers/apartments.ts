@@ -12,7 +12,7 @@ export type Apartment = {
   owner?: string;
 };
 
-type Apartments = {
+export type Apartments = {
   [key: string]: Apartment;
 };
 

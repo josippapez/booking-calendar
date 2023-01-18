@@ -1,5 +1,6 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getApartmentsForuser } from "../../../../store/firebaseActions/apartmentActions";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { selectApartment } from "../../../../store/reducers/apartments";
 import Dropdown from "../Dropdown/Dropdown";
@@ -43,7 +44,7 @@ export type TransactionInvoiceData = {
 
 const Invoice: NextPage = (props: Props) => {
   const dispatch = useAppDispatch();
-  const apartments = useAppSelector(state => state.apartments);
+  const { apartments } = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
     state => state.apartments.selectedApartment
   );
@@ -84,23 +85,32 @@ const Invoice: NextPage = (props: Props) => {
       },
     });
 
+  useEffect(() => {
+    if (!apartments) {
+      dispatch(getApartmentsForuser());
+    }
+  }, []);
+
   const renderInvoice = () => {
     return (
       <div>
         <div className="w-56">
           <Dropdown
             placeholder="Select apartment"
-            data={Object.keys(apartments?.apartments).map(key => {
-              return {
-                id: apartments.apartments[key].id,
-                name: apartments.apartments[key].name,
-                value: apartments.apartments[key],
-              };
-            })}
+            data={
+              apartments &&
+              Object.keys(apartments).map(key => {
+                return {
+                  id: apartments[key].id,
+                  name: apartments[key].name,
+                  value: apartments[key],
+                };
+              })
+            }
             selected={selectedApartment?.id as string}
             setData={item => {
               if (item.id !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item.id]));
+                dispatch(selectApartment(apartments[item.id]));
               }
             }}
           />

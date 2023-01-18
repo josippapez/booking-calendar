@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Images from "../../../public/Styles/Assets/Images/Images";
+import { getApartmentsForuser } from "../../../store/firebaseActions/apartmentActions";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { selectApartment } from "../../../store/reducers/apartments";
 import { setGuests } from "../../../store/reducers/guests";
@@ -21,7 +22,7 @@ const Guests = (props: Props) => {
   const { t, i18n } = useTranslation("Guests");
   const navigate = useRouter();
   const dispatch = useAppDispatch();
-  const apartments = useAppSelector(state => state.apartments);
+  const { apartments } = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
     state => state.apartments.selectedApartment
   );
@@ -66,6 +67,12 @@ const Guests = (props: Props) => {
     }
   }, [selectedApartment, year]);
 
+  useEffect(() => {
+    if (!apartments) {
+      dispatch(getApartmentsForuser());
+    }
+  }, []);
+
   return (
     <>
       <h1 className="font-bold text-3xl">{t("guest_book")}</h1>
@@ -73,17 +80,20 @@ const Guests = (props: Props) => {
         <div className="flex justify-between items-center mt-7 mb-10">
           <Dropdown
             placeholder="Select apartment"
-            data={Object.keys(apartments?.apartments).map(key => {
-              return {
-                id: apartments.apartments[key].id,
-                name: apartments.apartments[key].name,
-                value: apartments.apartments[key],
-              };
-            })}
+            data={
+              apartments &&
+              Object.keys(apartments).map(key => {
+                return {
+                  id: apartments[key].id,
+                  name: apartments[key].name,
+                  value: apartments[key],
+                };
+              })
+            }
             selected={selectedApartment?.id as string}
             setData={item => {
               if (item.id !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(apartments.apartments[item.id]));
+                dispatch(selectApartment(apartments[item.id]));
               }
             }}
           />

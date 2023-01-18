@@ -6,7 +6,7 @@ import style from "./Dropdown.module.scss";
 type Props = {
   placeholder: string;
   selected: string;
-  data: {
+  data?: {
     id: string;
     name: string;
     value:
@@ -65,7 +65,11 @@ function Dropdown(props: Props) {
           type="button"
           placeholder={placeholder}
           className="placeholder:text-sm cursor-pointer w-[calc(100%_-_30px)] text-ellipsis overflow-hidden"
-          value={selected ? data.find(item => item.id === selected)?.name : ""}
+          value={
+            selected && data
+              ? data.find(item => item.id === selected)?.name
+              : ""
+          }
         />
         <Image
           src={Images.DownArrow}
@@ -78,7 +82,7 @@ function Dropdown(props: Props) {
       </div>
       {openedDropdown && (
         <div className={`${style.dropdown} rounded-md p-1 shadow-md`}>
-          {data &&
+          {data ? (
             data.map(item => (
               <div
                 key={item.id}
@@ -92,7 +96,10 @@ function Dropdown(props: Props) {
               >
                 {item.name}
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="text-gray-700 rounded-md p-2">No data</div>
+          )}
         </div>
       )}
     </div>
