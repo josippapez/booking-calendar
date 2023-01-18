@@ -38,9 +38,8 @@ const ImageInput = (props: Props) => {
         <div className="flex w-full">
           <Image
             src={image ?? ""}
-            objectFit="contain"
-            width={"120px"}
-            height={"120px"}
+            width={120}
+            height={120}
             alt="apartment Logo"
             placeholder="empty"
           />

@@ -76,8 +76,11 @@ const nextConfig = {
       new CopyPlugin({
         patterns: [
           // {
-          //   from: pdfWorkerPath,
-          //   to: path.join(__dirname),
+          //   from: path.join(
+          //     path.dirname(require.resolve("pdfjs-dist/package.json")),
+          //     "build",
+          //     "pdf.worker.min.js"
+          //   ),
           // },
           {
             from: path.join(

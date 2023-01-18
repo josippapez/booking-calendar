@@ -1,4 +1,3 @@
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { getApartmentsForuser } from "../../../../store/firebaseActions/apartmentActions";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
@@ -42,7 +41,7 @@ export type TransactionInvoiceData = {
   };
 };
 
-const Invoice: NextPage = (props: Props) => {
+const Invoice = (props: Props) => {
   const dispatch = useAppDispatch();
   const { apartments } = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
