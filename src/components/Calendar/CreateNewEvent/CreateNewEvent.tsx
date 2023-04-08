@@ -1,10 +1,10 @@
-import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import DateRangePicker from "../../Shared/DateRangePicker/DateRangePicker";
-import Modal from "../../Shared/Modal/Modal";
-import { Day, Event, EventsByYear } from "../CalendarTypes";
-import style from "./CreateNewEvent.module.scss";
+import DateRangePicker from '@/components/Shared/DateRangePicker/DateRangePicker';
+import { Modal } from '@/components/Shared/Modal/Modal';
+import { DateTime } from 'luxon';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Day, Event, EventsByYear } from '../CalendarTypes';
+import style from './CreateNewEvent.module.scss';
 
 type Props = {
   show: boolean;
@@ -27,17 +27,17 @@ const CreateNewEvent = (props: Props) => {
     selectedEventToEdit,
   } = props;
 
-  const { t } = useTranslation("CreateNewEvent");
+  const { t } = useTranslation('CreateNewEvent');
 
   const [newEvent, setNewEvent] = useState<Event>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
-    title: "",
-    start: "",
-    end: "",
-    color: "",
-    description: "",
-    price: "",
-    phone: "",
+    title: '',
+    start: '',
+    end: '',
+    color: '',
+    description: '',
+    price: '',
+    phone: '',
     booking: false,
     weekNumber: 0,
   });
@@ -49,13 +49,13 @@ const CreateNewEvent = (props: Props) => {
     const end = DateTime.fromISO(endDate);
     const monthDates: Day[] = [];
 
-    const daysInMonth = end.diff(start, "days");
+    const daysInMonth = end.diff(start, 'days');
     for (let i = 0; i <= daysInMonth.days; i++) {
       const day = start.plus({ days: i });
       monthDates.push({
         day: day.day,
-        date: day.toFormat("yyyy-MM-dd"),
-        name: day.toFormat("EEEE"),
+        date: day.toFormat('yyyy-MM-dd'),
+        name: day.toFormat('EEEE'),
         year: day.year.toString(),
         lastMonth: false,
         weekNumber: day.weekNumber,
@@ -75,12 +75,12 @@ const CreateNewEvent = (props: Props) => {
       if (!show || !showEdit) {
         setNewEvent({
           id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
-          title: "",
-          start: "",
-          end: "",
-          color: "",
-          description: "",
-          phone: "",
+          title: '',
+          start: '',
+          end: '',
+          color: '',
+          description: '',
+          phone: '',
           booking: false,
           weekNumber: 0,
         });
@@ -89,31 +89,31 @@ const CreateNewEvent = (props: Props) => {
   }, [show, showEdit]);
 
   const colors = [
-    "#e63946",
-    "#f72585",
-    "#b5179e",
-    "#480ca8",
-    "#e773ad",
-    "#f3b0ff",
-    "#fca1d9",
-    "#254D32",
-    "#3A7D44",
-    "#181D27",
-    "#2b2d42",
-    "#023047",
-    "#27d9f7",
-    "#80ffdb",
-    "#fca311",
-    "#fcab64",
+    '#e63946',
+    '#f72585',
+    '#b5179e',
+    '#480ca8',
+    '#e773ad',
+    '#f3b0ff',
+    '#fca1d9',
+    '#254D32',
+    '#3A7D44',
+    '#181D27',
+    '#2b2d42',
+    '#023047',
+    '#27d9f7',
+    '#80ffdb',
+    '#fca311',
+    '#fcab64',
   ];
 
-  const bookingColor = "#00387e";
+  const bookingColor = '#00387e';
 
   return (
     <>
       <Modal
-        animation="fade"
-        width="20rem"
+        animation='fade'
+        width='min(90%, 400px)'
         show={show || showEdit}
         closeModal={() => {
           setShow(false);
@@ -121,76 +121,76 @@ const CreateNewEvent = (props: Props) => {
         }}
       >
         <>
-          <div className="modal-header rounded-t-xl bg-gray-200 py-4">
-            <h2 className="text-center font-bold">
-              {t("add_new_reservation_title")}
+          <div className='modal-header rounded-t-xl bg-gray-200 py-4'>
+            <h2 className='text-center font-bold'>
+              {t('add_new_reservation_title')}
             </h2>
           </div>
-          <div className="p-4 bg-white modal-body">
-            <div className="flex h-[36px]">
-              <span className="font-bold text-sm">Booking</span>
+          <div className='modal-body bg-white p-4'>
+            <div className='flex h-[36px]'>
+              <span className='text-sm font-bold'>Booking</span>
               <input
-                className="bg-white rounded-full w-4 h-4 ml-2"
-                type="checkbox"
+                className='ml-2 h-4 w-4 rounded-full bg-white'
+                type='checkbox'
                 checked={newEvent.booking}
-                onClick={() => setNewEvent({ ...newEvent, color: "" })}
+                onClick={() => setNewEvent({ ...newEvent, color: '' })}
                 onChange={() => {
                   setNewEvent({ ...newEvent, booking: !newEvent.booking });
                 }}
               />
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-col justify-center">
-                <label className="text-sm font-bold">{t("title")}</label>
+            <div className='flex flex-col gap-3'>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('title')}</label>
                 <input
-                  className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
-                  type="text"
+                  className='rounded-md border bg-white placeholder:text-sm focus:border-blue-500'
+                  type='text'
                   value={newEvent.title}
                   onChange={e =>
                     setNewEvent({ ...newEvent, title: e.target.value })
                   }
                 />
               </div>
-              <div className="flex flex-col justify-center">
-                <label className="text-sm font-bold">{t("description")}</label>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('description')}</label>
                 <input
-                  className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
-                  type="text"
+                  className='rounded-md border bg-white placeholder:text-sm focus:border-blue-500'
+                  type='text'
                   value={newEvent.description}
                   onChange={e =>
                     setNewEvent({ ...newEvent, description: e.target.value })
                   }
                 />
               </div>
-              <div className="flex flex-col justify-center">
-                <label className="text-sm font-bold">{t("price")}</label>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('price')}</label>
                 <input
-                  className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
-                  type="text"
+                  className='rounded-md border bg-white placeholder:text-sm focus:border-blue-500'
+                  type='text'
                   value={newEvent.price}
                   onChange={e =>
                     setNewEvent({ ...newEvent, price: e.target.value })
                   }
                 />
               </div>
-              <div className="flex flex-col justify-center">
-                <label className="text-sm font-bold">{t("phone")}</label>
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('phone')}</label>
                 <input
-                  className="bg-white border focus:border-blue-500 rounded-md placeholder:text-sm"
-                  type="text"
+                  className='rounded-md border bg-white placeholder:text-sm focus:border-blue-500'
+                  type='text'
                   value={newEvent.phone}
                   onChange={e =>
                     setNewEvent({ ...newEvent, phone: e.target.value })
                   }
                 />
               </div>
-              <div className="flex flex-col justify-center">
-                <label className="text-sm font-bold">{t("color")}</label>
-                <div className="flex flex-col justify-center relative">
+              <div className='flex flex-col justify-center'>
+                <label className='text-sm font-bold'>{t('color')}</label>
+                <div className='relative flex flex-col justify-center'>
                   <input
-                    type="button"
-                    placeholder="Color"
-                    className={`${style.dropdownInput} cursor-pointer border focus:border-blue-500 rounded-md placeholder:text-sm`}
+                    type='button'
+                    placeholder='Color'
+                    className={`${style.dropdownInput} cursor-pointer rounded-md border placeholder:text-sm focus:border-blue-500`}
                     onClick={() => {
                       setOpenedDropdown(!openedDropdown);
                     }}
@@ -200,7 +200,7 @@ const CreateNewEvent = (props: Props) => {
                   />
                   {openedDropdown && (
                     <div
-                      className={`${style.dropdown} border focus:border-blue-500 rounded-md p-1`}
+                      className={`${style.dropdown} rounded-md border p-1 focus:border-blue-500`}
                     >
                       {(newEvent.booking ? Array(bookingColor) : colors).map(
                         color => (
@@ -224,29 +224,29 @@ const CreateNewEvent = (props: Props) => {
               </div>
             </div>
           </div>
-          <div className="bg-gray-200 p-4 border-t-2 rounded-b-xl">
+          <div className='rounded-b-xl border-t-2 bg-gray-200 p-4'>
             <div
-              className="flex flex-col justify-center text-center"
+              className='flex flex-col justify-center text-center'
               onClick={() => {
                 setShowDateRangePicker(true);
               }}
             >
-              <label className="text-sm font-bold">{t("date_range")}</label>
-              <div className="bg-white border-2 border-slate-200 rounded-md p-1 w-full flex">
-                <div className="font-bold w-[45%]">
+              <label className='text-sm font-bold'>{t('date_range')}</label>
+              <div className='flex w-full rounded-md border-2 border-slate-200 bg-white p-1'>
+                <div className='w-[45%] font-bold'>
                   {newEvent.start &&
-                    DateTime.fromISO(newEvent.start).toFormat("dd. MM. yyyy.")}
+                    DateTime.fromISO(newEvent.start).toFormat('dd. MM. yyyy.')}
                 </div>
-                <div className="px-2 w-[10%]">-</div>
-                <div className="font-bold w-[45%]">
+                <div className='w-[10%] px-2'>-</div>
+                <div className='w-[45%] font-bold'>
                   {newEvent.end &&
-                    DateTime.fromISO(newEvent.end).toFormat("dd. MM. yyyy.")}
+                    DateTime.fromISO(newEvent.end).toFormat('dd. MM. yyyy.')}
                 </div>
               </div>
             </div>
-            <div className="flex justify-center mt-3">
+            <div className='mt-3 flex justify-center'>
               <button
-                className="font-bold"
+                className='font-bold'
                 onClick={() => {
                   if (newEvent.start && newEvent.end && newEvent.color) {
                     let editedEvents = { ...events };
@@ -303,8 +303,8 @@ const CreateNewEvent = (props: Props) => {
                 }}
                 style={{
                   backgroundImage: `url(/Styles/Assets/Images/check.svg)`,
-                  height: "35px",
-                  width: "35px",
+                  height: '35px',
+                  width: '35px',
                 }}
               />
             </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Modal from "../../Shared/Modal/Modal";
+import { Modal } from "@/components/Shared/Modal/Modal";
 import { Event } from "../CalendarTypes";
 import style from "./DayDetails.module.scss";
 

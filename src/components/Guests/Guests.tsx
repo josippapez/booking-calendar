@@ -11,14 +11,12 @@ import { getApartmentsForuser } from "../../../store/firebaseActions/apartmentAc
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { selectApartment } from "../../../store/reducers/apartments";
 import { setGuests } from "../../../store/reducers/guests";
-import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
-import DatePickerHeader from "../Shared/DatePicker/Header/DatePickerHeader";
 import Dropdown from "../Shared/Dropdown/Dropdown";
 import AddNewGuest, { Guest } from "./GuestsModal/AddNewGuest";
+import { useCalculateEachDayOfMonth } from "@/Hooks/calculateEachDayOfMonth";
+import { DatePickerHeader } from "@/components/Shared/DatePicker";
 
-type Props = {};
-
-const Guests = (props: Props) => {
+const Guests = () => {
   const { t, i18n } = useTranslation("Guests");
   const navigate = useRouter();
   const dispatch = useAppDispatch();
@@ -129,6 +127,7 @@ const Guests = (props: Props) => {
               </button>
               <DatePickerHeader
                 hideMonth
+                hideOnlyYearButton
                 selectedYear={year}
                 setSelectedYear={setyear}
               />

@@ -1,15 +1,14 @@
-import { usePDF } from "@react-pdf/renderer";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
-import { Document, Page, pdfjs } from "react-pdf";
-import { useAppSelector } from "../../../../../store/hooks";
-import PageLoader from "../../Loader/PageLoader";
-import PDFDownload from "../../PDFDownload/PDFDownload";
-import { TransactionInvoiceData } from "../Invoice";
-import InvoiceTemplate from "../Templates/InvoiceTemplate";
-import style from "./InvoiceDisplay.module.scss";
+import { useWindowSize } from '@/Hooks';
+import TransactionInvoice from '@/components/Shared/Invoice/Templates/TransactionInvoice';
+import { usePDFComponentsAreHTML } from '@/components/Shared/Invoice/Templates/custom/Components';
+import { PDFDownload } from '@/components/Shared/PDFDownload/PDFDownload';
+import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import { useAppSelector } from '../../../../../store/hooks';
+import { TransactionInvoiceData } from '../Invoice';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -19,42 +18,33 @@ type Props = {
 };
 
 const options = {
-  cMapUrl: "cmaps/",
+  cMapUrl: 'cmaps/',
   cMapPacked: true,
 };
 
 const InvoiceDisplay = (props: Props) => {
   const { invoiceData, setInvoiceData } = props;
-
-  const { i18n } = useTranslation();
+  const windowSize = useWindowSize();
+  const { i18n, t } = useTranslation('TransactionInvoice');
+  const { isHTML } = usePDFComponentsAreHTML();
 
   const selectedApartment = useAppSelector(
     state => state.apartments.selectedApartment
   );
 
-  const [numPages, setNumPages] = useState<number>(1);
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const [displayDownloadModal, setDisplayDownloadModal] = useState(false);
 
-  const [instance, updateInstance] = usePDF({
-    document: InvoiceTemplate({
-      apartmentData: invoiceData.apartmentData,
-      invoiceData: invoiceData.invoiceData,
-      recepientData: invoiceData.recepientData,
-    }),
-  });
-
-  const updateInstanceRef: { current: null | ReturnType<typeof setTimeout> } =
-    useRef(null);
-
-  useEffect(() => {
-    if (updateInstanceRef.current) {
-      clearTimeout(updateInstanceRef.current);
-    }
-    updateInstanceRef.current = setTimeout(() => {
-      updateInstance();
-    }, 500);
-  }, [i18n.language, invoiceData]);
+  const TemplateNotHtml = useCallback(
+    () =>
+      TransactionInvoice({
+        ...invoiceData,
+        translate: t,
+        locale: i18n.language,
+      }),
+    [isHTML, invoiceData]
+  );
+  const Template = () =>
+    TransactionInvoice({ ...invoiceData, translate: t, locale: i18n.language });
 
   useEffect(() => {
     if (selectedApartment) {
@@ -64,86 +54,52 @@ const InvoiceDisplay = (props: Props) => {
           name: selectedApartment.name,
           address: selectedApartment.address,
           image: selectedApartment.image,
-          owner: selectedApartment.owner ?? "",
-          pid: selectedApartment.pid ?? "",
-          iban: selectedApartment.iban ?? "",
+          owner: selectedApartment.owner ?? '',
+          pid: selectedApartment.pid ?? '',
+          iban: selectedApartment.iban ?? '',
         },
       });
     }
   }, [selectedApartment]);
 
-  const onDocumentLoadSuccess = useCallback(
-    (document: any) => {
-      const { numPages: nextNumPages } = document;
-      if (pageNumber > nextNumPages) {
-        setPageNumber(nextNumPages);
-      }
-      setNumPages(nextNumPages);
-    },
-    [instance.blob]
-  );
-
-  const onItemClick = useCallback(
-    ({ pageNumber: nextPageNumber }: { pageNumber: string }) => {
-      setPageNumber(Number(nextPageNumber));
-    },
-    []
-  );
+  const scale = (windowSize.height - 80) / 842;
 
   return (
-    <div className={`w-full xl:w-1/2`}>
-      <Suspense fallback={<PageLoader />}>
-        <Document
-          {...options}
-          file={instance.url}
-          renderMode="svg"
-          className="drop-shadow-2xl flex justify-center items-center sticky top-0 w-full"
-          onItemClick={onItemClick}
-          onLoadSuccess={onDocumentLoadSuccess}
+    <>
+      <div
+        className={`documentPDFView relative flex flex-col items-center justify-center drop-shadow-xl`}
+        style={{
+          height: 842 * scale,
+          width: '100%',
+        }}
+      >
+        <div
+          className='document-display'
+          style={{
+            width: 595,
+            height: 842,
+            transform: `scaleX(${scale}) scaleY(
+                ${scale}
+              )`,
+          }}
         >
-          {/* //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore */}
-          <Page renderMode="canvas" pageNumber={pageNumber || 1}>
-            {pageNumber && numPages && (
-              <div className={`${style["document-controls"]}`}>
-                <div className={`${style["page-controls-navigation"]}`}>
-                  <button
-                    disabled={pageNumber <= 1}
-                    onClick={() => setPageNumber(pageNumber - 1)}
-                    type="button"
-                    aria-label="Previous page"
-                  >
-                    ‹
-                  </button>
-                  <span>
-                    {pageNumber} of {numPages}
-                  </span>
-                  <button
-                    disabled={pageNumber >= numPages}
-                    onClick={() => setPageNumber(pageNumber + 1)}
-                    type="button"
-                    aria-label="Next page"
-                  >
-                    ›
-                  </button>
-                </div>
-                <button
-                  className={`${style["pdf-download"]}`}
-                  onClick={() => setDisplayDownloadModal(true)}
-                />
-              </div>
-            )}
-          </Page>
-        </Document>
-      </Suspense>
-      {instance && instance.blob && instance.url && (
-        <PDFDownload
-          pdfInstance={{ url: instance.url, blob: instance.blob }}
-          show={displayDownloadModal}
-          closeModal={() => setDisplayDownloadModal(false)}
-        />
-      )}
-    </div>
+          <Template />
+        </div>
+
+        <div className='document-controls'>
+          <button
+            className='pdf-download'
+            onClick={() => setDisplayDownloadModal(true)}
+          />
+        </div>
+      </div>
+
+      <PDFDownload
+        PdfInstance={TemplateNotHtml}
+        show={displayDownloadModal}
+        closeModal={() => setDisplayDownloadModal(false)}
+      />
+    </>
   );
 };
 

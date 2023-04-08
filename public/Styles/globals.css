@@ -5,13 +5,10 @@
 *,
 *::before,
 *::after {
+  /* line-height: calc(1em + 0.5rem); */
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  /* line-height: calc(1em + 0.5rem); */
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
 }
 
 html,
@@ -20,17 +17,17 @@ body {
 }
 
 body {
-  margin: 0;
-  font-family: "Inter-variable", sans-serif;
-  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  line-height: 1.5;
+  font-family: 'Inter-variable', sans-serif;
   @apply bg-zinc-50;
   scroll-behavior: smooth;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
@@ -54,7 +51,6 @@ video,
 canvas,
 svg {
   display: block;
-  max-width: 100%;
 }
 
 p,
@@ -76,17 +72,52 @@ h6 {
   min-height: 680px;
 }
 
+.document-controls {
+  display: flex;
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  place-content: center;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity ease-in-out 0.2s;
+}
+
+.documentPDFView:hover .document-controls,
+.document-controls:hover {
+  opacity: 1;
+  z-index: 2;
+}
+
+.pdf-download:hover {
+  background-color: #e6e6e6;
+}
+
+.pdf-download {
+  cursor: pointer;
+  margin-left: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  background: url('./Assets/Images/downloadDocument.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #ffffff;
+  width: 40px;
+  height: 40px;
+}
+
+
 @font-face {
-  font-family: "Inter-variable";
-  src: url("./Assets/Fonts/Inter-VariableFont.ttf") format("truetype");
   font-style: italic normal oblique;
   font-weight: 100 900;
+  src: url('./Assets/Fonts/Inter-VariableFont.ttf') format('truetype');
+  font-family: 'Inter-variable';
 }
 
 .page-container {
   display: grid;
-  grid-template-columns: 1fr min(120em, calc(100% - 160px)) 1fr;
   grid-template-rows: max-content;
+  grid-template-columns: 1fr min(120em, calc(100% - 160px)) 1fr;
   column-gap: 32px;
 }
 
@@ -101,8 +132,8 @@ h6 {
 }
 
 .full-bleed {
-  width: 100%;
   grid-column: 1 / -1;
+  width: 100%;
 }
 
 /* width */

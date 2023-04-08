@@ -7,7 +7,7 @@ import { AlertModalProvider } from "../src/AlertModalProvider";
 import { AuthProvider } from "../src/AuthProvider";
 import { ProtectedRoutes } from "../src/components/Routes";
 import PageLoader from "../src/components/Shared/Loader/PageLoader";
-import "../src/i18n";
+import i18n from "@/i18n";
 import { persistor, store } from "../store/store";
 
 declare global {
@@ -19,6 +19,7 @@ declare global {
 function MyApp({ Component, pageProps, router }: AppProps) {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
+    i18n.init();
     const start = () => {
       setLoading(true);
     };

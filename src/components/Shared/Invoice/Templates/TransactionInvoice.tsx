@@ -1,64 +1,63 @@
 import {
   Document,
-  Font,
   Image,
   Page,
-  StyleSheet,
   Text,
   View,
-} from "@react-pdf/renderer";
-import { DateTime } from "luxon";
-import { TFunction } from "react-i18next";
-import InterBold from "../../../../../public/Styles/Assets/Fonts/Inter-Bold.ttf";
-import InterLight from "../../../../../public/Styles/Assets/Fonts/Inter-Light.ttf";
-import InterRegular from "../../../../../public/Styles/Assets/Fonts/Inter-Regular.ttf";
-import { TransactionInvoiceData } from "../Invoice";
+} from '@/components/Shared/Invoice/Templates/custom/Components';
+import { TFunction } from 'i18next';
+import { DateTime } from 'luxon';
+import InterBold from '@public/Styles/Assets/Fonts/Inter-Bold.ttf';
+import InterLight from '@public/Styles/Assets/Fonts/Inter-Light.ttf';
+import InterRegular from '@public/Styles/Assets/Fonts/Inter-Regular.ttf';
+import { TransactionInvoiceData } from '../Invoice';
+import { Font, StyleSheet } from '@react-pdf/renderer';
 
 type Props = {
   translate: TFunction;
   locale: string;
-  apartmentData: TransactionInvoiceData["apartmentData"];
-  recepientData: TransactionInvoiceData["recepientData"];
-  invoiceData: TransactionInvoiceData["invoiceData"];
+  apartmentData: TransactionInvoiceData['apartmentData'];
+  recepientData: TransactionInvoiceData['recepientData'];
+  invoiceData: TransactionInvoiceData['invoiceData'];
 };
 
 Font.register({
-  family: "Inter",
+  family: 'Inter',
   fonts: [
     {
       src: InterRegular,
-      fontWeight: "normal",
+      fontWeight: 'normal',
     },
     {
       src: InterBold,
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
-    { src: InterLight, fontWeight: "light" },
+    { src: InterLight, fontWeight: 'light' },
   ],
 });
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column",
-    backgroundColor: "white",
+    flexDirection: 'column',
+    backgroundColor: 'white',
     padding: 40,
     fontSize: 10,
-    fontFamily: "Inter",
+    fontFamily: 'Inter',
   },
   column: {
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   row: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   horizontalCenter: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   verticalCenter: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   lightGrayText: {
-    color: "#818181",
+    color: '#818181',
   },
   marginTop10: {
     marginTop: 10,
@@ -83,13 +82,13 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   bold: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   italic: {
-    fontStyle: "italic",
+    fontStyle: 'italic',
   },
   semibold: {
-    fontWeight: "semibold",
+    fontWeight: 'semibold',
   },
 });
 
@@ -99,11 +98,11 @@ const TransactionInvoice = (props: Props): JSX.Element => {
 
   return (
     <Document>
-      <Page size="A4" style={[styles.page]}>
+      <Page size='A4' style={[styles.page]}>
         <View
           style={[
             styles.row,
-            { justifyContent: "space-between", height: "20%" },
+            { justifyContent: 'space-between', height: '20%' },
           ]}
         >
           {apartmentData?.image && (
@@ -111,27 +110,27 @@ const TransactionInvoice = (props: Props): JSX.Element => {
               src={apartmentData.image}
               style={[
                 {
-                  width: "40%",
+                  width: '40%',
                   height: 100,
-                  objectFit: "contain",
+                  objectFit: 'contain',
                   padding: 10,
                 },
               ]}
             />
           )}
-          <View style={[styles.column, styles.padding20, { width: "40%" }]}>
+          <View style={[styles.column, styles.padding20, { width: '40%' }]}>
             <Text>{apartmentData?.name}</Text>
             <Text>{apartmentData?.address}</Text>
             <Text>{apartmentData?.owner}</Text>
             <Text>
               {apartmentData?.pid
-                ? `${translate("pid")}: ${apartmentData?.pid}`
-                : ""}
+                ? `${translate('pid')}: ${apartmentData?.pid}`
+                : ''}
             </Text>
             <Text>
               {apartmentData?.iban
-                ? `${translate("iban")}: ${apartmentData?.iban}`
-                : ""}
+                ? `${translate('iban')}: ${apartmentData?.iban}`
+                : ''}
             </Text>
           </View>
         </View>
@@ -146,8 +145,8 @@ const TransactionInvoice = (props: Props): JSX.Element => {
               style={[
                 {
                   fontSize: 20,
-                  fontFamily: "Inter",
-                  fontWeight: "bold",
+                  fontFamily: 'Inter',
+                  fontWeight: 'bold',
                   lineHeight: 1.5,
                 },
               ]}
@@ -155,16 +154,16 @@ const TransactionInvoice = (props: Props): JSX.Element => {
               {invoiceData?.invoiceName}
             </Text>
             <Text>
-              {translate("date_of_invoice")}:{" "}
+              {translate('date_of_invoice')}:{' '}
               {invoiceData.date
                 ? DateTime.fromISO(invoiceData.date)
                     .setLocale(locale)
                     .toLocaleString({
-                      month: "long",
-                      day: "2-digit",
-                      year: "numeric",
+                      month: 'long',
+                      day: '2-digit',
+                      year: 'numeric',
                     })
-                : ""}
+                : ''}
             </Text>
           </View>
         </View>
@@ -174,19 +173,19 @@ const TransactionInvoice = (props: Props): JSX.Element => {
               style={[
                 styles.row,
                 {
-                  textTransform: "uppercase",
-                  textAlign: "center",
+                  textTransform: 'uppercase',
+                  textAlign: 'center',
                   paddingBottom: 10,
-                  borderBottom: "1px solid #818181",
+                  borderBottom: '1px solid #818181',
                 },
               ]}
             >
-              <Text style={[{ width: "40%", textAlign: "left" }]}>
-                {translate("service_name")}
+              <Text style={[{ width: '40%', textAlign: 'left' }]}>
+                {translate('service_name')}
               </Text>
-              <Text style={[{ width: "20%" }]}>{translate("amount")}</Text>
-              <Text style={[{ width: "20%" }]}>{translate("price")}</Text>
-              <Text style={[{ width: "20%" }]}>{translate("total")}</Text>
+              <Text style={[{ width: '20%' }]}>{translate('amount')}</Text>
+              <Text style={[{ width: '20%' }]}>{translate('price')}</Text>
+              <Text style={[{ width: '20%' }]}>{translate('total')}</Text>
             </View>
             {invoiceData?.services.map((service, index) => (
               <View
@@ -194,24 +193,24 @@ const TransactionInvoice = (props: Props): JSX.Element => {
                 style={[
                   styles.row,
                   {
-                    textTransform: "uppercase",
-                    textAlign: "center",
-                    margin: "5 0",
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
+                    margin: '5 0',
                   },
                 ]}
               >
-                <Text style={[{ width: "40%", textAlign: "left" }]}>
+                <Text style={[{ width: '40%', textAlign: 'left' }]}>
                   {service.name}
                 </Text>
-                <Text style={[{ width: "20%" }]}>
+                <Text style={[{ width: '20%' }]}>
                   {Number(service.amount).toLocaleString(locale)}
                 </Text>
-                <Text style={[{ width: "20%" }]}>
+                <Text style={[{ width: '20%' }]}>
                   {Number(service.price).toLocaleString(locale, {
                     minimumFractionDigits: 2,
                   })}
                 </Text>
-                <Text style={[{ width: "20%" }]}>
+                <Text style={[{ width: '20%' }]}>
                   {Number(service.total).toLocaleString(locale, {
                     minimumFractionDigits: 2,
                   })}
@@ -223,22 +222,22 @@ const TransactionInvoice = (props: Props): JSX.Element => {
         <View
           style={[
             styles.row,
-            { marginTop: 40, display: "flex", justifyContent: "flex-end" },
+            { marginTop: 40, display: 'flex', justifyContent: 'flex-end' },
           ]}
         >
           <View
             style={[
               styles.row,
-              { width: "40%", justifyContent: "space-around" },
+              { width: '40%', justifyContent: 'space-around' },
             ]}
           >
-            <Text>{translate("total_price")}</Text>
+            <Text>{translate('total_price')}</Text>
             <Text>
               {invoiceData?.services
                 .reduce((a, b) => a + Number(b.total), 0)
                 .toLocaleString(locale, {
                   minimumFractionDigits: 2,
-                })}{" "}
+                })}{' '}
               {invoiceData?.totalCurrency}
             </Text>
           </View>
@@ -246,29 +245,29 @@ const TransactionInvoice = (props: Props): JSX.Element => {
         <View style={[styles.row, { marginTop: 40, marginBottom: 40 }]}>
           <View style={[styles.column, { left: 40 }]}>
             <Text style={[{ fontSize: 10 }]}>
-              {translate("user_is_free_of_vat")}
+              {translate('user_is_free_of_vat')}
             </Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>{translate(`free_of_vat_true`)}</Text>
             </View>
             <Text style={[{ fontSize: 10 }]}>
-              {translate("fiscalisation_invoice")}
+              {translate('fiscalisation_invoice')}
             </Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>
-                {translate("transaction_invoice")}{" "}
-                {invoiceData.dateOfFiscalization !== ""
+                {translate('transaction_invoice')}{' '}
+                {invoiceData.dateOfFiscalization !== ''
                   ? DateTime.fromISO(invoiceData.dateOfFiscalization)
                       .setLocale(locale)
                       .toLocaleString({
-                        month: "long",
-                        day: "2-digit",
-                        year: "numeric",
+                        month: 'long',
+                        day: '2-digit',
+                        year: 'numeric',
                       })
-                  : ""}
+                  : ''}
               </Text>
             </View>
-            <Text style={[{ fontSize: 10 }]}>{translate("note")}:</Text>
+            <Text style={[{ fontSize: 10 }]}>{translate('note')}:</Text>
             <View style={[{ left: 20, marginBottom: 20 }]}>
               <Text>{invoiceData?.note}</Text>
             </View>
@@ -279,19 +278,19 @@ const TransactionInvoice = (props: Props): JSX.Element => {
           style={[
             styles.column,
             {
-              position: "absolute",
+              position: 'absolute',
               bottom: 10,
               left: 0,
               right: 0,
-              textAlign: "center",
-              color: "gray",
-              alignItems: "center",
+              textAlign: 'center',
+              color: 'gray',
+              alignItems: 'center',
             },
           ]}
         >
           {invoiceData?.contact_name && (
             <Text style={[{ fontSize: 10 }]}>
-              {translate("contact")}: {invoiceData?.contact}{" "}
+              {translate('contact')}: {invoiceData?.contact}{' '}
               {`(${invoiceData?.contact_name})`}
             </Text>
           )}

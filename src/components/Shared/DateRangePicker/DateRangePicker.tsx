@@ -1,13 +1,13 @@
-import { DateTime, Interval } from "luxon";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Events } from "../../../../store/reducers/events";
-import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
-import { Day, Event } from "../../Calendar/CalendarTypes";
-import DatePickerDates from "../DatePicker/Dates/DatePickerDates";
-import DatePickerHeader from "../DatePicker/Header/DatePickerHeader";
-import Modal from "../Modal/Modal";
-import style from "./DateRangePicker.module.scss";
+import { useCalculateEachDayOfMonth } from '@/Hooks';
+import { DatePickerHeader } from '@/components/Shared/DatePicker';
+import { DatePickerDates } from '@/components/Shared/DatePicker/Dates/DatePickerDates';
+import { Modal } from '@/components/Shared/Modal/Modal';
+import { DateTime, Interval } from 'luxon';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Events } from '../../../../store/reducers/events';
+import { Day, Event } from '../../Calendar/CalendarTypes';
+import style from './DateRangePicker.module.scss';
 
 type Props = {
   showDateRangePicker: boolean;
@@ -28,7 +28,7 @@ const DateRangePicker = (props: Props) => {
     disableForCurrentReservations,
   } = props;
 
-  const { t } = useTranslation("DateRangePicker");
+  const { t } = useTranslation('DateRangePicker');
 
   const eachDayOfMonth = useCalculateEachDayOfMonth({
     startYear: DateTime.local().year,
@@ -37,13 +37,13 @@ const DateRangePicker = (props: Props) => {
 
   const { month, year, setmonth, setyear } = eachDayOfMonth;
 
-  const [currentDate, setCurrentDate] = useState("");
+  const [currentDate, setCurrentDate] = useState('');
 
   const displayDateRangeDays = (day: Day, index: number) => {
-    const isToday = DateTime.local().hasSame(DateTime.fromISO(day.date), "day");
+    const isToday = DateTime.local().hasSame(DateTime.fromISO(day.date), 'day');
     const disabled =
       disableForCurrentReservations &&
-      (DateTime.fromISO(day.date).diffNow("day").days < -1 ||
+      (DateTime.fromISO(day.date).diffNow('day').days < -1 ||
         (currentReservations &&
           currentReservations[day.year] &&
           currentReservations[day.year][day.date]?.length > 0 &&
@@ -64,10 +64,10 @@ const DateRangePicker = (props: Props) => {
         DateTime.fromISO(currentDate)
       )
         .splitBy({ days: 1 })
-        .map(day => day.toISODate().split("/"))
+        .map(day => day.toISODate().split('/'))
         .find((date, index) => {
-          const firsDayYear = date[0].split("-")[0];
-          const secondDayYear = date[1].split("-")[0];
+          const firsDayYear = date[0].split('-')[0];
+          const secondDayYear = date[1].split('-')[0];
           if (
             currentReservations[firsDayYear] &&
             currentReservations[secondDayYear] &&
@@ -104,47 +104,47 @@ const DateRangePicker = (props: Props) => {
           }
         }}
         className={`cursor-pointer
-        ${style["dateRange-Day"]} font-bold select-none
-        ${isToday && "border-2 border-blue-500"}
+        ${style['dateRange-Day']} select-none font-bold
+        ${isToday && 'border-2 border-blue-500'}
         ${
-          ["Saturday", "Sunday"].includes(day.name)
-            ? "bg-opacity-60 text-neutral-500"
+          ['Saturday', 'Sunday'].includes(day.name)
+            ? 'bg-opacity-60 text-neutral-500'
             : day.lastMonth
-            ? "opacity-30 font-normal"
-            : ""
+            ? 'font-normal opacity-30'
+            : ''
         }
-        ${event.start === day.date && "!bg-sky-600 text-white rounded-l-full"}
-        ${event.end === day.date && "!bg-sky-600 text-white rounded-r-full"}
+        ${event.start === day.date && 'rounded-l-full !bg-sky-600 text-white'}
+        ${event.end === day.date && 'rounded-r-full !bg-sky-600 text-white'}
         ${
           event.start && event.end && !disabled
             ? Interval.fromDateTimes(
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(event.end).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-              ? "bg-sky-300 !text-white"
-              : "bg-white"
+              ? 'bg-sky-300 !text-white'
+              : 'bg-white'
             : !disabled &&
               currentDate &&
               Interval.fromDateTimes(
                 DateTime.fromISO(event.start),
                 DateTime.fromISO(currentDate).plus({ days: 1 })
               ).contains(DateTime.fromISO(day.date))
-            ? "bg-sky-200"
-            : "bg-white"
+            ? 'bg-sky-200'
+            : 'bg-white'
         }
         ${
           disabled
-            ? "opacity-10 cursor-not-allowed"
-            : "hover:bg-sky-300 hover:text-white"
+            ? 'cursor-not-allowed opacity-10'
+            : 'hover:bg-sky-300 hover:text-white'
         }
-        ${selectedDaysContainDisabled?.length && "cursor-not-allowed"}`}
+        ${selectedDaysContainDisabled?.length && 'cursor-not-allowed'}`}
         onMouseUp={() => {
           if (!disabled) {
             if (event.start && event.end) {
               setEvent({
                 ...event,
                 start: day.date,
-                end: "",
+                end: '',
               });
               return;
             }
@@ -165,7 +165,7 @@ const DateRangePicker = (props: Props) => {
               if (
                 DateTime.fromISO(event.start).diff(
                   DateTime.fromISO(day.date),
-                  "days"
+                  'days'
                 ).days > 0
               ) {
                 setEvent({
@@ -189,12 +189,13 @@ const DateRangePicker = (props: Props) => {
 
   return (
     <Modal
-      animation="fade"
+      animation='fade'
       show={showDateRangePicker}
       closeModal={() => setShowDateRangePicker(false)}
     >
-      <div className="p-4 bg-white rounded-md relative">
+      <div className='relative rounded-md bg-white p-4'>
         <DatePickerHeader
+          hideOnlyYearButton
           selectedMonth={month}
           selectedYear={year}
           setSelectedMonth={setmonth}
@@ -207,30 +208,30 @@ const DateRangePicker = (props: Props) => {
             customDisplayDate={displayDateRangeDays}
           />
         </div>
-        <div className="flex justify-end">
+        <div className='flex justify-end'>
           <button
-            className="hover:bg-slate-200 font-bold py-2 px-4 rounded"
+            className='rounded px-4 py-2 font-bold hover:bg-slate-200'
             onClick={() => {
               setShowDateRangePicker(false);
-              setEvent({ ...event, start: "", end: "" });
+              setEvent({ ...event, start: '', end: '' });
             }}
           >
-            {t("cancel")}
+            {t('cancel')}
           </button>
           <button
-            className="hover:bg-slate-200 font-bold py-2 px-4 rounded"
+            className='rounded px-4 py-2 font-bold hover:bg-slate-200'
             onClick={() => {
               setEvent({
                 ...event,
-                start: "",
-                end: "",
+                start: '',
+                end: '',
               });
             }}
           >
-            {t("clear")}
+            {t('clear')}
           </button>
           <button
-            className="hover:bg-slate-200 font-bold py-2 px-4 rounded"
+            className='rounded px-4 py-2 font-bold hover:bg-slate-200'
             onClick={() => {
               setShowDateRangePicker(false);
               setEvent({
@@ -240,7 +241,7 @@ const DateRangePicker = (props: Props) => {
               });
             }}
           >
-            {t("done")}
+            {t('done')}
           </button>
         </div>
       </div>

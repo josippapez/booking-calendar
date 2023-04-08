@@ -1,7 +1,6 @@
+import { useCalculateEachDayOfMonth } from "@/Hooks/calculateEachDayOfMonth";
+import { Day } from "@/components/Calendar/CalendarTypes";
 import { DateTime, Info } from "luxon";
-import { useTranslation } from "react-i18next";
-import useCalculateEachDayOfMonth from "../../../../Hooks/calculateEachDayOfMonth";
-import { Day } from "../../../Calendar/CalendarTypes";
 import style from "./DatePickerDates.module.scss";
 
 type Props = {
@@ -14,7 +13,7 @@ type Props = {
   customDisplayDate?: (day: Day, index: number) => JSX.Element;
 };
 
-const DatePickerDates = (props: Props) => {
+export const DatePickerDates = (props: Props) => {
   const {
     initialDate,
     setDate,
@@ -24,7 +23,6 @@ const DatePickerDates = (props: Props) => {
     showNextMonth,
     showPreviousMonth,
   } = props;
-  const { i18n } = useTranslation("DateRangePicker");
 
   const displayDate = (day: Day, index: number) => {
     if (customDisplayDate) {
@@ -40,15 +38,15 @@ const DatePickerDates = (props: Props) => {
     return (
       <div
         key={index}
-        className={`cursor-pointer
+        className={`cursor-pointer transition-all hover:rounded-md hover:bg-blue-200
         ${initialDate === day.date && style.selectedDate}
         ${isToday && "border-2 border-blue-500"}
-        ${style["dateRange-Day"]} font-bold select-none
+        ${style["dateRange-Day"]} select-none font-bold
         ${
           ["Saturday", "Sunday"].includes(day.name)
             ? "bg-opacity-60 text-neutral-500"
             : day.lastMonth
-            ? "opacity-30 font-normal"
+            ? "font-normal opacity-30"
             : ""
         }`}
         onMouseUp={() => {
@@ -65,23 +63,18 @@ const DatePickerDates = (props: Props) => {
   const daysHeader = (month: number, year: number) => {
     return (
       <div>
-        <div className="font-extrabold text-xl px-2 pb-2 drop-shadow-md flex gap-2">
-          {DateTime.local()
-            .set({ month, year })
-            .setLocale(i18n.language)
-            .toFormat("LLLL yyyy")}
+        <div className="flex gap-2 px-2 pb-2 text-xl font-extrabold drop-shadow-md">
+          {DateTime.local().set({ month, year }).toFormat("LLLL yyyy")}
         </div>
         <div className={style.calendarGridHeader}>
-          {Info.weekdaysFormat("short", { locale: i18n.language }).map(
-            (day, index) => (
-              <div
-                key={index}
-                className={`${style.dayName} select-none font-semibold`}
-              >
-                {day}
-              </div>
-            )
-          )}
+          {Info.weekdaysFormat("short").map((day, index) => (
+            <div
+              key={index}
+              className={`${style.dayName} select-none font-semibold`}
+            >
+              {day}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -91,7 +84,7 @@ const DatePickerDates = (props: Props) => {
     dates && (
       <>
         {showPreviousMonth && (
-          <div>
+          <div className="rounded-md bg-gray-100 p-4 shadow-inner">
             {daysHeader(dates.lastMonth, dates.lastMonthYear)}
             <div className={`${style.calendarGrid}`}>
               {dates.lastMonthDates.map((day, index) =>
@@ -100,14 +93,14 @@ const DatePickerDates = (props: Props) => {
             </div>
           </div>
         )}
-        <div>
+        <div className="rounded-md bg-gray-100 p-4 shadow-inner">
           {daysHeader(dates.month, dates.year)}
           <div className={`${style.calendarGrid}`}>
             {dates.dates.map((day, index) => displayDate(day, index))}
           </div>
         </div>
         {showNextMonth && (
-          <div>
+          <div className="rounded-md bg-gray-100 p-4 shadow-inner">
             {daysHeader(dates.nextMonth, dates.nextMonthYear)}
             <div className={`${style.calendarGrid}`}>
               {dates.nextMonthDates.map((day, index) =>
@@ -120,5 +113,3 @@ const DatePickerDates = (props: Props) => {
     )
   );
 };
-
-export default DatePickerDates;

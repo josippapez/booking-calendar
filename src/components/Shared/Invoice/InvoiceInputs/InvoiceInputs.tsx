@@ -1,11 +1,11 @@
+import { DateInput } from "@/components/Shared/Inputs/DateInput";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import DateInput from "../../Inputs/DateInput";
 import ImageInput from "../../Inputs/ImageInput";
 import ServiceInput from "../../Inputs/ServiceInput";
 import { TransactionInvoiceData } from "../Invoice";
-
 import style from "./InvoiceInputs.module.scss";
+import { useWindowSize } from "@/Hooks";
 
 type Props = {
   invoiceData: TransactionInvoiceData;
@@ -13,6 +13,7 @@ type Props = {
 };
 
 const InvoiceInputs = (props: Props) => {
+  const windowSize = useWindowSize();
   const { invoiceData, setInvoiceData } = props;
 
   const { t } = useTranslation("InvoiceInputs");
@@ -23,9 +24,6 @@ const InvoiceInputs = (props: Props) => {
   return (
     <div
       className={`flex gap-3 flex-col w-full xl:w-1/2`}
-      style={{
-        minHeight: window.innerHeight - 60 - window.innerHeight * 0.05 + "px",
-      }}
     >
       {Object.keys(invoiceData).map(key => {
         return (
@@ -79,7 +77,7 @@ const InvoiceInputs = (props: Props) => {
                                 },
                               });
                             }}
-                            setValue={date => {
+                            setData={date => {
                               setInvoiceData({
                                 ...invoiceData,
                                 [key]: {
@@ -241,7 +239,7 @@ const InvoiceInputs = (props: Props) => {
                   return (
                     <ImageInput
                       key={innerKey}
-                      inputName={t(innerKey)}
+                      inputName={t(innerKey).toString()}
                       image={invoiceData.apartmentData.image}
                       setImage={image => {
                         setInvoiceData({

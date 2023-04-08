@@ -1,24 +1,24 @@
-import { Unsubscribe } from "firebase/firestore";
-import { DateTime, Info } from "luxon";
-import { InferGetServerSidePropsType, NextPage } from "next";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { getServerSideProps } from "../../../../pages/[id]";
-import Images from "../../../../public/Styles/Assets/Images/Images";
-import { useMobileView } from "../../../checkForMobileView";
-import useCalculateEachDayOfMonth from "../../../Hooks/calculateEachDayOfMonth";
-import { FirebaseCollectionActions } from "../../../Hooks/FirebaseCollectionActions";
-import { EventsByYear } from "../../Calendar/CalendarTypes";
-import CreateNewReservation from "../../Calendar/CreateNewReservation/CreateNewReservation";
-import style from "./PublicCalendar.module.scss";
+import { useCalculateEachDayOfMonth } from '@/Hooks';
+import { Unsubscribe } from 'firebase/firestore';
+import { DateTime, Info } from 'luxon';
+import { InferGetServerSidePropsType, NextPage } from 'next';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getServerSideProps } from '../../../../pages/[id]';
+import Images from '../../../../public/Styles/Assets/Images/Images';
+import { FirebaseCollectionActions } from '../../../Hooks/FirebaseCollectionActions';
+import { useMobileView } from '../../../checkForMobileView';
+import { EventsByYear } from '../../Calendar/CalendarTypes';
+import CreateNewReservation from '../../Calendar/CreateNewReservation/CreateNewReservation';
+import style from './PublicCalendar.module.scss';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const PublicCalendar: NextPage = (props: Props) => {
   const { apartmentEmail, apartmentLogo, apartmentName } = props;
-  const { t, i18n } = useTranslation("PublicCalendar");
+  const { t, i18n } = useTranslation('PublicCalendar');
   const mobileView = useMobileView();
   const router = useRouter();
 
@@ -26,7 +26,15 @@ const PublicCalendar: NextPage = (props: Props) => {
   const [displayNewReservation, setDisplayNewReservation] =
     useState<boolean>(false);
 
-  const { lastMonthDates, dates, nextMonthDates, year, month, setyear, setmonth } = useCalculateEachDayOfMonth({
+  const {
+    lastMonthDates,
+    dates,
+    nextMonthDates,
+    year,
+    month,
+    setyear,
+    setmonth,
+  } = useCalculateEachDayOfMonth({
     startYear: DateTime.local().year,
     startMonth: DateTime.local().month,
   });
@@ -38,7 +46,7 @@ const PublicCalendar: NextPage = (props: Props) => {
   const unsubscribe = useRef<Unsubscribe | undefined>(undefined);
 
   useEffect(() => {
-    const { listenById } = FirebaseCollectionActions("events");
+    const { listenById } = FirebaseCollectionActions('events');
 
     unsubscribe.current = listenById(`${router.query.id}/data/public`, data => {
       setEvents(data as EventsByYear);
@@ -55,38 +63,34 @@ const PublicCalendar: NextPage = (props: Props) => {
     <div>
       <title>{apartmentName}</title>
       {apartmentName && (
-        <div className="mb-5 flex items-center gap-10">
-          <div className=" font-bold text-2xl text-blue-700">
+        <div className='mb-5 flex items-center gap-10'>
+          <div className=' text-2xl font-bold text-blue-700'>
             {apartmentName}
           </div>
           {apartmentLogo && (
-            <div className="relative h-20 w-48">
+            <div className='relative h-fit w-fit'>
               <Image
                 src={apartmentLogo}
                 alt={apartmentName}
-                layout="fill"
-                objectFit="contain"
-                className="rounded"
+                className='rounded'
+                width={100}
+                height={100}
               />
             </div>
           )}
         </div>
       )}
-      <div className={`flex justify-between items-center`}>
+      <div className={`flex items-center justify-between`}>
         <div
           className={`${style.dateNavigation} flex select-none gap-3 drop-shadow-md`}
         >
           <div
             className={`flex items-center ${
-              mobileView ? "w-[165px]" : "w-36"
-            } rounded-md h-10`}
+              mobileView ? 'w-[165px]' : 'w-36'
+            } h-10 rounded-md`}
           >
             <button
-              disabled={
-                DateTime.local(year, month)
-                  .diffNow()
-                  .as("months") < 0
-              }
+              disabled={DateTime.local(year, month).diffNow().as('months') < 0}
               onClick={() => {
                 if (month === 1) {
                   setmonth(12);
@@ -97,13 +101,13 @@ const PublicCalendar: NextPage = (props: Props) => {
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/left-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
               }}
-              className={`hover:bg-neutral-100 p-5 rounded-l-md disabled:bg-neutral-300`}
+              className={`rounded-l-md p-5 hover:bg-neutral-100 disabled:bg-neutral-300`}
             />
-            <h2 className="w-full text-center px-5 select-none font-bold">
+            <h2 className='w-full select-none px-5 text-center font-bold'>
               {month}
             </h2>
             <button
@@ -117,16 +121,16 @@ const PublicCalendar: NextPage = (props: Props) => {
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/right-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
               }}
-              className={`hover:bg-neutral-100 p-5 rounded-r-md`}
+              className={`rounded-r-md p-5 hover:bg-neutral-100`}
             />
           </div>
-          <div className={`flex items-center rounded-md h-10 w-[165px]`}>
+          <div className={`flex h-10 w-[165px] items-center rounded-md`}>
             <button
-              disabled={DateTime.local(year).diffNow().as("year") < 0}
+              disabled={DateTime.local(year).diffNow().as('year') < 0}
               onClick={() => {
                 setyear(year - 1);
 
@@ -134,13 +138,13 @@ const PublicCalendar: NextPage = (props: Props) => {
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/left-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
               }}
-              className={`hover:bg-neutral-100 p-5 rounded-l-md disabled:bg-neutral-300`}
+              className={`rounded-l-md p-5 hover:bg-neutral-100 disabled:bg-neutral-300`}
             />
-            <h2 className="w-full text-center px-5 select-none font-bold">
+            <h2 className='w-full select-none px-5 text-center font-bold'>
               {year}
             </h2>
             <button
@@ -149,76 +153,76 @@ const PublicCalendar: NextPage = (props: Props) => {
               }}
               style={{
                 backgroundImage: `url(/Styles/Assets/Images/right-arrow.svg)`,
-                backgroundSize: "75%",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
+                backgroundSize: '75%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
               }}
-              className={`hover:bg-neutral-100 p-5 rounded-r-md`}
+              className={`rounded-r-md p-5 hover:bg-neutral-100`}
             />
           </div>
         </div>
         <div
           className={`${
-            mobileView ? "flex flex-col" : "flex items-center"
-          } gap-3 select-none drop-shadow-md`}
+            mobileView ? 'flex flex-col' : 'flex items-center'
+          } select-none gap-3 drop-shadow-md`}
         >
           {!mobileView && (
-            <div className="flex gap-3">
-              <div className="font-semibold">{t("can_be_reserved")}:</div>
-              <div className="flex">
-                <div className="h-6 w-6 border-2 bg-white" />
-                <Image alt="" src={Images.CheckGreen} className="h-6 w-6" />
+            <div className='flex gap-3'>
+              <div className='font-semibold'>{t('can_be_reserved')}:</div>
+              <div className='flex'>
+                <div className='h-6 w-6 border-2 bg-white' />
+                <Image alt='' src={Images.CheckGreen} className='h-6 w-6' />
               </div>
-              <div className="flex">
+              <div className='flex'>
                 <div
-                  className="h-6 w-6 border-2"
+                  className='h-6 w-6 border-2'
                   style={{
                     background:
-                      "linear-gradient(to right bottom, white 50%, #DC2726 50.3%)",
+                      'linear-gradient(to right bottom, white 50%, #DC2726 50.3%)',
                   }}
                 />
-                <Image alt="" src={Images.CheckGreen} className="h-6 w-6" />
+                <Image alt='' src={Images.CheckGreen} className='h-6 w-6' />
               </div>
-              <div className="flex">
-                <div className="h-6 w-6 bg-red-600 border-2" />
-                <Image alt="" src={Images.XCircle} className="h-6 w-6" />
+              <div className='flex'>
+                <div className='h-6 w-6 border-2 bg-red-600' />
+                <Image alt='' src={Images.XCircle} className='h-6 w-6' />
               </div>
             </div>
           )}
           <button
-            className="bg-blue-700 hover:bg-blue-500 rounded-md font-bold text-white px-3 py-2 h-fit"
+            className='h-fit rounded-md bg-blue-700 px-3 py-2 font-bold text-white hover:bg-blue-500'
             onClick={() => setDisplayNewReservation(true)}
           >
-            {t("create_reservation")}
+            {t('create_reservation')}
           </button>
         </div>
       </div>
       {mobileView && (
-        <div className="flex gap-3 mt-6 items-center justify-center drop-shadow-md">
-          <div className="font-semibold">{t("can_be_reserved")}:</div>
-          <div className="flex">
-            <div className="h-6 w-6 border-2 bg-white" />
-            <Image alt="" src={Images.CheckGreen} className="h-6 w-6" />
+        <div className='mt-6 flex items-center justify-center gap-3 drop-shadow-md'>
+          <div className='font-semibold'>{t('can_be_reserved')}:</div>
+          <div className='flex'>
+            <div className='h-6 w-6 border-2 bg-white' />
+            <Image alt='' src={Images.CheckGreen} className='h-6 w-6' />
           </div>
-          <div className="flex">
+          <div className='flex'>
             <div
-              className="h-6 w-6 border-2"
+              className='h-6 w-6 border-2'
               style={{
                 background:
-                  "linear-gradient(to right bottom, white 50%, #DC2726 50.3%)",
+                  'linear-gradient(to right bottom, white 50%, #DC2726 50.3%)',
               }}
             />
-            <Image alt="" src={Images.CheckGreen} className="h-6 w-6" />
+            <Image alt='' src={Images.CheckGreen} className='h-6 w-6' />
           </div>
-          <div className="flex">
-            <div className="h-6 w-6 bg-red-600 border-2" />
-            <Image alt="" src={Images.XCircle} className="h-6 w-6" />
+          <div className='flex'>
+            <div className='h-6 w-6 border-2 bg-red-600' />
+            <Image alt='' src={Images.XCircle} className='h-6 w-6' />
           </div>
         </div>
       )}
       <div
         ref={calendarGrid}
-        className={`${style.calendar} drop-shadow-md transition-all duration-75 relative`}
+        className={`${style.calendar} relative drop-shadow-md transition-all duration-75`}
         onTouchStart={e => {
           touchMoveHorizontal = e.targetTouches.item(0).clientX;
           currentScrollPosition = e.touches.item(0).pageX;
@@ -240,7 +244,7 @@ const PublicCalendar: NextPage = (props: Props) => {
         }}
         onTouchEnd={e => {
           if (calendarGrid.current) {
-            calendarGrid.current.style.left = "0px";
+            calendarGrid.current.style.left = '0px';
             currentScrollPosition = null;
           }
           if (
@@ -259,17 +263,23 @@ const PublicCalendar: NextPage = (props: Props) => {
             touchMoveHorizontal - e.changedTouches.item(0).clientX < -50
           ) {
             touchMoveHorizontal = null;
-            if (month === 1) {
+            if (
+              month === 1 &&
+              DateTime.local(year, month).diffNow().as('months') >= 0 &&
+              DateTime.local(year, month).diffNow().as('year') >= 0
+            ) {
               setmonth(12);
               setyear(year - 1);
               return;
             }
-            setmonth(month - 1);
+            if (DateTime.local(year, month).diffNow().as('months') >= 0) {
+              setmonth(month - 1);
+            }
           }
         }}
       >
         <div className={style.calendarGridHeader}>
-          {Info.weekdaysFormat("short", { locale: i18n.language }).map(
+          {Info.weekdaysFormat('short', { locale: i18n.language }).map(
             (day, index) => (
               <div
                 key={index}
@@ -304,44 +314,44 @@ const PublicCalendar: NextPage = (props: Props) => {
                 : events[nextMonthDates[0].year][nextMonthDates[0].date]
                     ?.length);
 
-            return DateTime.fromISO(day.date).diffNow("day").days > -1 ? (
+            return DateTime.fromISO(day.date).diffNow('day').days > -1 ? (
               <div
                 key={index}
                 className={`relative shadow-[0_-1px_1px_#cbd5e1]
-                hover:shadow-[0_-2px_1px_#93C5FD] hover:border-2 hover:border-t-0 hover:border-blue-300 ${
+                hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
                   mobileView ? style.mobileGridItem : style.gridItem
                 }`}
               >
                 <div
-                  className={`font-semibold select-none h-full flex flex-col
-                  overflow-hidden ${
-                    ["Saturday", "Sunday"].includes(day.name)
-                      ? "opacity-50"
+                  className={`flex h-full select-none flex-col overflow-hidden
+                  font-semibold ${
+                    ['Saturday', 'Sunday'].includes(day.name)
+                      ? 'opacity-50'
                       : day.lastMonth
-                      ? "opacity-30 font-normal"
-                      : "opacity-100"
+                      ? 'font-normal opacity-30'
+                      : 'opacity-100'
                   } ${
                     events &&
                     events[day.year] &&
                     events[day.year][day.date]?.length > 0 &&
-                    "text-white"
-                  } ${startingDay && "text-black"}`}
+                    'text-white'
+                  } ${startingDay && 'text-black'}`}
                 >
-                  <div className="absolute top-0 left-0">{day.day}</div>
+                  <div className='absolute left-0 top-0'>{day.day}</div>
                   <div
                     className={`h-full ${
                       events &&
                       events[day.year] &&
                       events[day.year][day.date]?.length > 0 &&
-                      "bg-red-600"
+                      'bg-red-600'
                     }
                     `}
                     style={{
                       background: startingDay
-                        ? "linear-gradient(to right bottom, transparent 50%, #DC2726 50.3%)"
+                        ? 'linear-gradient(to right bottom, transparent 50%, #DC2726 50.3%)'
                         : endingDay
-                        ? "linear-gradient(to right bottom, #DC2726 50%, transparent 50.3%)"
-                        : "",
+                        ? 'linear-gradient(to right bottom, #DC2726 50%, transparent 50.3%)'
+                        : '',
                     }}
                   />
                 </div>
@@ -350,21 +360,21 @@ const PublicCalendar: NextPage = (props: Props) => {
               <div
                 key={index}
                 className={`relative shadow-[0_-1px_1px_#cbd5e1]
-              hover:shadow-[0_-2px_1px_#93C5FD] hover:border-2 hover:border-t-0 hover:border-blue-300 ${
+              hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
                 mobileView ? style.mobileGridItem : style.gridItem
               }`}
               >
                 <div
-                  className={`font-semibold select-none h-full flex flex-col
-                overflow-hidden ${
-                  ["Saturday", "Sunday"].includes(day.name)
-                    ? "opacity-50"
+                  className={`flex h-full select-none flex-col overflow-hidden
+                font-semibold ${
+                  ['Saturday', 'Sunday'].includes(day.name)
+                    ? 'opacity-50'
                     : day.lastMonth
-                    ? "opacity-30 font-normal"
-                    : "opacity-100"
+                    ? 'font-normal opacity-30'
+                    : 'opacity-100'
                 }`}
                 >
-                  <div className="absolute top-0 left-0">{day.day}</div>
+                  <div className='absolute left-0 top-0'>{day.day}</div>
                 </div>
               </div>
             );

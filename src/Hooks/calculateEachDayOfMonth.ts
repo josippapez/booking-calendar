@@ -1,13 +1,13 @@
+import { Day } from "@/components/Calendar/CalendarTypes";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
-import { Day } from "../components/Calendar/CalendarTypes";
 
 type Props = {
   startMonth: number;
   startYear: number;
 };
 
-const useCalculateEachDayOfMonth = (
+export const useCalculateEachDayOfMonth = (
   props: Props
 ): {
   month: number;
@@ -102,5 +102,3 @@ const useCalculateEachDayOfMonth = (
     }, [nextMonth, nextMonthYear]),
   };
 };
-
-export default useCalculateEachDayOfMonth;

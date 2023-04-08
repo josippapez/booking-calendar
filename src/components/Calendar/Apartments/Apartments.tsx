@@ -1,8 +1,7 @@
-import { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   editApartment,
@@ -19,9 +18,7 @@ import { setEvents } from "../../../../store/reducers/events";
 import { useAlert } from "../../../AlertModalProvider";
 import { useMobileView } from "../../../checkForMobileView";
 
-type Props = {};
-
-const Apartments: NextPage = (props: Props) => {
+const Apartments: FC = () => {
   const { showAlert } = useAlert();
   const { t } = useTranslation("Apartments");
   const dispatch = useAppDispatch();
@@ -471,23 +468,20 @@ const Apartments: NextPage = (props: Props) => {
                       <Link
                         key={apartments.apartments[apartment].id}
                         href={`/apartments/${apartments.apartments[apartment].id}`}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4"
+                        onClick={() => {
+                          if (
+                            apartments.selectedApartment?.id !==
+                            apartments.apartments[apartment].id
+                          ) {
+                            dispatch(setEvents({}));
+                          }
+                          dispatch(
+                            selectApartment(apartments.apartments[apartment])
+                          );
+                        }}
                       >
-                        <a
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4"
-                          onClick={() => {
-                            if (
-                              apartments.selectedApartment?.id !==
-                              apartments.apartments[apartment].id
-                            ) {
-                              dispatch(setEvents({}));
-                            }
-                            dispatch(
-                              selectApartment(apartments.apartments[apartment])
-                            );
-                          }}
-                        >
-                          {t("select")}
-                        </a>
+                        {t("select")}
                       </Link>
                     )}
                   </td>

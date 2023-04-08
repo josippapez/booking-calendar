@@ -1,35 +1,35 @@
-import { FirebaseError } from "firebase/app";
-import firebase from "firebase/compat/app";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { DateTime, Info } from "luxon";
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { FirebaseError } from 'firebase/app';
+import firebase from 'firebase/compat/app';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { DateTime, Info } from 'luxon';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   removeEventForApartment,
   saveEventsForApartment,
-} from "../../../store/firebaseActions/eventActions";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectApartment } from "../../../store/reducers/apartments";
-import { setEvents } from "../../../store/reducers/events";
-import { useMobileView } from "../../checkForMobileView";
-import useCalculateEachDayOfMonth from "../../Hooks/calculateEachDayOfMonth";
-import DatePickerHeader from "../Shared/DatePicker/Header/DatePickerHeader";
-import Dropdown from "../Shared/Dropdown/Dropdown";
-import style from "./Calendar.module.scss";
-import { Event, EventsByYear } from "./CalendarTypes";
-import CreateNewEvent from "./CreateNewEvent/CreateNewEvent";
-import DayDetails from "./DayDetails/DayDetails";
+} from '../../../store/firebaseActions/eventActions';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { selectApartment } from '../../../store/reducers/apartments';
+import { setEvents } from '../../../store/reducers/events';
+import { useMobileView } from '../../checkForMobileView';
+import Dropdown from '../Shared/Dropdown/Dropdown';
+import style from './Calendar.module.scss';
+import { Event, EventsByYear } from './CalendarTypes';
+import CreateNewEvent from './CreateNewEvent/CreateNewEvent';
+import DayDetails from './DayDetails/DayDetails';
+import { useCalculateEachDayOfMonth } from '@/Hooks';
+import { DatePickerHeader } from '@/components/Shared/DatePicker';
 
 type Props = {};
 
 const Calendar: NextPage = (props: Props) => {
-  const { t, i18n } = useTranslation("Calendar");
+  const { t, i18n } = useTranslation('Calendar');
   const dispatch = useAppDispatch();
   const navigate = useRouter();
 
-  const id = useRef("");
+  const id = useRef('');
 
   const eventsData = useAppSelector(state => state.events.events);
   const apartments = useAppSelector(state => state.apartments);
@@ -57,8 +57,8 @@ const Calendar: NextPage = (props: Props) => {
     (event: Event) => {
       let biggestIndex = 0;
       let smallestIndex = 999;
-      const eventStartSplit = event.start.split("-");
-      const eventEndSplit = event.end.split("-");
+      const eventStartSplit = event.start.split('-');
+      const eventEndSplit = event.end.split('-');
       let endDate = event.end;
       let startDate = event.start;
 
@@ -69,8 +69,8 @@ const Calendar: NextPage = (props: Props) => {
         endDate = DateTime.fromObject({
           month,
         })
-          .endOf("month")
-          .toFormat("yyyy-MM-dd");
+          .endOf('month')
+          .toFormat('yyyy-MM-dd');
       }
 
       if (
@@ -81,20 +81,20 @@ const Calendar: NextPage = (props: Props) => {
         startDate = DateTime.fromObject({
           month,
         })
-          .startOf("month")
-          .toFormat("yyyy-MM-dd");
+          .startOf('month')
+          .toFormat('yyyy-MM-dd');
       }
 
       for (
         let index = 0;
         index <=
-        DateTime.fromISO(endDate).diff(DateTime.fromISO(startDate), "days")
+        DateTime.fromISO(endDate).diff(DateTime.fromISO(startDate), 'days')
           .days;
         index++
       ) {
         const tempDate = DateTime.fromISO(startDate)
           .plus({ days: index })
-          .toFormat("yyyy-MM-dd");
+          .toFormat('yyyy-MM-dd');
         if (
           eventsData[DateTime.fromISO(startDate).year] &&
           eventsData[DateTime.fromISO(startDate).year][tempDate]
@@ -118,7 +118,7 @@ const Calendar: NextPage = (props: Props) => {
   const getEventsById = async (id: string) => {
     try {
       const event = await getDoc(
-        doc(getFirestore(firebase.app()), "events", `${id}/data/private`)
+        doc(getFirestore(firebase.app()), 'events', `${id}/data/private`)
       ).then(doc => doc.data());
 
       if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
@@ -126,8 +126,8 @@ const Calendar: NextPage = (props: Props) => {
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
-        if (error.code === "permission-denied") {
-          navigate.push("/");
+        if (error.code === 'permission-denied') {
+          navigate.push('/');
         }
       }
     }
@@ -137,7 +137,7 @@ const Calendar: NextPage = (props: Props) => {
     if (
       navigate &&
       navigate.query.id &&
-      typeof navigate.query.id === "string"
+      typeof navigate.query.id === 'string'
     ) {
       id.current = navigate.query.id;
       getEventsById(id.current);
@@ -162,13 +162,13 @@ const Calendar: NextPage = (props: Props) => {
     <>
       <title>{apartments.selectedApartment?.name}</title>
       <div
-        className={`flex justify-between h-fit ${
-          mobileView ? "flex-col" : "flex-row"
+        className={`flex h-fit justify-between ${
+          mobileView ? 'flex-col' : 'flex-row'
         }`}
       >
-        <div className={`font-bold flex gap-3 ${mobileView && "mb-6"}`}>
+        <div className={`flex gap-3 font-bold ${mobileView && 'mb-6'}`}>
           <Dropdown
-            placeholder="Select apartment"
+            placeholder='Select apartment'
             data={Object.keys(apartments?.apartments).map(key => {
               return {
                 id: apartments.apartments[key].id,
@@ -185,13 +185,14 @@ const Calendar: NextPage = (props: Props) => {
             }}
           />
           <button
-            className="bg-blue-500 hover:bg-blue-400 rounded-md h-10 px-3 text-white drop-shadow-md"
+            className='h-10 rounded-md bg-blue-500 px-3 text-white drop-shadow-md hover:bg-blue-400'
             onClick={() => navigate.push(`/${id.current}`)}
           >
-            {t("public_view")}
+            {t('public_view')}
           </button>
         </div>
         <DatePickerHeader
+          hideOnlyYearButton
           selectedMonth={month}
           selectedYear={year}
           setSelectedMonth={setmonth}
@@ -203,8 +204,8 @@ const Calendar: NextPage = (props: Props) => {
         ref={calendarGrid}
         className={`${
           style.calendar
-        } transition-all duration-75 drop-shadow-md relative ${
-          mobileView && "full-bleed"
+        } relative drop-shadow-md transition-all duration-75 ${
+          mobileView && 'full-bleed'
         }`}
         onTouchStart={e => {
           touchMoveHorizontal = e.targetTouches.item(0).clientX;
@@ -227,7 +228,7 @@ const Calendar: NextPage = (props: Props) => {
         }}
         onTouchEnd={e => {
           if (calendarGrid.current) {
-            calendarGrid.current.style.left = "0px";
+            calendarGrid.current.style.left = '0px';
             currentScrollPosition = null;
           }
           if (
@@ -256,7 +257,7 @@ const Calendar: NextPage = (props: Props) => {
         }}
       >
         <div className={style.calendarGridHeader}>
-          {Info.weekdaysFormat("short", { locale: i18n.language }).map(
+          {Info.weekdaysFormat('short', { locale: i18n.language }).map(
             (day, index) => (
               <div
                 key={index}
@@ -290,7 +291,7 @@ const Calendar: NextPage = (props: Props) => {
               <div
                 key={index}
                 className={`relative shadow-[0_-1px_1px_#cbd5e1]
-                  hover:shadow-[0_-2px_1px_#93C5FD] hover:border-2 hover:border-t-0 hover:border-blue-300 ${
+                  hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
                     mobileView ? style.mobileGridItem : style.gridItem
                   }`}
                 onClick={() => {
@@ -305,12 +306,12 @@ const Calendar: NextPage = (props: Props) => {
                 }}
               >
                 <div
-                  className={`select-none h-full flex flex-col ${
-                    ["Saturday", "Sunday"].includes(day.name)
-                      ? "opacity-50"
+                  className={`flex h-full select-none flex-col ${
+                    ['Saturday', 'Sunday'].includes(day.name)
+                      ? 'opacity-50'
                       : day.lastMonth
-                      ? "opacity-30 font-normal"
-                      : "opacity-100"
+                      ? 'font-normal opacity-30'
+                      : 'opacity-100'
                   } ${mobileView ? style.mobileDayText : style.dayText}`}
                 >
                   <div>{day.day}</div>
@@ -325,35 +326,35 @@ const Calendar: NextPage = (props: Props) => {
                         <div
                           id={`${day.day}-${event.id}`}
                           key={`${day.day}-${event.id}`}
-                          className={`text-white flex font-bold px-2 py-1
-                          min-h-[40px]
+                          className={`flex min-h-[40px] px-2 py-1 font-bold
+                          text-white
                          ${
                            tempStartDate
-                             ? "self-end rounded-l-full"
+                             ? 'self-end rounded-l-full'
                              : tempEndDate
-                             ? "self-start rounded-r-full"
-                             : "self-center"
+                             ? 'self-start rounded-r-full'
+                             : 'self-center'
                          }
                         `}
                           style={{
                             backgroundColor: event.color,
-                            padding: "0.5rem",
+                            padding: '0.5rem',
                             width: tempStartDate
-                              ? "70%"
+                              ? '70%'
                               : tempEndDate
-                              ? "30%"
-                              : "100%",
-                            color: tempStartDate ? "white" : "#fff0",
+                              ? '30%'
+                              : '100%',
+                            color: tempStartDate ? 'white' : '#fff0',
                           }}
                         >
                           {event.booking && tempStartDate && (
                             <div
-                              className={`rounded-full w-6 text-center bg-gray-600`}
+                              className={`w-6 rounded-full bg-gray-600 text-center`}
                             >
                               B
                             </div>
                           )}
-                          <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+                          <div className='overflow-hidden text-ellipsis whitespace-nowrap'>
                             {event.title}
                           </div>
                         </div>
@@ -372,8 +373,8 @@ const Calendar: NextPage = (props: Props) => {
           setSelectedDay={setSelectedDay}
           setSelectedEventToEdit={setSelectedEventToEdit}
           events={
-            selectedDay && eventsData[selectedDay.split("-")[0]]
-              ? eventsData[selectedDay.split("-")[0]][selectedDay]
+            selectedDay && eventsData[selectedDay.split('-')[0]]
+              ? eventsData[selectedDay.split('-')[0]][selectedDay]
               : []
           }
           isMobileView={mobileView}
@@ -389,9 +390,9 @@ const Calendar: NextPage = (props: Props) => {
           setEvents={events => dispatch(saveEventsForApartment(events))}
         />
       </div>
-      <div className="fixed bottom-0 right-0 p-3 w-fit drop-shadow-md">
+      <div className='fixed bottom-0 right-0 w-fit p-3 drop-shadow-md'>
         <button
-          className="bg-blue-500 hover:bg-neutral-400 text-white font-bold py-2 px-4 rounded text-lg"
+          className='rounded bg-blue-500 px-4 py-2 text-lg font-bold text-white hover:bg-neutral-400'
           onClick={() => setAddNewEvent(true)}
         >
           +

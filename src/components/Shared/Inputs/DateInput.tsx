@@ -1,67 +1,79 @@
-import { DateTime } from "luxon";
-import { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
-import DatePicker from "../DatePicker/DatePicker";
+import { DatePicker } from "@/components/Shared/DatePicker";
+import { DateTime, DateTimeFormatOptions } from "luxon";
+import { useState } from "react";
 
 type Props = {
-  value?: string;
-  setValue: (value: string) => void;
+  type?: "date" | "month" | "year";
+  disabled?: boolean;
+  label?: string;
+  inline?: boolean;
+  value: string;
+  fullWidth?: boolean;
+  startYear?: number;
+  setData: (data: string) => void;
   resetData: () => void;
+  format?: {
+    month?: "numeric" | "2-digit" | "narrow" | "short" | "long";
+    day?: "numeric" | "2-digit";
+    year?: "numeric" | "2-digit";
+  };
 };
 
-const DateInput = (props: Props) => {
-  const { value, setValue, resetData } = props;
-  const { i18n } = useTranslation();
-
-  const [displayDatePicker, setDisplayDatePicker] = useState(false);
-
-  const handleDateChange = useCallback(
-    (date: string) => {
-      setValue(date);
-      setDisplayDatePicker(false);
+export const DateInput = (props: Props) => {
+  const {
+    label,
+    value,
+    setData,
+    resetData,
+    inline,
+    fullWidth,
+    startYear,
+    format = {
+      month: "long",
+      day: "2-digit",
+      year: "numeric",
     },
-    [setValue]
-  );
+    disabled,
+    type = "date",
+  } = props;
 
-  const handleResetData = useCallback(() => {
-    resetData();
-  }, [resetData]);
+  const isOnlyYear = value?.length === 4;
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const onlyYearFormat = {
+    year: "numeric",
+  } satisfies DateTimeFormatOptions;
+
+  const newFormat = isOnlyYear ? onlyYearFormat : format;
 
   return (
-    <>
+    <div
+      className={`flex ${inline ? "flex-row items-center gap-4" : "flex-col"} ${
+        fullWidth ? "w-full" : ""
+      } drop-shadow-sm`}
+    >
+      {label && <label className="font-medium">{label}</label>}
       <input
+        disabled={disabled}
         type="button"
-        className="appearance-none border bg-white rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-        value={
-          value !== ""
-            ? DateTime.fromISO(value as string)
-                .setLocale(i18n.language)
-                .toLocaleString({
-                  month: "long",
-                  day: "2-digit",
-                  year: "numeric",
-                })
-            : ""
+        className="w-ful flex h-10 flex-row rounded-md bg-white
+        px-4 text-start ring-0 transition-all duration-300 ease-in-out hover:cursor-pointer
+        focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 dark:bg-almost-black-input"
+        onClick={() => setShowDatePicker(true)}
+        defaultValue={
+          value ? DateTime.fromISO(value).toLocaleString(newFormat) : ""
         }
-        onClick={() => {
-          setDisplayDatePicker(true);
-        }}
       />
       <DatePicker
-        closeDatePicker={() => {
-          setDisplayDatePicker(false);
-        }}
-        setDate={handleDateChange}
-        resetData={handleResetData}
-        showDatePicker={displayDatePicker}
-        initialDate={value as string}
+        type={type}
+        startYear={startYear}
+        initialDate={value}
+        showDatePicker={showDatePicker}
+        closeDatePicker={() => setShowDatePicker(false)}
+        resetData={resetData}
+        setDate={setData}
       />
-    </>
+    </div>
   );
 };
-
-DateInput.defaultProps = {
-  value: "",
-};
-
-export default DateInput;

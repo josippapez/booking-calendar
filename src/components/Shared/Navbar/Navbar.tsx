@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { logout } from "../../../../store/firebaseActions/authActions";
 import { useMobileView } from "../../../checkForMobileView";
-import useDarkMode from "../../../Hooks/useDarkMode";
 import style from "./Navbar.module.scss";
+import { useCloseOnClickOutside, useDarkMode } from "@/Hooks";
 
 type Props = { userAuthenticated: boolean };
 
@@ -21,6 +21,11 @@ function Navbar(props: Props) {
   const component = useRef<HTMLDivElement | null>(null);
   const languageComponent = useRef<HTMLDivElement | null>(null);
 
+  useCloseOnClickOutside(component, () => setDropdownOpenned(false));
+  useCloseOnClickOutside(languageComponent, () =>
+    setDisplayLanguageDropdown(false)
+  );
+
   useEffect(() => {
     if (dropdownOpenned) {
       document.getElementById("mobile-menu-2")?.classList.remove("hidden");
@@ -28,27 +33,6 @@ function Navbar(props: Props) {
       document.getElementById("mobile-menu-2")?.classList.add("hidden");
     }
   }, [dropdownOpenned]);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        component.current &&
-        !component.current.contains(event.target as Node)
-      ) {
-        setDropdownOpenned(false);
-      }
-      if (
-        languageComponent.current &&
-        !languageComponent.current.contains(event.target as Node)
-      ) {
-        setDisplayLanguageDropdown(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [component, languageComponent]);
 
   const languages = [
     { title: "English", value: "en-US" },
@@ -75,24 +59,27 @@ function Navbar(props: Props) {
               >
                 <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
                   <li>
-                    <Link href="/apartments">
-                      <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                        {t("apartments_link_name")}
-                      </a>
+                    <Link
+                      className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                      href="/apartments"
+                    >
+                      {t("apartments_link_name")}
                     </Link>
                   </li>
                   <li>
-                    <Link href="/invoice">
-                      <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                        {t("invoice_link_name")}
-                      </a>
+                    <Link
+                      className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                      href="/invoice"
+                    >
+                      {t("invoice_link_name")}
                     </Link>
                   </li>
                   <li>
-                    <Link href="/guests">
-                      <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                        {t("guests_link_name")}
-                      </a>
+                    <Link
+                      className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                      href="/guests"
+                    >
+                      {t("guests_link_name")}
                     </Link>
                   </li>
                 </ul>
@@ -145,24 +132,27 @@ function Navbar(props: Props) {
           >
             <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium gap-[10px]">
               <li>
-                <Link href="/apartments">
-                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                    {t("apartments_link_name")}
-                  </a>
+                <Link
+                  className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                  href="/apartments"
+                >
+                  {t("apartments_link_name")}
                 </Link>
               </li>
               <li>
-                <Link href="/invoice">
-                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                    {t("invoice_link_name")}
-                  </a>
+                <Link
+                  className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                  href="/invoice"
+                >
+                  {t("invoice_link_name")}
                 </Link>
               </li>
               <li>
-                <Link href="/guests">
-                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
-                    {t("guests_link_name")}
-                  </a>
+                <Link
+                  className="block py-2 pr-4 pl-3 text-white bg-blue-700 hover:bg-blue-500 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                  href="/guests"
+                >
+                  {t("guests_link_name")}
                 </Link>
               </li>
               <li>

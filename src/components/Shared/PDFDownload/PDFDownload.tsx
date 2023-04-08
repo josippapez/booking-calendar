@@ -1,35 +1,51 @@
-import { useState } from "react";
-import Modal from "../Modal/Modal";
+import { usePDFComponentsAreHTML } from '@/components/Shared/Invoice/Templates/custom/Components';
+import { Modal } from '@/components/Shared/Modal/Modal';
+import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
+import { useEffect, useState } from 'react';
 
 type Props = {
-  pdfInstance: {
-    url: string;
-    blob: Blob;
-  };
+  PdfInstance?: () => JSX.Element;
+  pdfBlob?: ReactPDF.UsePDFInstance;
   closeModal(): void;
   show: boolean;
 };
 
-const PDFDownload = (props: Props) => {
-  const { pdfInstance, show, closeModal } = props;
-  const [cvName, setCvName] = useState("Invoice");
+export const PDFDownload = ({
+  PdfInstance,
+  show,
+  closeModal,
+  pdfBlob,
+}: Props) => {
+  const { isHTML, setHtml } = usePDFComponentsAreHTML();
+  const [cvName, setCvName] = useState('CV');
+  const [download, setDownload] = useState(false);
+
+  useEffect(() => {
+    if (show) setHtml(false);
+  }, [show]);
+
   return (
     <Modal
       show={show}
-      position="center"
-      animation="fade"
-      closeModal={closeModal}
+      position='center'
+      closeModal={() => {
+        setHtml(true);
+        setDownload(false);
+        setTimeout(() => {
+          closeModal();
+        }, 100);
+      }}
     >
-      <div className="w-fit h-fit bg-white p-5 flex-col relative">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Download Invoice</h1>
+      <div className='text-almost-black relative h-fit w-fit flex-col bg-white p-5'>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-2xl font-bold'>Download CV</h1>
           <button
-            className="font-bold absolute top-1 right-3 hover:bg-slate-500 hover:text-white rounded-full"
+            className='absolute right-3 top-1 rounded-full font-bold hover:bg-slate-500 hover:text-white'
             style={{
-              lineHeight: "10px",
-              fontSize: "20px",
-              width: "30px",
-              height: "30px",
+              lineHeight: '10px',
+              fontSize: '20px',
+              width: '30px',
+              height: '30px',
             }}
             onClick={() => {
               closeModal();
@@ -38,28 +54,49 @@ const PDFDownload = (props: Props) => {
             &times;
           </button>
         </div>
-        <div className="flex justify-center mt-4">
-          <span className="font-bold w-auto self-center mr-3">Invoice file name</span>
+        <div className='mt-4 flex justify-center'>
+          <span className='mr-3 w-auto self-center font-bold'>CV PDF name</span>
           <input
-            className="w-auto p-2 border border-gray-400"
-            type="text"
-            placeholder="Enter Invoice name"
+            className='w-auto border border-gray-400 p-2'
+            type='text'
+            placeholder='Enter CV name'
             value={cvName}
             onChange={e => setCvName(e.target.value)}
           />
         </div>
-        <div className="flex justify-center mt-4">
-          <a
-            className="w-full p-2 bg-blue-500 text-white font-bold text-center shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800"
-            href={pdfInstance?.url}
-            download={`${cvName}.pdf`}
-          >
-            Download
-          </a>
+        <div className='mt-4 flex justify-center'>
+          {pdfBlob && (
+            <a
+              className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
+              href={pdfBlob?.url || ''}
+              download={`${cvName}.pdf`}
+            >
+              Download
+            </a>
+          )}
+          {!pdfBlob &&
+            PdfInstance &&
+            (download ? (
+              <PDFDownloadLink
+                className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
+                document={!isHTML ? <PdfInstance /> : <></>}
+                fileName={`${cvName}.pdf`}
+              >
+                {({ blob, url, loading, error }) => {
+                  if (loading) return 'Loading document...';
+                  return 'Download now!';
+                }}
+              </PDFDownloadLink>
+            ) : (
+              <button
+                className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
+                onClick={() => setDownload(true)}
+              >
+                Download
+              </button>
+            ))}
         </div>
       </div>
     </Modal>
   );
 };
-
-export default PDFDownload;
