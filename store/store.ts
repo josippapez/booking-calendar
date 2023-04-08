@@ -10,9 +10,9 @@ import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
 import { reducers } from "./reducers/reducer";
 import firebaseConfig from "./Config/fbConfig";
+import storage from "./storage";
 
 const persistConfig = {
   key: "root",
