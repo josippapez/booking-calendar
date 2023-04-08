@@ -1,12 +1,12 @@
-import Cookies from "js-cookie";
-import { AppProps } from "next/app";
-import { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useAppSelector } from "../../store/hooks";
-import { useMobileView } from "../checkForMobileView";
-import AlertModal from "./Shared/AlertModal/AlertModal";
-import Navbar from "./Shared/Navbar/Navbar";
+import { useMobileView } from '@/checkForMobileView';
+import AlertModal from '@/components/Shared/AlertModal/AlertModal';
+import Navbar from '@/components/Shared/Navbar/Navbar';
+import Cookies from 'js-cookie';
+import { AppProps } from 'next/app';
+import { useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useAppSelector } from 'store/hooks';
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const user = useAppSelector(state => state.user.user);
@@ -14,30 +14,30 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const [displayPage, setDisplayPage] = useState(false);
 
   useEffect(() => {
-    const element = document.getElementById("__next");
+    const element = document.getElementById('__next');
     if (mobileView && element !== null) {
-      element.style.maxHeight = window.innerHeight + "px";
-      element.style.height = window.innerHeight + "px";
+      element.style.maxHeight = window.innerHeight + 'px';
+      element.style.height = window.innerHeight + 'px';
     }
   }, [router, user, mobileView]);
 
   const checkForAuthentication = async () => {
-    if (!Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
-      if (!["/", "/[id]"].includes(router.route)) {
-        router.push("/");
+    if (!Cookies.get('accessToken') && !Cookies.get('refreshToken')) {
+      if (!['/', '/[id]'].includes(router.route)) {
+        router.push('/');
       }
     }
-    if (Cookies.get("accessToken")) {
+    if (Cookies.get('accessToken')) {
       if (
         ![
-          "/apartments",
-          "/apartments/[id]",
-          "/[id]",
-          "/invoice",
-          "/guests",
+          '/apartments',
+          '/apartments/[id]',
+          '/[id]',
+          '/invoice',
+          '/guests',
         ].includes(router.route)
       ) {
-        router.push("/apartments");
+        router.push('/apartments');
       }
     }
     setDisplayPage(true);
@@ -49,12 +49,12 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
 
   return displayPage ? (
     <>
-      <Navbar userAuthenticated={!!Cookies.get("accessToken")} />
+      <Navbar userAuthenticated={!!Cookies.get('accessToken')} />
       <div
-        className={`min-w-screen w-full overflow-x-hidden h-fit page-container ${
+        className={`min-w-screen page-container h-fit w-full overflow-x-hidden ${
           mobileView
-            ? window.location.pathname !== "/" && "py-10"
-            : window.location.pathname !== "/" && "py-16"
+            ? window.location.pathname !== '/' && 'py-10'
+            : window.location.pathname !== '/' && 'py-16'
         } select-none`}
       >
         <ToastContainer />

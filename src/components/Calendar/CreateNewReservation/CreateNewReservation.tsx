@@ -1,11 +1,11 @@
+import DateRangePicker from '@/components/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@/components/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch } from '../../../../store/hooks';
-import { Events } from '../../../../store/reducers/events';
-import { sendEmail } from '../../../../store/sendgridActions/emailActions';
-import DateRangePicker from '../../Shared/DateRangePicker/DateRangePicker';
+import { useAppDispatch } from 'store/hooks';
+import { Events } from 'store/reducers/events';
+import { sendEmail } from 'store/sendgridActions/emailActions';
 
 type Props = {
   show: boolean;

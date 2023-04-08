@@ -33,21 +33,21 @@ const ServiceInput = (props: Props) => {
       <input
         className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-2/6"
         type={"text"}
-        placeholder={t("name")}
+        placeholder={t("name").toString()}
         onChange={e => setServiceName(e.target.value)}
       />
       <input
         className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6"
         type={"number"}
         lang={i18n.language}
-        placeholder={t("amount")}
+        placeholder={t("amount").toString()}
         onChange={e => setServiceAmount(e.target.value)}
       />
       <input
         className="appearance-none border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6"
         type={"number"}
         lang={i18n.language}
-        placeholder={t("price")}
+        placeholder={t("price").toString()}
         onChange={e => setServicePrice(e.target.value)}
       />
       <div className="appearance-none bg-gray-200 flex items-center justify-center border rounded-md text-gray-700 leading-tight focus:border-blue-500 w-1/6">

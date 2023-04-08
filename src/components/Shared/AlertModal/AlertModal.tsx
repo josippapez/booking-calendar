@@ -1,7 +1,7 @@
 import { Modal } from '@/components/Shared/Modal/Modal';
 import { useTranslation } from 'react-i18next';
-import { useAlert } from '../../../AlertModalProvider';
 import style from './AlertModal.module.scss';
+import { useAlert } from '@/AlertModalProvider';
 
 type Props = {};
 

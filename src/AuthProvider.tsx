@@ -1,7 +1,6 @@
-import firebase from "firebase/compat/app";
-import i18next from "i18next";
-import Cookies from "js-cookie";
-import { createContext, useContext, useEffect, useState } from "react";
+import firebase from 'firebase/compat/app';
+import Cookies from 'js-cookie';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext<{ user: firebase.User | null }>({
   user: null,
@@ -20,14 +19,14 @@ export function AuthProvider({ children }: any) {
     return firebase.auth().onIdTokenChanged(async user => {
       if (!user) {
         setUser(null);
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
       } else {
         const token = await user.getIdToken();
         const refreshToken = user.refreshToken;
         setUser(user);
-        Cookies.set("accessToken", token, { expires: 14 });
-        Cookies.set("refreshToken", refreshToken, { expires: 14 });
+        Cookies.set('accessToken', token, { expires: 14 });
+        Cookies.set('refreshToken', refreshToken, { expires: 14 });
       }
     });
   }, []);

@@ -1,3 +1,6 @@
+import { useCalculateEachDayOfMonth } from '@/Hooks';
+import { DatePickerHeader } from '@/components/Shared/DatePicker';
+import Dropdown from '@/components/Shared/Dropdown/Dropdown';
 import { FirebaseError } from 'firebase/app';
 import firebase from 'firebase/compat/app';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
@@ -14,13 +17,10 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { selectApartment } from '../../../store/reducers/apartments';
 import { setEvents } from '../../../store/reducers/events';
 import { useMobileView } from '../../checkForMobileView';
-import Dropdown from '../Shared/Dropdown/Dropdown';
 import style from './Calendar.module.scss';
 import { Event, EventsByYear } from './CalendarTypes';
 import CreateNewEvent from './CreateNewEvent/CreateNewEvent';
 import DayDetails from './DayDetails/DayDetails';
-import { useCalculateEachDayOfMonth } from '@/Hooks';
-import { DatePickerHeader } from '@/components/Shared/DatePicker';
 
 type Props = {};
 

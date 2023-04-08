@@ -1,4 +1,4 @@
-​import {
+import {
   PageProps,
   SVGPresentationAttributes,
   SourceObject,
@@ -50,25 +50,6 @@ export type PropsDefs = PropsWithChildren;
 export type PropsDocument = PropsWithChildren<DocumentProps>;
 
 export type { Style as StylePDF };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // react-pdf/ types
 interface NodeProps {

@@ -2,6 +2,10 @@
 
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 
 // const pdfWorkerPath = require.resolve(`pdfjs-dist/build/pdf.worker.min.js`);
 
@@ -116,4 +120,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

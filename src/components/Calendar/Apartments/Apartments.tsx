@@ -1,26 +1,23 @@
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { FC, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useAlert } from '@/AlertModalProvider';
+import { useMobileView } from '@/checkForMobileView';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { FC, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   editApartment,
   getApartmentsForuser,
   removeApartment,
   saveApartment,
-} from "../../../../store/firebaseActions/apartmentActions";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import {
-  selectApartment,
-  setApartments,
-} from "../../../../store/reducers/apartments";
-import { setEvents } from "../../../../store/reducers/events";
-import { useAlert } from "../../../AlertModalProvider";
-import { useMobileView } from "../../../checkForMobileView";
+} from 'store/firebaseActions/apartmentActions';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { selectApartment, setApartments } from 'store/reducers/apartments';
+import { setEvents } from 'store/reducers/events';
 
 const Apartments: FC = () => {
   const { showAlert } = useAlert();
-  const { t } = useTranslation("Apartments");
+  const { t } = useTranslation('Apartments');
   const dispatch = useAppDispatch();
   const mobileView = useMobileView();
   const navigate = useRouter();
@@ -37,14 +34,14 @@ const Apartments: FC = () => {
     iban: string;
     owner: string;
   }>({
-    id: "",
-    name: "",
-    address: "",
-    email: "",
-    image: "",
-    pid: "",
-    iban: "",
-    owner: "",
+    id: '',
+    name: '',
+    address: '',
+    email: '',
+    image: '',
+    pid: '',
+    iban: '',
+    owner: '',
   });
   const emailRegex =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
@@ -60,70 +57,70 @@ const Apartments: FC = () => {
   return (
     <>
       <div>
-        <div className="flex justify-between">
-          <div className="font-bold text-3xl">{t("apartments")}</div>
+        <div className='flex justify-between'>
+          <div className='text-3xl font-bold'>{t('apartments')}</div>
         </div>
         <div
           className={`flex ${
-            mobileView ? "flex-col" : "gap-10"
+            mobileView ? 'flex-col' : 'gap-10'
           } drop-shadow-sm`}
         >
           <div
-            className={`w-full ${mobileView ? "100%" : "max-w-sm"}
-            mt-6 mb-8`}
+            className={`w-full ${mobileView ? '100%' : 'max-w-sm'}
+            mb-8 mt-6`}
           >
-            <form className="rounded-md relative">
+            <form className='relative rounded-md'>
               {newApartment.id && (
                 <div
-                  className={`absolute right-0 -top-4 w-8 h-8 font-black text-3xl rounded-full cursor-pointer text-center bg-transparent`}
+                  className={`absolute -top-4 right-0 h-8 w-8 cursor-pointer rounded-full bg-transparent text-center text-3xl font-black`}
                   style={{
                     backgroundImage: `url(/Styles/Assets/Images/xCircle.svg)`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    backgroundSize: 'contain',
                   }}
                   onClick={() => {
                     setNewApartment({
-                      id: "",
-                      name: "",
-                      address: "",
-                      email: "",
-                      image: "",
-                      pid: "",
-                      iban: "",
-                      owner: "",
+                      id: '',
+                      name: '',
+                      address: '',
+                      email: '',
+                      image: '',
+                      pid: '',
+                      iban: '',
+                      owner: '',
                     });
                   }}
                 />
               )}
-              <div className="mb-4">
+              <div className='mb-4'>
                 <label
-                  className="block text-gray-700 text-sm font-bold"
-                  htmlFor="apartmentName"
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='apartmentName'
                 >
-                  {t("apartment_name")}
+                  {t('apartment_name')}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  id="apartmentName"
-                  type="text"
+                  className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                  id='apartmentName'
+                  type='text'
                   value={newApartment.name}
                   onChange={e => {
                     setNewApartment({ ...newApartment, name: e.target.value });
                   }}
                 />
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 <label
-                  className="block text-gray-700 text-sm font-bold"
-                  htmlFor="apartmentAddress"
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='apartmentAddress'
                 >
-                  {t("apartment_address")}
+                  {t('apartment_address')}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  id="apartmentAddress"
-                  type="text"
+                  className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                  id='apartmentAddress'
+                  type='text'
                   value={newApartment.address}
                   onChange={e => {
                     setNewApartment({
@@ -133,17 +130,17 @@ const Apartments: FC = () => {
                   }}
                 />
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 <label
-                  className="block text-gray-700 text-sm font-bold"
-                  htmlFor="apartmentOwner"
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='apartmentOwner'
                 >
-                  {t("apartment_owner")}
+                  {t('apartment_owner')}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  id="apartmentOwner"
-                  type="text"
+                  className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                  id='apartmentOwner'
+                  type='text'
                   value={newApartment.owner}
                   onChange={e => {
                     setNewApartment({
@@ -153,17 +150,17 @@ const Apartments: FC = () => {
                   }}
                 />
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 <label
-                  className="block text-gray-700 text-sm font-bold"
-                  htmlFor="apartmentPID"
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='apartmentPID'
                 >
-                  {t("apartment_pid")}
+                  {t('apartment_pid')}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  id="apartmentPID"
-                  type="text"
+                  className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                  id='apartmentPID'
+                  type='text'
                   value={newApartment.pid}
                   onChange={e => {
                     setNewApartment({
@@ -173,17 +170,17 @@ const Apartments: FC = () => {
                   }}
                 />
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 <label
-                  className="block text-gray-700 text-sm font-bold"
-                  htmlFor="apartmentIBAN"
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='apartmentIBAN'
                 >
-                  {t("apartment_IBAN")}
+                  {t('apartment_IBAN')}
                 </label>
                 <input
-                  className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                  id="apartmentIBAN"
-                  type="text"
+                  className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                  id='apartmentIBAN'
+                  type='text'
                   value={newApartment.iban}
                   onChange={e => {
                     setNewApartment({
@@ -193,23 +190,23 @@ const Apartments: FC = () => {
                   }}
                 />
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 <label
-                  className="block text-gray-700 text-sm font-bold"
-                  htmlFor="appartmentEmail"
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='appartmentEmail'
                 >
-                  {t("apartment_email")}
+                  {t('apartment_email')}
                 </label>
                 <input
-                  className={`appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500 mb-3  ${
+                  className={`mb-3 w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500  ${
                     newApartment.email
                       ? emailRegex.test(newApartment.email)
-                        ? "!border-green-500"
-                        : "!border-red-500"
-                      : ""
+                        ? '!border-green-500'
+                        : '!border-red-500'
+                      : ''
                   }`}
-                  id="appartmentEmail"
-                  type="text"
+                  id='appartmentEmail'
+                  type='text'
                   value={newApartment.email}
                   onChange={e => {
                     setNewApartment({
@@ -219,15 +216,15 @@ const Apartments: FC = () => {
                   }}
                 />
               </div>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <button
                   disabled={
                     !newApartment.address ||
                     !newApartment.name ||
                     !emailRegex.test(newApartment.email)
                   }
-                  className="bg-blue-700 hover:bg-blue-500 text-white shadow-md font-bold py-2 px-4 rounded disabled:bg-gray-400"
-                  type="button"
+                  className='rounded bg-blue-700 px-4 py-2 font-bold text-white shadow-md hover:bg-blue-500 disabled:bg-gray-400'
+                  type='button'
                   onClick={() => {
                     if (
                       newApartment.address &&
@@ -239,14 +236,14 @@ const Apartments: FC = () => {
                           editApartment(newApartment, setProgress, setError)
                         );
                         setNewApartment({
-                          id: "",
-                          name: "",
-                          address: "",
-                          email: "",
-                          image: "",
-                          pid: "",
-                          iban: "",
-                          owner: "",
+                          id: '',
+                          name: '',
+                          address: '',
+                          email: '',
+                          image: '',
+                          pid: '',
+                          iban: '',
+                          owner: '',
                         });
                         return;
                       }
@@ -256,80 +253,80 @@ const Apartments: FC = () => {
                             ...newApartment,
                             id: crypto
                               .getRandomValues(new Uint8Array(16))
-                              .join(""),
+                              .join(''),
                           },
                           setProgress,
                           setError
                         )
                       );
                       setNewApartment({
-                        id: "",
-                        name: "",
-                        address: "",
-                        email: "",
-                        image: "",
-                        pid: "",
-                        iban: "",
-                        owner: "",
+                        id: '',
+                        name: '',
+                        address: '',
+                        email: '',
+                        image: '',
+                        pid: '',
+                        iban: '',
+                        owner: '',
                       });
                     }
                   }}
                 >
                   {newApartment && newApartment.id
-                    ? t("edit_apartment")
-                    : t("add_apartment")}
+                    ? t('edit_apartment')
+                    : t('add_apartment')}
                 </button>
               </div>
             </form>
           </div>
-          <div className={`w-full max-w-md mt-6 mb-8`}>
+          <div className={`mb-8 mt-6 w-full max-w-md`}>
             {progress ? (
-              <div className="flex justify-center bg-gray-200 rounded-md shadow-md w-full">
+              <div className='flex w-full justify-center rounded-md bg-gray-200 shadow-md'>
                 <div
-                  className="bg-blue-500 rounded-md shadow-md"
+                  className='rounded-md bg-blue-500 shadow-md'
                   style={{
                     width: `${progress}%`,
-                    height: "2px",
+                    height: '2px',
                   }}
                 />
               </div>
             ) : (
-              <div className="flex flex-col h-full justify-between gap-4">
-                {newApartment.image && newApartment.image !== "" && (
+              <div className='flex h-full flex-col justify-between gap-4'>
+                {newApartment.image && newApartment.image !== '' && (
                   <div
-                    className={`flex justify-center relative ${
-                      mobileView ? "h-[17rem]" : "h-full"
+                    className={`relative flex justify-center ${
+                      mobileView ? 'h-[17rem]' : 'h-full'
                     }`}
                   >
                     <Image
                       src={
-                        typeof newApartment.image === "string"
+                        typeof newApartment.image === 'string'
                           ? newApartment.image
                           : URL.createObjectURL(newApartment.image)
                       }
-                      objectFit="contain"
-                      alt="apartment Logo"
-                      layout="fill"
-                      placeholder="empty"
+                      objectFit='contain'
+                      alt='apartment Logo'
+                      layout='fill'
+                      placeholder='empty'
                     />
                   </div>
                 )}
-                <div className="flex justify-between">
+                <div className='flex justify-between'>
                   <div>
                     {error && (
-                      <div className="text-red-500 font-bold">{error}</div>
+                      <div className='font-bold text-red-500'>{error}</div>
                     )}
                     <label
-                      className="block cursor-pointer h-10 py-2 px-4 text-gray-700 font-bold w-fit rounded-md hover:bg-blue-500 hover:drop-shadow-md hover:text-white"
-                      htmlFor="apartmentImage"
+                      className='block h-10 w-fit cursor-pointer rounded-md px-4 py-2 font-bold text-gray-700 hover:bg-blue-500 hover:text-white hover:drop-shadow-md'
+                      htmlFor='apartmentImage'
                     >
-                      {t("apartment_image")}
+                      {t('apartment_image')}
                     </label>
                     <input
-                      className="hidden"
-                      id="apartmentImage"
-                      type="file"
-                      accept="image/png, image/jpeg, image/jpg"
+                      className='hidden'
+                      id='apartmentImage'
+                      type='file'
+                      accept='image/png, image/jpeg, image/jpg'
                       onClick={e => {
                         setError(null);
                       }}
@@ -347,25 +344,25 @@ const Apartments: FC = () => {
                               image: e.target.files[0],
                             });
                           } else {
-                            setError(t("image_size_error", { size: 2 }));
+                            setError(t('image_size_error', { size: 2 }));
                           }
                         }
                       }}
                     />
                   </div>
-                  {newApartment.image && newApartment.image !== "" && (
+                  {newApartment.image && newApartment.image !== '' && (
                     <div>
                       <button
-                        className="bg-blue-700 hover:bg-blue-500 text-white shadow-md font-bold py-2 px-4 rounded"
-                        type="button"
+                        className='rounded bg-blue-700 px-4 py-2 font-bold text-white shadow-md hover:bg-blue-500'
+                        type='button'
                         onClick={() => {
                           setNewApartment({
                             ...newApartment,
-                            image: "",
+                            image: '',
                           });
                         }}
                       >
-                        {t("clear")}
+                        {t('clear')}
                       </button>
                     </div>
                   )}
@@ -376,25 +373,25 @@ const Apartments: FC = () => {
         </div>
       </div>
       <div
-        className={`relative overflow-x-auto drop-shadow-md rounded-lg ${
-          mobileView && "full-bleed"
+        className={`relative overflow-x-auto rounded-lg drop-shadow-md ${
+          mobileView && 'full-bleed'
         }`}
       >
-        <table className="w-full text-left text-gray-500 dark:text-gray-400 text-base">
-          <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+        <table className='w-full text-left text-base text-gray-500 dark:text-gray-400'>
+          <thead className='text-xs uppercase text-gray-700 dark:text-gray-400'>
             <tr>
-              <th scope="col" className="px-6 py-3 text-md">
-                {t("name")}
+              <th scope='col' className='text-md px-6 py-3'>
+                {t('name')}
               </th>
-              <th scope="col" className="px-6 py-3 text-md">
-                {t("address")}
+              <th scope='col' className='text-md px-6 py-3'>
+                {t('address')}
               </th>
-              <th scope="col" className="px-6 py-3 text-md">
-                {t("email")}
+              <th scope='col' className='text-md px-6 py-3'>
+                {t('email')}
               </th>
-              <th scope="col" className="px-6 py-3">
-                <span className="sr-only">{t("edit")}</span>
-                <span className="sr-only">{t("remove")}</span>
+              <th scope='col' className='px-6 py-3'>
+                <span className='sr-only'>{t('edit')}</span>
+                <span className='sr-only'>{t('remove')}</span>
               </th>
             </tr>
           </thead>
@@ -403,7 +400,7 @@ const Apartments: FC = () => {
               apartments?.apartments &&
               Object.keys(apartments.apartments).map(apartment => (
                 <tr
-                  className="bg-white border-b cursor-pointer hover:bg-blue-50 hover:transition-colors duration-150 first:rounded-t-lg"
+                  className='cursor-pointer border-b bg-white duration-150 first:rounded-t-lg hover:bg-blue-50 hover:transition-colors'
                   key={apartments.apartments[apartment].id}
                   onClick={() => {
                     if (
@@ -418,26 +415,26 @@ const Apartments: FC = () => {
                     );
                   }}
                 >
-                  <td className="font-bold px-6 py-4 text-gray-900 dark:text-white whitespace-nowrap">
+                  <td className='whitespace-nowrap px-6 py-4 font-bold text-gray-900 dark:text-white'>
                     {apartments.apartments[apartment].name}
                   </td>
-                  <td className="font-bold px-6 py-4">
+                  <td className='px-6 py-4 font-bold'>
                     {apartments.apartments[apartment].address}
                   </td>
-                  <td className="font-bold px-6 py-4">
+                  <td className='px-6 py-4 font-bold'>
                     {apartments.apartments[apartment].email}
                   </td>
                   <td
                     className={`px-6 py-4 text-right ${
-                      mobileView ? "flex" : ""
+                      mobileView ? 'flex' : ''
                     }`}
                   >
                     <button
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      className='font-medium text-blue-600 hover:underline dark:text-blue-500'
                       onClick={e => {
                         e.stopPropagation();
                         showAlert(
-                          t("remove_apartment"),
+                          t('remove_apartment'),
                           false,
                           () => () =>
                             dispatch(
@@ -448,27 +445,27 @@ const Apartments: FC = () => {
                         );
                       }}
                     >
-                      {t("remove")}
+                      {t('remove')}
                     </button>
                     <button
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4"
+                      className='ml-4 font-medium text-blue-600 hover:underline dark:text-blue-500'
                       onClick={e => {
                         e.stopPropagation();
                         setNewApartment({
-                          pid: apartments.apartments[apartment]?.pid || "",
-                          iban: apartments.apartments[apartment]?.iban || "",
-                          owner: apartments.apartments[apartment]?.owner || "",
+                          pid: apartments.apartments[apartment]?.pid || '',
+                          iban: apartments.apartments[apartment]?.iban || '',
+                          owner: apartments.apartments[apartment]?.owner || '',
                           ...apartments.apartments[apartment],
                         });
                       }}
                     >
-                      {t("edit")}
+                      {t('edit')}
                     </button>
                     {!mobileView && (
                       <Link
                         key={apartments.apartments[apartment].id}
                         href={`/apartments/${apartments.apartments[apartment].id}`}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4"
+                        className='ml-4 font-medium text-blue-600 hover:underline dark:text-blue-500'
                         onClick={() => {
                           if (
                             apartments.selectedApartment?.id !==
@@ -481,7 +478,7 @@ const Apartments: FC = () => {
                           );
                         }}
                       >
-                        {t("select")}
+                        {t('select')}
                       </Link>
                     )}
                   </td>
