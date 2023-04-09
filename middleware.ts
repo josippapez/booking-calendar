@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
   if (request.cookies.has('accessToken')) {
     if (
       !request.nextUrl.pathname.match(
-        '//apartments/[0-9a-zA-Z-]+|/apartments|/invoice|/guests|/public/[0-9a-zA-Z-]+/x'
+        /^\/(?:apartments(?:\/[\w-]+)?|invoice|guests|public\/[\w-]+)$/
       )
     ) {
       return NextResponse.redirect(new URL(Routes.APARTMENTS, request.url));
@@ -34,6 +34,6 @@ export const config = {
      * - assets (static asset files in public directory)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|assets|logo.png|favicon.ico|Styles/Assets).*)',
+    '/((?!api|_next/static|_next/image|assets|logo.png|favicon.ico|Styles/Assets|sw.js).*)',
   ],
 };
