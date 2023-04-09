@@ -115,7 +115,7 @@ const Invoice = (props: Props) => {
           />
         </div>
         {selectedApartment && (
-          <div className="flex justify-around mt-5 flex-col xl:flex-row gap-5">
+          <div className="flex justify-around mt-5 flex-col 2xl:flex-row gap-5">
             <InvoiceInputs
               invoiceData={transactionInvoiceData}
               setInvoiceData={setTransactionInvoiceData}

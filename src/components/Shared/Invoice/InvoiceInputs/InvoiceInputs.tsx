@@ -1,11 +1,10 @@
-import { DateInput } from "@/components/Shared/Inputs/DateInput";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import ImageInput from "../../Inputs/ImageInput";
-import ServiceInput from "../../Inputs/ServiceInput";
-import { TransactionInvoiceData } from "../Invoice";
-import style from "./InvoiceInputs.module.scss";
-import { useWindowSize } from "@/Hooks";
+import { DateInput } from '@/components/Shared/Inputs/DateInput';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ImageInput from '../../Inputs/ImageInput';
+import ServiceInput from '../../Inputs/ServiceInput';
+import { TransactionInvoiceData } from '../Invoice';
+import style from './InvoiceInputs.module.scss';
 
 type Props = {
   invoiceData: TransactionInvoiceData;
@@ -13,18 +12,15 @@ type Props = {
 };
 
 const InvoiceInputs = (props: Props) => {
-  const windowSize = useWindowSize();
   const { invoiceData, setInvoiceData } = props;
 
-  const { t } = useTranslation("InvoiceInputs");
+  const { t } = useTranslation('InvoiceInputs');
 
   const [displayInputSection, setDisplayInputSection] =
-    useState("apartmentData");
+    useState('apartmentData');
 
   return (
-    <div
-      className={`flex gap-3 flex-col w-full xl:w-1/2`}
-    >
+    <div className={`flex w-full flex-col gap-3 2xl:w-1/2`}>
       {Object.keys(invoiceData).map(key => {
         return (
           <div
@@ -34,7 +30,7 @@ const InvoiceInputs = (props: Props) => {
             }`}
           >
             <h1
-              className="text-2xl font-bold hover:cursor-pointer bg-zinc-200 text-gray-800 px-3 py-2 rounded-md hover:bg-zinc-100"
+              className='rounded-md bg-zinc-200 px-3 py-2 text-2xl font-bold text-gray-800 hover:cursor-pointer hover:bg-zinc-100'
               onClick={() => {
                 setDisplayInputSection(key);
               }}
@@ -47,10 +43,10 @@ const InvoiceInputs = (props: Props) => {
                 if (el) {
                   if (displayInputSection === key) {
                     setTimeout(() => {
-                      el.style.overflowY = "auto";
+                      el.style.overflowY = 'auto';
                     }, 250);
                   } else {
-                    el.style.overflowY = "hidden";
+                    el.style.overflowY = 'hidden';
                   }
                 }
               }}
@@ -58,12 +54,12 @@ const InvoiceInputs = (props: Props) => {
               {Object.entries(
                 invoiceData[key as keyof TransactionInvoiceData]
               ).map(([innerKey, value]) => {
-                if (innerKey !== "image") {
-                  if (innerKey !== "services") {
-                    if (innerKey.includes("date")) {
+                if (innerKey !== 'image') {
+                  if (innerKey !== 'services') {
+                    if (innerKey.includes('date')) {
                       return (
-                        <div key={innerKey} className="flex flex-col">
-                          <span className="font-bold">{t(`${innerKey}`)}</span>
+                        <div key={innerKey} className='flex flex-col'>
+                          <span className='font-bold'>{t(`${innerKey}`)}</span>
                           <DateInput
                             value={value as string}
                             resetData={() => {
@@ -73,7 +69,7 @@ const InvoiceInputs = (props: Props) => {
                                   ...invoiceData[
                                     key as keyof typeof invoiceData
                                   ],
-                                  [innerKey]: "",
+                                  [innerKey]: '',
                                 },
                               });
                             }}
@@ -93,18 +89,18 @@ const InvoiceInputs = (props: Props) => {
                       );
                     } else
                       return (
-                        <div key={innerKey} className="flex flex-col">
-                          <span className="font-bold">{t(innerKey)}</span>
-                          {innerKey === "VAT" ? (
+                        <div key={innerKey} className='flex flex-col'>
+                          <span className='font-bold'>{t(innerKey)}</span>
+                          {innerKey === 'VAT' ? (
                             <input
-                              className="h-6 focus:border-blue-500"
-                              type={"checkbox"}
+                              className='h-6 focus:border-blue-500'
+                              type={'checkbox'}
                               checked={value ? Boolean(value) : false}
                               onChange={e => {
                                 setInvoiceData({
                                   ...invoiceData,
                                   invoiceData: {
-                                    ...invoiceData["invoiceData"],
+                                    ...invoiceData['invoiceData'],
                                     VAT: e.target.checked,
                                   },
                                 });
@@ -112,9 +108,9 @@ const InvoiceInputs = (props: Props) => {
                             />
                           ) : (
                             <input
-                              className="appearance-none border rounded-md w-full text-gray-700 leading-tight focus:border-blue-500"
-                              type={"text"}
-                              value={value ? value.toString() : ""}
+                              className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                              type={'text'}
+                              value={value ? value.toString() : ''}
                               onChange={e => {
                                 setInvoiceData({
                                   ...invoiceData,
@@ -133,13 +129,13 @@ const InvoiceInputs = (props: Props) => {
                   } else {
                     return (
                       <div key={innerKey}>
-                        <span className="font-bold">{t(innerKey)}</span>
-                        <div className="flex flex-col">
+                        <span className='font-bold'>{t(innerKey)}</span>
+                        <div className='flex flex-col'>
                           {Object.entries(
-                            invoiceData["invoiceData"]["services"]
+                            invoiceData['invoiceData']['services']
                           ).map(([serviceKey, serviceValue]) => {
                             let newArray = [
-                              ...invoiceData["invoiceData"]["services"],
+                              ...invoiceData['invoiceData']['services'],
                             ];
 
                             const handleServiceName = (value: string) => {
@@ -161,7 +157,7 @@ const InvoiceInputs = (props: Props) => {
 
                             const handleServiceChange = (
                               value: string,
-                              inputKey: "price" | "amount"
+                              inputKey: 'price' | 'amount'
                             ) => {
                               newArray[Number(serviceKey)][inputKey] =
                                 Number(value).toFixed(2);
@@ -185,10 +181,10 @@ const InvoiceInputs = (props: Props) => {
                                 key={serviceKey}
                                 inputKey={serviceKey}
                                 setServiceAmount={value =>
-                                  handleServiceChange(value, "amount")
+                                  handleServiceChange(value, 'amount')
                                 }
                                 setServicePrice={value =>
-                                  handleServiceChange(value, "price")
+                                  handleServiceChange(value, 'price')
                                 }
                                 setServiceName={value =>
                                   handleServiceName(value)
@@ -211,26 +207,26 @@ const InvoiceInputs = (props: Props) => {
                           })}
                         </div>
                         <button
-                          className="appearance-none p-3 border rounded-md bg-white hover:bg-gray-100 text-gray-700 leading-tight"
+                          className='appearance-none rounded-md border bg-white p-3 leading-tight text-gray-700 hover:bg-gray-100'
                           onClick={() => {
                             setInvoiceData({
                               ...invoiceData,
                               [key]: {
                                 ...invoiceData[key as keyof typeof invoiceData],
                                 services: [
-                                  ...invoiceData["invoiceData"]["services"],
+                                  ...invoiceData['invoiceData']['services'],
                                   {
-                                    name: "",
-                                    amount: "",
-                                    price: "",
-                                    total: "",
+                                    name: '',
+                                    amount: '',
+                                    price: '',
+                                    total: '',
                                   },
                                 ],
                               },
                             });
                           }}
                         >
-                          {t("add_new_service")}
+                          {t('add_new_service')}
                         </button>
                       </div>
                     );
@@ -255,7 +251,7 @@ const InvoiceInputs = (props: Props) => {
                           ...invoiceData,
                           apartmentData: {
                             ...invoiceData.apartmentData,
-                            image: "",
+                            image: '',
                           },
                         });
                       }}
