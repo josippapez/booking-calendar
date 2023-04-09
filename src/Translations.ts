@@ -1,4 +1,4 @@
-import FilesContext from "./FilesContext";
+import FilesContext from '../FilesContext';
 
 const localeRegex = /.*\/i18n\/(.*)\.([A-Za-z-]+)\.json$/;
 const translations: {

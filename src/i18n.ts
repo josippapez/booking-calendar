@@ -1,20 +1,19 @@
-import i18next from "i18next";
-import intervalPlural from "i18next-intervalplural-postprocessor";
-import { initReactI18next } from "react-i18next";
-import translations from "./Translations";
+import i18next, { use } from 'i18next';
+import intervalPlural from 'i18next-intervalplural-postprocessor';
+import { initReactI18next } from 'react-i18next';
+import translations from './Translations';
 
 if (!i18next.isInitialized) {
-  i18next
-    .use(intervalPlural)
+  use(intervalPlural)
     .use(initReactI18next)
     .init({
       debug: false,
-      fallbackLng: "hr",
+      fallbackLng: 'hr',
       interpolation: {
         escapeValue: false,
       },
       resources: translations,
-      defaultNS: "translation",
+      defaultNS: 'translation',
     });
 }
 

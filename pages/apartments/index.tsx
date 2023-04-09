@@ -1,18 +1,16 @@
-import { PageLoader } from '@/components/Shared/Loader/PageLoader';
+import { PageLoader } from '@modules/Shared/Loader/PageLoader';
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
 const DynamicApartmentsCalendarPage = dynamic(
-  () => import('../../src/components/Calendar/Apartments/Apartments'),
+  () => import('@modules/Apartments/Apartments').then(mod => mod.Apartments),
   {
     suspense: true,
   }
 );
 
-type Props = {};
-
-const Apartments: NextPage = (props: Props) => {
+const Apartments: NextPage = () => {
   return (
     <Suspense fallback={<PageLoader isLoading />}>
       <title>Apartments</title>

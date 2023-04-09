@@ -1,18 +1,16 @@
-import { PageLoader } from '@/components/Shared/Loader/PageLoader';
+import { PageLoader } from '@modules/Shared/Loader/PageLoader';
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
 const DynamicGuestsPage = dynamic(
-  () => import('../../src/components/Guests/Guests'),
+  () => import('@modules/Guests/Guests').then(mod => mod.Guests),
   {
     suspense: true,
   }
 );
 
-type Props = {};
-
-const Guests: NextPage = (props: Props) => {
+const Guests: NextPage = () => {
   return (
     <Suspense fallback={<PageLoader isLoading />}>
       <title>Guests</title>

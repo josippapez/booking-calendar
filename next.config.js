@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 
-const CopyPlugin = require("copy-webpack-plugin");
-const path = require("path");
+const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
-
+  enabled:
+    process.env.ANALYZE === 'true' && process.env.NODE_ENV === 'production',
+});
 
 // const pdfWorkerPath = require.resolve(`pdfjs-dist/build/pdf.worker.min.js`);
 
@@ -24,9 +24,9 @@ function cssLoaderOptions(modules) {
   const { getLocalIdent, ...others } = modules; // Need to delete getLocalIdent else localIdentName doesn't work
   return {
     ...others,
-    localIdentName: "[hash:base64:6]",
-    exportLocalsConvention: "camelCaseOnly",
-    mode: "local",
+    localIdentName: '[hash:base64:6]',
+    exportLocalsConvention: 'camelCaseOnly',
+    mode: 'local',
   };
 }
 
@@ -34,11 +34,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["firebasestorage.googleapis.com", "localhost"],
+    domains: ['firebasestorage.googleapis.com', 'localhost'],
   },
   webpack: config => {
     const oneOf = config.module.rules.find(
-      rule => typeof rule.oneOf === "object"
+      rule => typeof rule.oneOf === 'object'
     );
     if (oneOf) {
       // Find the module which targets *.scss|*.sass files
@@ -49,7 +49,7 @@ const nextConfig = {
       if (moduleSassRule) {
         // Get the config object for css-loader plugin
         const cssLoader = moduleSassRule.use.find(({ loader }) =>
-          loader.includes("css-loader")
+          loader.includes('css-loader')
         );
         if (cssLoader) {
           cssLoader.options = {
@@ -63,22 +63,22 @@ const nextConfig = {
       test: /pdf\.worker\.(min\.)?js/,
       use: [
         {
-          loader: "file-loader",
+          loader: 'file-loader',
           options: {
-            name: "[contenthash].[ext]",
-            publicPath: "_next/static/worker",
-            outputPath: "static/worker",
+            name: '[contenthash].[ext]',
+            publicPath: '_next/static/worker',
+            outputPath: 'static/worker',
           },
         },
       ],
     });
     config.module.rules.unshift({
       test: /\.(woff|woff2|eot|ttf|otf)$/i,
-      type: "asset/resource",
+      type: 'asset/resource',
     });
 
     const fileLoaderRule = config.module.rules.find(rule =>
-      rule.test?.test?.(".svg")
+      rule.test?.test?.('.svg')
     );
 
     config.module.rules.push(
@@ -92,7 +92,7 @@ const nextConfig = {
         test: /\.svg$/i,
         issuer: /\.[jt]sx?$/,
         resourceQuery: { not: /url/ }, // exclude if *.svg?url
-        use: ["@svgr/webpack"],
+        use: ['@svgr/webpack'],
       }
     );
     config.plugins.push(
@@ -107,10 +107,10 @@ const nextConfig = {
           // },
           {
             from: path.join(
-              path.dirname(require.resolve("pdfjs-dist/package.json")),
-              "cmaps"
+              path.dirname(require.resolve('pdfjs-dist/package.json')),
+              'cmaps'
             ),
-            to: "cmaps/",
+            to: 'cmaps/',
           },
         ],
       })

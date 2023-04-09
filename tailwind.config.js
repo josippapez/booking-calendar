@@ -1,11 +1,12 @@
 module.exports = {
-  darkMode: "class",
+  darkMode: 'class',
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './src/**/*.{js,ts,jsx,tsx}',
+    './modules/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
