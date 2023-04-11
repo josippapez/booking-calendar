@@ -39,7 +39,7 @@ export const AddNewGuest: FC<Props> = ({
   selectedGuestId,
 }) => {
   const { showAlert } = useAlert();
-  const { t, i18n } = useTranslation('AddNewGuest');
+  const { t } = useTranslation('AddNewGuest');
   const dispatch = useAppDispatch();
   const [guestInfo, setGuestInfo] = useState<Guest>(
     selectedGuest || {
@@ -91,8 +91,6 @@ export const AddNewGuest: FC<Props> = ({
     'travelIdNumber',
     'note',
   ];
-
-  console.log(guestInfo.dateOfArrival, guestInfo.dateOfDeparture);
 
   return (
     <Modal
