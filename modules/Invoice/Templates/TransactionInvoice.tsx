@@ -1,11 +1,11 @@
-import { TransactionInvoiceData } from '@modules/Shared/Invoice/Invoice';
+import { TransactionInvoiceData } from '@modules/Invoice/Invoice';
 import {
   Document,
   Image,
   Page,
   Text,
   View,
-} from '@modules/Shared/Invoice/Templates/custom/Components';
+} from '@modules/Invoice/Templates/custom/Components';
 import InterBold from '@public/Styles/Assets/Fonts/Inter-Bold.ttf';
 import InterLight from '@public/Styles/Assets/Fonts/Inter-Light.ttf';
 import InterRegular from '@public/Styles/Assets/Fonts/Inter-Regular.ttf';
@@ -157,12 +157,11 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
               {translate('date_of_invoice')}:{' '}
               {invoiceData.date
                 ? DateTime.fromISO(invoiceData.date)
-                    .setLocale(locale)
-                    .toLocaleString({
-                      month: 'long',
-                      day: '2-digit',
-                      year: 'numeric',
-                    })
+                  .toLocaleString({
+                    month: 'long',
+                    day: '2-digit',
+                    year: 'numeric',
+                  })
                 : ''}
             </Text>
           </View>
@@ -258,12 +257,11 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
                 {translate('transaction_invoice')}{' '}
                 {invoiceData.dateOfFiscalization !== ''
                   ? DateTime.fromISO(invoiceData.dateOfFiscalization)
-                      .setLocale(locale)
-                      .toLocaleString({
-                        month: 'long',
-                        day: '2-digit',
-                        year: 'numeric',
-                      })
+                    .toLocaleString({
+                      month: 'long',
+                      day: '2-digit',
+                      year: 'numeric',
+                    })
                   : ''}
               </Text>
             </View>

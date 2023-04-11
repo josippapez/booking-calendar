@@ -13,6 +13,27 @@ const firebase = FirebaseService.getInstance();
 
 export const FirebaseCollectionActions = (collectionName: string) => {
   return {
+    addById: async (
+      data: any,
+      id: string,
+      onSuccess?: () => void,
+      onError?: () => void
+    ) => {
+      try {
+        if (!id) {
+          throw new Error('Collection path parameter missing');
+        }
+        await setDoc(doc(firebase.getFirestore(), collectionName, id), data);
+        if (onSuccess) {
+          onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        if (onError) {
+          onError();
+        }
+      }
+    },
     addByUserId: (data: any, onSuccess?: () => void, onError?: () => void) => {
       return async (dispatch: AppDispatch, getState: AppState) => {
         try {

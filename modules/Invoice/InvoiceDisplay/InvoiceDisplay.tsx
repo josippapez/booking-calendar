@@ -1,15 +1,15 @@
-import { useWindowSize } from '@modules/Shared/Hooks';
+import { useAppSelector } from '@/store/hooks';
 import {
   InvoiceTemplate,
+  PDFDownload,
   TransactionInvoiceData,
   usePDFComponentsAreHTML,
-} from '@modules/Shared/Invoice';
-import { PDFDownload } from '@modules/Shared/PDFDownload/PDFDownload';
+} from '@modules/Invoice';
+import { useWindowSize } from '@modules/Shared/Hooks';
 import { useCallback, useEffect, useState } from 'react';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { useAppSelector } from '@/store/hooks';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -89,7 +89,6 @@ export const InvoiceDisplay = (props: Props) => {
           />
         </div>
       </div>
-
       <PDFDownload
         PdfInstance={TemplateNotHtml}
         show={displayDownloadModal}

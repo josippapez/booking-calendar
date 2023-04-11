@@ -1,4 +1,4 @@
-import { TransactionInvoice } from '@modules/Shared/Invoice/Templates/TransactionInvoice';
+import { TransactionInvoice } from '@modules/Invoice/Templates/TransactionInvoice';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TransactionInvoiceData } from '../Invoice';

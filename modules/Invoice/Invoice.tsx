@@ -1,11 +1,9 @@
-import { Dropdown } from '@modules/Shared/Dropdown';
-import { InvoiceDisplay, InvoiceInputs } from '@modules/Shared/Invoice';
-import { FC, useEffect, useState } from 'react';
-import { getApartmentsForuser } from '@/store/firebaseActions/apartmentActions';
+import { getApartmentsForUser } from '@/store/firebaseActions/apartmentActions';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectApartment } from '@/store/reducers/apartments';
-
-type Props = {};
+import { Dropdown } from '@modules/Shared/Dropdown';
+import { InvoiceDisplay, InvoiceInputs } from '@modules/Invoice';
+import { FC, useEffect, useState } from 'react';
 
 export type TransactionInvoiceData = {
   apartmentData: {
@@ -85,7 +83,7 @@ export const Invoice: FC = () => {
 
   useEffect(() => {
     if (!apartments) {
-      dispatch(getApartmentsForuser());
+      dispatch(getApartmentsForUser());
     }
   }, []);
 

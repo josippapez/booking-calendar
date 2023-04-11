@@ -1,12 +1,13 @@
+import { logout } from '@/store/firebaseActions/authActions';
 import { useCloseOnClickOutside, useDarkMode } from '@modules/Shared/Hooks';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
+import { Routes } from 'consts';
+import { Settings } from 'luxon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { logout } from '@/store/firebaseActions/authActions';
 import style from './Navbar.module.scss';
-import { Routes } from 'consts';
 
 type Props = { userAuthenticated: boolean };
 
@@ -62,7 +63,7 @@ export function Navbar(props: Props) {
                   <li>
                     <Link
                       className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
-                      href='/apartments'
+                      href={Routes.APARTMENTS}
                     >
                       {t('apartments_link_name')}
                     </Link>
@@ -70,7 +71,7 @@ export function Navbar(props: Props) {
                   <li>
                     <Link
                       className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
-                      href='/invoice'
+                      href={Routes.INVOICE}
                     >
                       {t('invoice_link_name')}
                     </Link>
@@ -78,7 +79,7 @@ export function Navbar(props: Props) {
                   <li>
                     <Link
                       className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
-                      href='/guests'
+                      href={Routes.GUESTS}
                     >
                       {t('guests_link_name')}
                     </Link>
@@ -191,6 +192,8 @@ export function Navbar(props: Props) {
                   }`}
                   onClick={() => {
                     i18n.changeLanguage(language.value);
+                    Settings.defaultLocale = language.value;
+                    localStorage.setItem('i18nextLng', language.value);
                   }}
                 >
                   {t(language.title, { ns: 'Languages' })}

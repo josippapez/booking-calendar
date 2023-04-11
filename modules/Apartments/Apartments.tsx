@@ -9,7 +9,7 @@ import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   editApartment,
-  getApartmentsForuser,
+  getApartmentsForUser,
   removeApartment,
   saveApartment,
 } from '@/store/firebaseActions/apartmentActions';
@@ -49,7 +49,7 @@ export const Apartments: FC = () => {
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
   useEffect(() => {
-    dispatch(getApartmentsForuser()).then(data => {
+    dispatch(getApartmentsForUser()).then(data => {
       if (data) {
         setApartments(data);
       }

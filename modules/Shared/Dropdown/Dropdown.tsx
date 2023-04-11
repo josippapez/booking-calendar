@@ -74,7 +74,8 @@ export function Dropdown(props: Props) {
         <Image
           src={Images.DownArrow}
           alt='arrow'
-          width={30}
+          width={40}
+          height={40}
           className={`absolute
             right-0 top-0
             bg-transparent`}

@@ -22,7 +22,6 @@ export const AlertModal = (props: Props) => {
       width={'20rem'}
       closeModal={closeModal}
       animation='fade'
-      zindex={10}
     >
       <div className={`${style['alert-modal']} rounded-md bg-white p-3`}>
         <div className={style['alert-modal__icon-alert']}></div>

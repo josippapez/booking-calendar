@@ -1,263 +1,248 @@
-import { FirebaseService } from '@/store/FirebaseService';
 import { Guests, setGuests } from '@/store/reducers/guests';
 import { AppDispatch, AppState } from '@/store/store';
 import { Guest } from '@modules/Guests';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { FirebaseCollectionActions } from '@modules/Shared';
+import { DocumentData } from 'firebase/firestore';
 
-const firebase = FirebaseService.getInstance();
+const { addById, getById } = FirebaseCollectionActions('guests');
 
 export const saveGuestForApartment = (guest: Guest) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
     const selectedApartment = getState().apartments.selectedApartment;
+    if (!selectedApartment || !selectedApartment.id) return;
 
-    if (selectedApartment && selectedApartment.id) {
-      const guestsForAppartment = getState().guests.guests;
-      const dateOfArrival = guest.dateOfArrival.split('-');
-      const dateOfDeparture = guest.dateOfDeparture.split('-');
-      const UID = crypto.randomUUID();
+    const guestsForApartment = getState().guests.guests;
+    const [arrivalYear, arrivalMonth] = guest.dateOfArrival.split('-');
+    const [departureYear, departureMonth] = guest.dateOfDeparture.split('-');
+    const UID = crypto.randomUUID();
 
-      let newGuestsForAppartment,
-        newGuestForAppartmentForNewYear = {};
-      if (dateOfArrival[0] === dateOfDeparture[0]) {
-        if (dateOfArrival[1] === dateOfDeparture[1]) {
-          newGuestsForAppartment = {
-            ...guestsForAppartment,
-            [dateOfArrival[1]]: {
-              ...guestsForAppartment[dateOfArrival[1]],
-              [UID]: guest,
-            },
-          };
-          await setDoc(
-            doc(
-              firebase.getFirestore(),
-              `guests/${selectedApartment.id}/data`,
-              dateOfArrival[0]
-            ),
-            newGuestsForAppartment
-          );
-        } else {
-          newGuestsForAppartment = {
-            ...guestsForAppartment,
-            [dateOfArrival[1]]: {
-              ...guestsForAppartment[dateOfArrival[1]],
-              [UID]: guest,
-            },
-            [dateOfDeparture[1]]: {
-              ...guestsForAppartment[dateOfDeparture[1]],
-              [UID]: guest,
-            },
-          };
-
-          await setDoc(
-            doc(
-              firebase.getFirestore(),
-              `guests/${selectedApartment.id}/data`,
-              dateOfArrival[0]
-            ),
-            newGuestsForAppartment
-          );
-        }
-      } else {
-        newGuestsForAppartment = {
-          ...guestsForAppartment,
-          [dateOfArrival[1]]: {
-            ...guestsForAppartment[dateOfArrival[1]],
+    let newGuestsForApartment,
+      newGuestForApartmentForNewYear = {};
+    if (arrivalYear === departureYear) {
+      if (arrivalMonth === departureMonth) {
+        newGuestsForApartment = {
+          ...guestsForApartment,
+          [arrivalMonth]: {
+            ...guestsForApartment[arrivalMonth],
             [UID]: guest,
           },
         };
-
-        await getDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfDeparture[0]
-          )
-        ).then(doc => {
-          if (doc.exists()) {
-            newGuestForAppartmentForNewYear = {
-              ...doc.data(),
-              [dateOfDeparture[1]]: {
-                ...doc.data()[dateOfDeparture[1]],
-                [UID]: guest,
-              },
-            };
-          } else {
-            newGuestForAppartmentForNewYear = {
-              [dateOfDeparture[1]]: {
-                [UID]: guest,
-              },
-            };
-          }
-        });
-
-        await setDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfArrival[0]
-          ),
-          newGuestsForAppartment
+        await addById(
+          newGuestsForApartment,
+          '/' + selectedApartment.id + '/data/' + arrivalYear
         );
-        await setDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfDeparture[0]
-          ),
-          newGuestForAppartmentForNewYear
+      } else {
+        const arrayOfMonths = Array.from(
+          { length: Number(departureMonth) - Number(arrivalMonth) + 1 },
+          (_, i) => Number(arrivalMonth) + i
+        );
+
+        newGuestsForApartment = arrayOfMonths.reduce(
+          (acc, month) => ({
+            ...acc,
+            [month]: {
+              ...guestsForApartment[month],
+              [UID]: guest,
+            },
+          }),
+          { ...guestsForApartment }
+        );
+
+        await addById(
+          newGuestsForApartment,
+          '/' + selectedApartment.id + '/data/' + arrivalYear
         );
       }
+    } else {
+      const arrayOfMonths = Array.from(
+        { length: 12 - Number(arrivalMonth) + 1 },
+        (_, i) => Number(arrivalMonth) + i
+      );
 
-      dispatch(setGuests(newGuestsForAppartment));
+      newGuestsForApartment = arrayOfMonths.reduce(
+        (acc, month) => ({
+          ...acc,
+          [month]: {
+            ...guestsForApartment[month],
+            [UID]: guest,
+          },
+        }),
+        { ...guestsForApartment }
+      );
+
+      await getById(
+        `guests/${selectedApartment.id}/data/${departureYear}`
+      ).then(data => {
+        const arrayOfMonths = Array.from(
+          { length: Number(departureMonth) },
+          (_, i) => i + 1
+        );
+        if (data) {
+          newGuestForApartmentForNewYear = {
+            ...data,
+          };
+
+          newGuestForApartmentForNewYear = arrayOfMonths.reduce(
+            (acc, month) => ({
+              ...acc,
+              [month]: {
+                ...data[month],
+                [UID]: guest,
+              },
+            }),
+            {}
+          );
+        } else {
+          newGuestForApartmentForNewYear = arrayOfMonths.reduce(
+            (acc, month) => ({
+              ...acc,
+              [month]: {
+                [UID]: guest,
+              },
+            }),
+            {}
+          );
+        }
+      });
+
+      await addById(
+        newGuestsForApartment,
+        '/' + selectedApartment.id + '/data/' + arrivalYear
+      );
+
+      await addById(
+        newGuestForApartmentForNewYear,
+        '/' + selectedApartment.id + '/data/' + departureYear
+      );
     }
+
+    dispatch(setGuests(newGuestsForApartment));
   };
 };
 
 export const deleteGuestForApartment = (guestId: string, guest: Guest) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
     const selectedApartment = getState().apartments.selectedApartment;
+    if (!selectedApartment || !selectedApartment.id) return;
 
-    if (selectedApartment && selectedApartment.id) {
-      const guestsForAppartment = { ...getState().guests.guests };
-      let newGuestsForAppartment,
-        newGuestForAppartmentForNewYear = {};
-      const dateOfArrival = guest.dateOfArrival.split('-');
-      const dateOfDeparture = guest.dateOfDeparture.split('-');
+    let newGuestsForApartment,
+      newGuestForApartmentForNewYear = {};
+    const [arrivalYear, arrivalMonth] = guest.dateOfArrival.split('-');
+    const [departureYear, departureMonth] = guest.dateOfDeparture.split('-');
+    const arrivalYearData = (await getById(
+      `/${selectedApartment.id}/data/${arrivalYear}`
+    )) as DocumentData;
 
-      if (dateOfArrival[0] === dateOfDeparture[0]) {
-        if (dateOfArrival[1] === dateOfDeparture[1]) {
-          newGuestsForAppartment = {
-            ...guestsForAppartment,
-            [dateOfArrival[1]]: {
-              ...Object.entries(guestsForAppartment[dateOfArrival[1]])
-                .filter(([key]) => key !== guestId)
-                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
-            },
-          };
-          // remove empty months
-          newGuestsForAppartment = Object.entries(newGuestsForAppartment)
-            .filter(([, value]) => Object.keys(value).length > 0)
-            .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+    if (arrivalYear === departureYear) {
+      if (arrivalMonth === departureMonth) {
+        newGuestsForApartment = {
+          ...arrivalYearData,
+          [arrivalMonth]: {
+            ...Object.entries(arrivalYearData[arrivalMonth])
+              .filter(([key]) => key !== guestId)
+              .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
+          },
+        };
+        // remove empty months
+        newGuestsForApartment = Object.entries(newGuestsForApartment)
+          .filter(([, value]) => Object.keys(value).length > 0)
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-          await setDoc(
-            doc(
-              firebase.getFirestore(),
-              `guests/${selectedApartment.id}/data`,
-              dateOfArrival[0]
-            ),
-            newGuestsForAppartment
-          );
-        } else {
-          newGuestsForAppartment = {
-            ...guestsForAppartment,
-            [dateOfArrival[1]]: {
-              ...Object.entries(guestsForAppartment[dateOfArrival[1]])
-                .filter(([key]) => key !== guestId)
-                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
-            },
-            [dateOfDeparture[1]]: {
-              ...Object.entries(guestsForAppartment[dateOfDeparture[1]])
-                .filter(([key]) => key !== guestId)
-                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
-            },
-          };
-
-          // remove empty months
-          newGuestsForAppartment = Object.entries(newGuestsForAppartment)
-            .filter(([, value]) => Object.keys(value).length > 0)
-            .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-
-          await setDoc(
-            doc(
-              firebase.getFirestore(),
-              `guests/${selectedApartment.id}/data`,
-              dateOfArrival[0]
-            ),
-            newGuestsForAppartment
-          );
-          await setDoc(
-            doc(
-              firebase.getFirestore(),
-              `guests/${selectedApartment.id}/data`,
-              dateOfDeparture[0]
-            ),
-            newGuestsForAppartment
-          );
-        }
-      } else {
-        await getDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfArrival[0]
-          )
-        ).then(doc => {
-          if (doc.exists()) {
-            newGuestsForAppartment = {
-              ...doc.data(),
-              [dateOfArrival[1]]: {
-                ...Object.entries(doc.data()[dateOfArrival[1]])
-                  .filter(([key]) => key !== guestId)
-                  .reduce(
-                    (acc, [key, value]) => ({ ...acc, [key]: value }),
-                    {}
-                  ),
-              },
-            };
-
-            // remove empty months
-            newGuestsForAppartment = Object.entries(newGuestsForAppartment)
-              .filter(([, value]) => Object.keys(value).length > 0)
-              .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-          }
-        });
-
-        await getDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfDeparture[0]
-          )
-        ).then(doc => {
-          if (doc.exists()) {
-            newGuestForAppartmentForNewYear = {
-              ...doc.data(),
-              [dateOfDeparture[1]]: {
-                ...Object.entries(doc.data()[dateOfDeparture[1]])
-                  .filter(([key]) => key !== guestId)
-                  .reduce(
-                    (acc, [key, value]) => ({ ...acc, [key]: value }),
-                    {}
-                  ),
-              },
-            };
-
-            newGuestForAppartmentForNewYear = Object.entries(
-              newGuestForAppartmentForNewYear
-            )
-              .filter(([, value]) => Object.keys(value as Guest).length > 0)
-              .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-          }
-        });
-
-        await setDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfArrival[0]
-          ),
-          newGuestsForAppartment
+        await addById(
+          newGuestsForApartment,
+          '/' + selectedApartment.id + '/data/' + arrivalYear
         );
-        await setDoc(
-          doc(
-            firebase.getFirestore(),
-            `guests/${selectedApartment.id}/data`,
-            dateOfDeparture[0]
-          ),
-          newGuestForAppartmentForNewYear
+      } else {
+        const arrayOfMonths = Array.from(
+          { length: Number(departureMonth) - Number(arrivalMonth) + 1 },
+          (_, i) => Number(arrivalMonth) + i
+        );
+
+        newGuestsForApartment = arrayOfMonths.reduce(
+          (acc, month) => ({
+            ...acc,
+            [month]: {
+              ...Object.entries(arrivalYearData[month])
+                .filter(([key]) => key !== guestId)
+                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
+            },
+          }),
+          { ...arrivalYearData }
+        );
+
+        // remove empty months
+        newGuestsForApartment = Object.entries(newGuestsForApartment)
+          .filter(([, value]) => Object.keys(value).length > 0)
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+        await addById(
+          newGuestsForApartment,
+          '/' + selectedApartment.id + '/data/' + arrivalYear
         );
       }
-      dispatch(setGuests(newGuestsForAppartment as Guests));
+    } else {
+      const departureYearData = (await getById(
+        `/${selectedApartment.id}/data/${departureYear}`
+      )) as DocumentData;
+
+      const arrayOfMonthsArrivalYear = Array.from(
+        { length: 12 - Number(arrivalMonth) + 1 },
+        (_, i) => Number(arrivalMonth) + i
+      );
+      const arrayOfMonthsDepartureYear = Array.from(
+        { length: Number(departureMonth) },
+        (_, i) => i + 1
+      );
+
+      if (arrivalYearData) {
+        newGuestsForApartment = arrayOfMonthsArrivalYear.reduce(
+          (acc, month) => ({
+            ...acc,
+            [month]: {
+              ...Object.entries(arrivalYearData[month])
+                .filter(([key]) => key !== guestId)
+                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
+            },
+          }),
+          { ...arrivalYearData }
+        );
+
+        // remove empty months
+        newGuestsForApartment = Object.entries(newGuestsForApartment)
+          .filter(([, value]) => Object.keys(value).length > 0)
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+      }
+
+      if (departureYearData) {
+        newGuestForApartmentForNewYear = arrayOfMonthsDepartureYear.reduce(
+          (acc, month) => ({
+            ...acc,
+            [month]: {
+              ...Object.entries(departureYearData[month])
+                .filter(([key]) => key !== guestId)
+                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
+            },
+          }),
+          { ...departureYearData }
+        );
+
+        newGuestForApartmentForNewYear = Object.entries(
+          newGuestForApartmentForNewYear
+        )
+          .filter(([, value]) => Object.keys(value as Guest).length > 0)
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+      }
+
+      await addById(
+        newGuestsForApartment,
+        '/' + selectedApartment.id + '/data/' + arrivalYear
+      );
+
+      await addById(
+        newGuestForApartmentForNewYear,
+        '/' + selectedApartment.id + '/data/' + departureYear
+      );
     }
+    dispatch(setGuests(newGuestsForApartment as Guests));
   };
 };

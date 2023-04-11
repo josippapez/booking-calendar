@@ -1,4 +1,4 @@
-import { usePDFComponentsAreHTML } from '@modules/Shared/Invoice/Templates/custom/Components';
+import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Components';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';

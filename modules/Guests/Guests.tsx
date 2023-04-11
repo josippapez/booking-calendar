@@ -1,8 +1,14 @@
-import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
+import { FirebaseService } from '@/store/FirebaseService';
+import { getApartmentsForUser } from '@/store/firebaseActions/apartmentActions';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { selectApartment } from '@/store/reducers/apartments';
+import { setGuests } from '@/store/reducers/guests';
 import { AddNewGuest, Guest } from '@modules/Guests/GuestsModal';
 import { Dropdown } from '@modules/Shared';
 import { DatePickerHeader } from '@modules/Shared/DatePicker';
+import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import Images from '@public/Styles/Assets/Images/Images';
+import { Routes } from 'consts';
 import { FirebaseError } from 'firebase/app';
 import { doc, getDoc } from 'firebase/firestore';
 import { DateTime, Info } from 'luxon';
@@ -10,19 +16,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getApartmentsForuser } from '@/store/firebaseActions/apartmentActions';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { selectApartment } from '@/store/reducers/apartments';
-import { setGuests } from '@/store/reducers/guests';
-import { Routes } from 'consts';
-import { FirebaseService } from '@/store/FirebaseService';
 
 const firebase = FirebaseService.getInstance();
 
 export const Guests: FC = () => {
-  const { t, i18n } = useTranslation('Guests');
   const navigate = useRouter();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation('Guests');
   const { apartments } = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
     state => state.apartments.selectedApartment
@@ -70,7 +70,7 @@ export const Guests: FC = () => {
 
   useEffect(() => {
     if (!apartments) {
-      dispatch(getApartmentsForuser());
+      dispatch(getApartmentsForUser());
     }
   }, []);
 
@@ -135,131 +135,128 @@ export const Guests: FC = () => {
                 setSelectedYear={setyear}
               />
             </div>
-            {Object.keys(guests)
-              .sort((a, b) =>
-                Number(a) > Number(b)
-                  ? sorting === 'asc'
-                    ? -1
-                    : 1
-                  : sorting === 'asc'
-                  ? 1
-                  : -1
-              )
-              .map(key => {
-                return (
-                  <div key={key}>
-                    <h1
-                      className={`mb-3 cursor-pointer text-3xl font-extrabold drop-shadow-md hover:bg-neutral-300 ${
-                        selectedMonth === parseInt(key) && 'bg-neutral-200'
-                      } rounded-md px-4 py-3`}
-                      onClick={() => {
-                        if (selectedMonth === parseInt(key)) {
-                          setSelectedMonth(null);
-                        } else {
-                          setSelectedMonth(parseInt(key));
-                        }
-                      }}
-                    >
-                      {
-                        Info.months('long', { locale: i18n.language })[
-                          Number(key) - 1
-                        ]
-                      }
-                    </h1>
-                    {selectedMonth === parseInt(key) && (
-                      <div
-                        className={`relative overflow-x-auto drop-shadow-md`}
+            {guests &&
+              Object.keys(guests)
+                .sort((a, b) =>
+                  Number(a) > Number(b)
+                    ? sorting === 'asc'
+                      ? -1
+                      : 1
+                    : sorting === 'asc'
+                    ? 1
+                    : -1
+                )
+                .map(key => {
+                  return (
+                    <div key={key}>
+                      <h1
+                        className={`mb-3 cursor-pointer text-3xl font-extrabold drop-shadow-md hover:bg-neutral-300 ${
+                          selectedMonth === parseInt(key) && 'bg-neutral-200'
+                        } rounded-md px-4 py-3`}
+                        onClick={() => {
+                          if (selectedMonth === parseInt(key)) {
+                            setSelectedMonth(null);
+                          } else {
+                            setSelectedMonth(parseInt(key));
+                          }
+                        }}
                       >
-                        <table className='w-full border-separate border-spacing-x-4 whitespace-nowrap'>
-                          <thead className='text-left text-lg'>
-                            <tr className='h-16'>
-                              <th className='font-semibold'>{t('name')}</th>
-                              <th className='font-semibold'>{t('PID')}</th>
-                              <th className='font-semibold'>
-                                {t('dateOfBirth')}
-                              </th>
-                              <th className='font-semibold'>{t('country')}</th>
-                              <th className='font-semibold'>{t('address')}</th>
-                              <th className='font-semibold'>
-                                {t('dateOfArrival')}
-                              </th>
-                              <th className='font-semibold'>
-                                {t('dateOfDeparture')}
-                              </th>
-                              <th className='font-semibold'>
-                                {t('numberOfInvoice')}
-                              </th>
-                              <th className='font-semibold'>{t('note')}</th>
-                            </tr>
-                          </thead>
-                          <tbody className='text-lg'>
-                            {Object.entries(guests[key])
-                              .sort(
-                                (
-                                  [firstKey, firstValue],
-                                  [secondKey, secondValue]
-                                ) =>
+                        {Info.months('long')[Number(key) - 1]}
+                      </h1>
+                      {selectedMonth === parseInt(key) && (
+                        <div
+                          className={`relative overflow-x-auto drop-shadow-md`}
+                        >
+                          <table className='w-full border-separate border-spacing-x-4 whitespace-nowrap'>
+                            <thead className='text-left text-lg'>
+                              <tr className='h-16'>
+                                <th className='font-semibold'>{t('name')}</th>
+                                <th className='font-semibold'>{t('PID')}</th>
+                                <th className='font-semibold'>
+                                  {t('dateOfBirth')}
+                                </th>
+                                <th className='font-semibold'>
+                                  {t('country')}
+                                </th>
+                                <th className='font-semibold'>
+                                  {t('address')}
+                                </th>
+                                <th className='font-semibold'>
+                                  {t('dateOfArrival')}
+                                </th>
+                                <th className='font-semibold'>
+                                  {t('dateOfDeparture')}
+                                </th>
+                                <th className='font-semibold'>
+                                  {t('numberOfInvoice')}
+                                </th>
+                                <th className='font-semibold'>{t('note')}</th>
+                              </tr>
+                            </thead>
+                            <tbody className='text-lg'>
+                              {Object.entries(guests[key])
+                                .sort(([, firstValue], [, secondValue]) =>
                                   secondValue.dateOfArrival >
                                   firstValue.dateOfArrival
                                     ? 1
                                     : -1
-                              )
-                              .map(([key, value]) => {
-                                return (
-                                  <tr
-                                    key={key}
-                                    className='h-16 hover:cursor-pointer'
-                                    onClick={() => {
-                                      setSelectedGuestId(key);
-                                      setSelectedGuest(value);
-                                      setShowAddNewGuestModal(true);
-                                    }}
-                                  >
-                                    <td className='font-medium'>
-                                      {value.name}
-                                    </td>
-                                    <td>{value.PID}</td>
-                                    <td>
-                                      {DateTime.fromISO(value.dateOfBirth)
-                                        .setLocale(i18n.language)
-                                        .toLocaleString({
+                                )
+                                .map(([key, value]) => {
+                                  return (
+                                    <tr
+                                      key={key}
+                                      className='h-16 hover:cursor-pointer'
+                                      onClick={() => {
+                                        setSelectedGuestId(key);
+                                        setSelectedGuest(value);
+                                        setShowAddNewGuestModal(true);
+                                      }}
+                                    >
+                                      <td className='font-medium'>
+                                        {value.name}
+                                      </td>
+                                      <td>{value.PID}</td>
+                                      <td>
+                                        {DateTime.fromISO(
+                                          value.dateOfBirth
+                                        ).toLocaleString({
                                           month: 'long',
                                           day: '2-digit',
                                           year: 'numeric',
                                         })}
-                                    </td>
-                                    <td>{value.country}</td>
-                                    <td>{value.address}</td>
-                                    <td>
-                                      {DateTime.fromISO(value.dateOfArrival)
-                                        .setLocale(i18n.language)
-                                        .toLocaleString({
+                                      </td>
+                                      <td>{value.country}</td>
+                                      <td>{value.address}</td>
+                                      <td>
+                                        {DateTime.fromISO(
+                                          value.dateOfArrival
+                                        ).toLocaleString({
                                           month: 'long',
                                           day: '2-digit',
                                           year: 'numeric',
                                         })}
-                                    </td>
-                                    <td>
-                                      {DateTime.fromISO(value.dateOfDeparture)
-                                        .setLocale(i18n.language)
-                                        .toLocaleString({
+                                      </td>
+                                      <td>
+                                        {DateTime.fromISO(
+                                          value.dateOfDeparture
+                                        ).toLocaleString({
                                           month: 'long',
                                           day: '2-digit',
                                           year: 'numeric',
                                         })}
-                                    </td>
-                                    <td>{value.numberOfInvoice}</td>
-                                    <td>{value.note}</td>
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                                      </td>
+                                      <td>{value.numberOfInvoice}</td>
+                                      <td>{value.note}</td>
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
           </>
         )}
       </>

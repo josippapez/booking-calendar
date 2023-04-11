@@ -65,7 +65,6 @@ export const DatePicker: FC<Props> = ({
       animation='fade'
       show={showDatePicker}
       closeModal={closeDatePicker}
-      zindex={10}
     >
       <div className='text-almost-black relative rounded-md bg-white p-4'>
         <DatePickerHeader

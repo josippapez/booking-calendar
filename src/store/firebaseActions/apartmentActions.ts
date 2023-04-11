@@ -218,7 +218,7 @@ const setApartmentDataTofirebase = (
   };
 };
 
-export const getApartmentsForuser = () => {
+export const getApartmentsForUser = () => {
   return async (dispatch: AppDispatch, getState: AppState) => {
     const { getById } = FirebaseCollectionActions('apartments');
     const apartments = await getById(getState().user.user.id);

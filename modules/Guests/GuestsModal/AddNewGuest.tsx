@@ -1,3 +1,8 @@
+import {
+  deleteGuestForApartment,
+  saveGuestForApartment,
+} from '@/store/firebaseActions/guestsActions';
+import { useAppDispatch } from '@/store/hooks';
 import { AlertModal } from '@modules/Shared';
 import { DatePicker } from '@modules/Shared/DatePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
@@ -5,11 +10,6 @@ import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { DateTime } from 'luxon';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  deleteGuestForApartment,
-  saveGuestForApartment,
-} from '@/store/firebaseActions/guestsActions';
-import { useAppDispatch } from '@/store/hooks';
 
 type Props = {
   show: boolean;
@@ -78,25 +78,27 @@ export const AddNewGuest: FC<Props> = ({
     return errors.length === 0;
   };
 
-  const sortInputs = (a: string, b: string) => {
-    if (
-      ['name', 'PID', 'dateOfBirth', 'dateOfArrival', 'dateOfBirth'].includes(a)
-    ) {
-      return -1;
-    }
-    if (
-      ['name', 'PID', 'dateOfBirth', 'dateOfArrival', 'dateOfBirth'].includes(b)
-    ) {
-      return 1;
-    }
-    return 0;
-  };
+  const sortedInputs = [
+    'name',
+    'PID',
+    'dateOfBirth',
+    'dateOfArrival',
+    'dateOfDeparture',
+    'country',
+    'city',
+    'address',
+    'numberOfInvoice',
+    'travelIdNumber',
+    'note',
+  ];
+
+  console.log(guestInfo.dateOfArrival, guestInfo.dateOfDeparture);
 
   return (
     <Modal
       show={show}
       closeModal={closeModal}
-      contentClassname='sm:w-10/12 md:w-1/2 lg:w-1/2 xl:w-1/3 w-10/12'
+      width='min(100%, 500px)'
       animation='fade'
     >
       <div className='rounded-md bg-white shadow-md'>
@@ -105,91 +107,85 @@ export const AddNewGuest: FC<Props> = ({
         </h1>
         <div className='p-5'>
           <div className='flex flex-col gap-2'>
-            {Object.keys(guestInfo)
-              .sort((a, b) => {
-                return sortInputs(a, b);
-              })
-              .map((key: string) => {
-                return (
-                  <div key={key} className='flex flex-col'>
-                    <label htmlFor={key} className='font-semibold'>
-                      {t(key)}
-                    </label>
-                    {key.includes('dateOf') ? (
-                      <>
-                        <input
-                          type='button'
-                          name={key}
-                          id={key}
-                          className={`rounded-md border bg-white focus:border-blue-500 ${
-                            errors.includes(key) ? 'border-red-500' : ''
-                          }`}
-                          value={
-                            guestInfo[key as keyof Guest]
-                              ? DateTime.fromISO(
-                                  guestInfo[
-                                    key as keyof {
-                                      dateOfArrival: string;
-                                      dateOfDeparture: string;
-                                    }
-                                  ]
-                                )
-                                  .setLocale(i18n.language)
-                                  .toLocaleString({
-                                    month: 'long',
-                                    day: '2-digit',
-                                    year: 'numeric',
-                                  })
-                              : guestInfo[key as keyof Guest]
-                          }
-                          onClick={() => setShowDatePicker(key)}
-                        />
-                        <DatePicker
-                          type='date'
-                          hideOnlyYearButton
-                          closeDatePicker={() => setShowDatePicker('')}
-                          showDatePicker={showDatePicker === key ? true : false}
-                          initialDate={guestInfo[key as keyof Guest]}
-                          setDate={(date: string) => {
-                            setErrors(prev => {
-                              return prev.filter(error => error !== key);
-                            });
-                            setGuestInfo({
-                              ...guestInfo,
-                              [key as keyof Guest]: date,
-                            });
-                          }}
-                          resetData={() => {
-                            setGuestInfo({
-                              ...guestInfo,
-                              [key as keyof Guest]: '',
-                            });
-                          }}
-                        />
-                      </>
-                    ) : (
+            {sortedInputs.map((key: string) => {
+              return (
+                <div key={key} className='flex flex-col'>
+                  <label htmlFor={key} className='font-semibold'>
+                    {t(key)}
+                  </label>
+                  {key.includes('dateOf') ? (
+                    <>
                       <input
-                        type='text'
+                        type='button'
                         name={key}
                         id={key}
                         className={`rounded-md border bg-white focus:border-blue-500 ${
                           errors.includes(key) ? 'border-red-500' : ''
                         }`}
-                        value={guestInfo[key as keyof Guest]}
-                        onChange={e => {
+                        value={
+                          guestInfo[key as keyof Guest]
+                            ? DateTime.fromISO(
+                                guestInfo[
+                                  key as keyof {
+                                    dateOfArrival: string;
+                                    dateOfDeparture: string;
+                                  }
+                                ]
+                              ).toLocaleString({
+                                month: 'long',
+                                day: '2-digit',
+                                year: 'numeric',
+                              })
+                            : guestInfo[key as keyof Guest]
+                        }
+                        onClick={() => setShowDatePicker(key)}
+                      />
+                      <DatePicker
+                        type='date'
+                        hideOnlyYearButton
+                        closeDatePicker={() => setShowDatePicker('')}
+                        showDatePicker={showDatePicker === key ? true : false}
+                        initialDate={guestInfo[key as keyof Guest]}
+                        setDate={(date: string) => {
                           setErrors(prev => {
                             return prev.filter(error => error !== key);
                           });
                           setGuestInfo({
                             ...guestInfo,
-                            [key]: e.target.value,
+                            [key as keyof Guest]: date,
+                          });
+                        }}
+                        resetData={() => {
+                          setGuestInfo({
+                            ...guestInfo,
+                            [key as keyof Guest]: '',
                           });
                         }}
                       />
-                    )}
-                  </div>
-                );
-              })}
+                    </>
+                  ) : (
+                    <input
+                      type='text'
+                      name={key}
+                      id={key}
+                      className={`rounded-md border bg-white focus:border-blue-500 ${
+                        errors.includes(key) ? 'border-red-500' : ''
+                      }`}
+                      value={guestInfo[key as keyof Guest]}
+                      onChange={e => {
+                        setErrors(prev => {
+                          return prev.filter(error => error !== key);
+                        });
+                        setGuestInfo({
+                          ...guestInfo,
+                          [key]: e.target.value,
+                        });
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className='flex justify-between p-5'>
