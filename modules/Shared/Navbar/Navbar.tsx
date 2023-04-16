@@ -1,6 +1,5 @@
 import { logout } from '@/store/firebaseActions/authActions';
 import { useCloseOnClickOutside, useDarkMode } from '@modules/Shared/Hooks';
-import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import { Routes } from 'consts';
 import { Settings } from 'luxon';
 import Link from 'next/link';
@@ -16,7 +15,6 @@ export function Navbar(props: Props) {
   const { t, i18n } = useTranslation('Navbar');
   const darkmode = useDarkMode();
   const router = useRouter();
-  const mobileView = useMobileView();
 
   const [dropdownOpenned, setDropdownOpenned] = useState(false);
   const [displayLanguageDropdown, setDisplayLanguageDropdown] = useState(false);
@@ -46,9 +44,7 @@ export function Navbar(props: Props) {
       {userAuthenticated && (
         <nav
           ref={component}
-          className={`page-container select-none ${
-            mobileView ? 'py-2.5' : 'py-2.5'
-          } relative border-b dark:bg-gray-800`}
+          className={`page-container select-none py-2.5 relative border-b dark:bg-gray-800`}
         >
           <div className='flex flex-wrap items-center justify-between'>
             <div className='flex gap-[20px]'>
@@ -93,7 +89,7 @@ export function Navbar(props: Props) {
                 type='button'
                 onClick={async () => {
                   await logout();
-                  router.push(Routes.LOGIN);
+                  await router.push(Routes.LOGIN);
                 }}
               >
                 {t('sign_out')}
@@ -163,7 +159,7 @@ export function Navbar(props: Props) {
                   type='button'
                   onClick={async () => {
                     await logout();
-                    router.push(Routes.LOGIN);
+                    await router.push(Routes.LOGIN);
                   }}
                 >
                   {t('sign_out')}

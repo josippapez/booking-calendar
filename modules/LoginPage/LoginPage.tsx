@@ -87,9 +87,9 @@ export const LoginPage: NextPage = (props: Props) => {
             <button
               className={`focus:shadow-outline mt-4 rounded bg-gray-200 p-6 hover:bg-gray-100 focus:outline-none ${style.google}`}
               type='button'
-              onClick={() => {
+              onClick={async () => {
                 setLoginError('');
-                signInWithGoogle().then(res => {
+                await signInWithGoogle().then(async (res) => {
                   if (res && res.id && res.email && res.accessToken) {
                     dispatch(
                       setUser({
@@ -98,7 +98,7 @@ export const LoginPage: NextPage = (props: Props) => {
                         accessToken: res.accessToken,
                       })
                     );
-                    router.push(Routes.APARTMENTS);
+                    await router.push(Routes.APARTMENTS);
                   }
                 });
               }}

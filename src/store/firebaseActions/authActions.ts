@@ -119,5 +119,5 @@ export const logout = async () => {
   await persistor.flush();
   Cookies.remove('token');
   const auth = firebase.getAuth();
-  signOut(auth);
+  await signOut(auth);
 };
