@@ -45,12 +45,8 @@ export const InvoiceDisplay = (props: Props) => {
       setInvoiceData({
         ...invoiceData,
         apartmentData: {
-          name: selectedApartment.name,
-          address: selectedApartment.address,
-          image: selectedApartment.image,
-          owner: selectedApartment.owner ?? '',
-          pid: selectedApartment.pid ?? '',
-          iban: selectedApartment.iban ?? '',
+          ...selectedApartment,
+          pricePerNight: selectedApartment?.pricePerNight ?? 0,
         },
       });
     }

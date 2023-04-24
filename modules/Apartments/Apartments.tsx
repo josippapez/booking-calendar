@@ -1,4 +1,4 @@
-import { AlertModal } from '@modules/Shared';
+import { AlertModal, useDebouncedValue } from '@modules/Shared';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { Routes } from 'consts';
@@ -16,6 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectApartment, setApartments } from '@/store/reducers/apartments';
 import { setEvents } from '@/store/reducers/events';
+import { Apartment } from '@modules/Apartments/models';
 
 export const Apartments: FC = () => {
   const { showAlert } = useAlert();
@@ -26,16 +27,7 @@ export const Apartments: FC = () => {
   const apartments = useAppSelector(state => state.apartments);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<null | string>(null);
-  const [newApartment, setNewApartment] = useState<{
-    name: string;
-    address: string;
-    id: string;
-    email: string;
-    image: File | string;
-    pid: string;
-    iban: string;
-    owner: string;
-  }>({
+  const [newApartment, setNewApartment] = useDebouncedValue<Apartment>({
     id: '',
     name: '',
     address: '',
@@ -44,6 +36,7 @@ export const Apartments: FC = () => {
     pid: '',
     iban: '',
     owner: '',
+    pricePerNight: undefined,
   });
   const emailRegex =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
@@ -92,6 +85,7 @@ export const Apartments: FC = () => {
                       pid: '',
                       iban: '',
                       owner: '',
+                      pricePerNight: undefined,
                     });
                   }}
                 />
@@ -107,7 +101,7 @@ export const Apartments: FC = () => {
                   className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
                   id='apartmentName'
                   type='text'
-                  value={newApartment.name}
+                  defaultValue={newApartment.name}
                   onChange={e => {
                     setNewApartment({ ...newApartment, name: e.target.value });
                   }}
@@ -124,7 +118,7 @@ export const Apartments: FC = () => {
                   className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
                   id='apartmentAddress'
                   type='text'
-                  value={newApartment.address}
+                  defaultValue={newApartment.address}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
@@ -144,7 +138,7 @@ export const Apartments: FC = () => {
                   className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
                   id='apartmentOwner'
                   type='text'
-                  value={newApartment.owner}
+                  defaultValue={newApartment.owner}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
@@ -164,7 +158,7 @@ export const Apartments: FC = () => {
                   className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
                   id='apartmentPID'
                   type='text'
-                  value={newApartment.pid}
+                  defaultValue={newApartment.pid}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
@@ -184,7 +178,7 @@ export const Apartments: FC = () => {
                   className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
                   id='apartmentIBAN'
                   type='text'
-                  value={newApartment.iban}
+                  defaultValue={newApartment.iban}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
@@ -210,11 +204,31 @@ export const Apartments: FC = () => {
                   }`}
                   id='appartmentEmail'
                   type='text'
-                  value={newApartment.email}
+                  defaultValue={newApartment.email}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
                       email: e.target.value,
+                    });
+                  }}
+                />
+              </div>
+              <div className='mb-4'>
+                <label
+                  className='block text-sm font-bold text-gray-700'
+                  htmlFor='apartmentPricePerNight'
+                >
+                  {t('apartment_price_per_night')}
+                </label>
+                <input
+                  className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                  id='apartmentPricePerNight'
+                  type='text'
+                  defaultValue={newApartment.pricePerNight}
+                  onChange={e => {
+                    setNewApartment({
+                      ...newApartment,
+                      pricePerNight: e.target.value,
                     });
                   }}
                 />
@@ -458,9 +472,6 @@ export const Apartments: FC = () => {
                       onClick={e => {
                         e.stopPropagation();
                         setNewApartment({
-                          pid: apartments.apartments[apartment]?.pid || '',
-                          iban: apartments.apartments[apartment]?.iban || '',
-                          owner: apartments.apartments[apartment]?.owner || '',
                           ...apartments.apartments[apartment],
                         });
                       }}

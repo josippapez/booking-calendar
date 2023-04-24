@@ -4,16 +4,10 @@ import { selectApartment } from '@/store/reducers/apartments';
 import { Dropdown } from '@modules/Shared/Dropdown';
 import { InvoiceDisplay, InvoiceInputs } from '@modules/Invoice';
 import { FC, useEffect, useState } from 'react';
+import { Apartment } from '@modules/Apartments/models';
 
 export type TransactionInvoiceData = {
-  apartmentData: {
-    name: string;
-    address: string;
-    owner: string;
-    image: string;
-    pid: string;
-    iban: string;
-  };
+  apartmentData: Apartment;
   recepientData: {
     recepientName: string;
     recepientAddress: string;
@@ -54,6 +48,9 @@ export const Invoice: FC = () => {
         image: '',
         pid: '',
         iban: '',
+        id: '',
+        email: '',
+        pricePerNight: undefined,
       },
       recepientData: {
         recepientName: '',

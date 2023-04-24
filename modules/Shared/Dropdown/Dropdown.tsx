@@ -9,22 +9,12 @@ type Props = {
   data?: {
     id: string;
     name: string;
-    value:
-      | string
-      | number
-      | {
-          [key: string]: number | string;
-        };
+    value: string | number | Object;
   }[];
   setData: (data: {
     id: string;
     name: string;
-    value:
-      | string
-      | number
-      | {
-          [key: string]: number | string;
-        };
+    value: string | number | Object;
   }) => void;
 };
 

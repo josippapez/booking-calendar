@@ -7,6 +7,7 @@
   "apartment_pid": "Apartment PID",
   "apartment_owner": "Apartment Owner",
   "apartment_IBAN": "IBAN for Payments (used on invoice)",
+  "apartment_price_per_night": "Price per night",
   "add_apartment": "Add Apartment",
   "edit_apartment": "Save changes",
   "edit": "Edit",
