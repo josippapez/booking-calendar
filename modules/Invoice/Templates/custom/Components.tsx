@@ -177,6 +177,7 @@ export const CustomPage: FC<PropsPage> = ({ style, children, ...rest }) => {
           flexDirection: 'column',
           position: 'relative',
           isolation: 'isolate',
+          height: '100%',
           ...(newStyle as { [key: string]: string }),
         }}
       >
@@ -297,6 +298,7 @@ export const CustomDocument: FC<PropsDocument> = ({ children, ...rest }) => {
           isolation: 'isolate',
           left: 0,
           right: 0,
+          height: '100%',
         }}
       >
         {children}

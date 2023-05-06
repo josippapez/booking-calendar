@@ -5,6 +5,7 @@ import { Dropdown } from '@modules/Shared/Dropdown';
 import { InvoiceDisplay, InvoiceInputs } from '@modules/Invoice';
 import { FC, useEffect, useState } from 'react';
 import { Apartment } from '@modules/Apartments/models';
+import { useTranslation } from 'react-i18next';
 
 export type TransactionInvoiceData = {
   apartmentData: Apartment;
@@ -33,6 +34,7 @@ export type TransactionInvoiceData = {
 };
 
 export const Invoice: FC = () => {
+  const { t } = useTranslation('InvoiceInputs');
   const dispatch = useAppDispatch();
   const { apartments } = useAppSelector(state => state.apartments);
   const selectedApartment = useAppSelector(
@@ -58,7 +60,9 @@ export const Invoice: FC = () => {
         recepientPID: '',
       },
       invoiceData: {
-        invoiceName: '',
+        invoiceName: t('invoiceNamePlaceholder', {
+          year: new Date().getFullYear(),
+        }).toString(),
         date: '',
         dateOfFiscalization: '',
         VAT: false,

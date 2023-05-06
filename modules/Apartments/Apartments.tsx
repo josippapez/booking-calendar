@@ -223,12 +223,12 @@ export const Apartments: FC = () => {
                 <input
                   className='w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
                   id='apartmentPricePerNight'
-                  type='text'
+                  type='number'
                   defaultValue={newApartment.pricePerNight}
                   onChange={e => {
                     setNewApartment({
                       ...newApartment,
-                      pricePerNight: e.target.value,
+                      pricePerNight: e.target.valueAsNumber,
                     });
                   }}
                 />

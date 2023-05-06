@@ -53,16 +53,16 @@ export const InvoiceDisplay = (props: Props) => {
   }, [selectedApartment]);
 
   const scale =
-    windowSize.width < windowSize.height
-      ? (windowSize.width - 170) / 595
-      : (windowSize.height - 170) / 842;
+    windowSize.width * 1.414213562 < windowSize.height
+      ? (windowSize.width - 80) / 595
+      : (windowSize.height - 80) / 842;
 
   return (
     <>
       <div
         className={`documentPDFView relative flex flex-col items-center justify-center drop-shadow-xl 2xl:w-4/5`}
         style={{
-          height: 842 * scale,
+          // height: 842 * scale,
         }}
       >
         <div
@@ -70,6 +70,7 @@ export const InvoiceDisplay = (props: Props) => {
           style={{
             width: 595,
             height: 842,
+            aspectRatio: 1.414213562,
             transform: `scaleX(${scale}) scaleY(
                 ${scale}
               )`,

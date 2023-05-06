@@ -107,7 +107,7 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
         >
           {apartmentData?.image && (
             <Image
-              src={apartmentData.image}
+              src={apartmentData.image as string}
               style={[
                 {
                   width: '40%',
@@ -156,8 +156,7 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
             <Text>
               {translate('date_of_invoice')}:{' '}
               {invoiceData.date
-                ? DateTime.fromISO(invoiceData.date)
-                  .toLocaleString({
+                ? DateTime.fromISO(invoiceData.date).toLocaleString({
                     month: 'long',
                     day: '2-digit',
                     year: 'numeric',
@@ -256,8 +255,9 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
               <Text>
                 {translate('transaction_invoice')}{' '}
                 {invoiceData.dateOfFiscalization !== ''
-                  ? DateTime.fromISO(invoiceData.dateOfFiscalization)
-                    .toLocaleString({
+                  ? DateTime.fromISO(
+                      invoiceData.dateOfFiscalization
+                    ).toLocaleString({
                       month: 'long',
                       day: '2-digit',
                       year: 'numeric',

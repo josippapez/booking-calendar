@@ -85,6 +85,30 @@ export const InvoiceInputs = (props: Props) => {
                           />
                         </div>
                       );
+                    } else if (innerKey === 'note') {
+                      return (
+                        <div key={innerKey} className='flex flex-col'>
+                          <span className='font-bold'>{t(`${innerKey}`)}</span>
+                          <textarea
+                            className='min-h-[100px] w-full appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
+                            value={value}
+                            rows={10}
+                            title={t(`${innerKey}`).toString()}
+                            placeholder={t(`${innerKey}`).toString()}
+                            onChange={e => {
+                              setInvoiceData({
+                                ...invoiceData,
+                                [key]: {
+                                  ...invoiceData[
+                                    key as keyof typeof invoiceData
+                                  ],
+                                  [innerKey]: e.target.value,
+                                },
+                              });
+                            }}
+                          />
+                        </div>
+                      );
                     } else
                       return (
                         <div key={innerKey} className='flex flex-col'>
@@ -234,7 +258,7 @@ export const InvoiceInputs = (props: Props) => {
                     <ImageInput
                       key={innerKey}
                       inputName={t(innerKey).toString()}
-                      image={invoiceData.apartmentData.image}
+                      image={invoiceData.apartmentData.image as string}
                       setImage={image => {
                         setInvoiceData({
                           ...invoiceData,

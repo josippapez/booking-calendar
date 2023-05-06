@@ -23,5 +23,6 @@
   "services": "Services",
   "add_new_service": "Add new service",
   "amount": "Amount",
-  "price": "Price"
+  "price": "Price",
+  "invoiceNamePlaceholder": "Invoice {{year}}"
 }

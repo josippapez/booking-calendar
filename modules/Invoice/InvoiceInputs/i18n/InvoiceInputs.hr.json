@@ -23,5 +23,6 @@
   "services": "Usluge",
   "add_new_service": "Dodaj novu uslugu",
   "amount": "Količina",
-  "price": "Cijena"
+  "price": "Cijena",
+  "invoiceNamePlaceholder": "Račun {{year}}"
 }
