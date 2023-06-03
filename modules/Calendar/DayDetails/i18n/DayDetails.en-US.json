@@ -2,5 +2,6 @@
   "title": "Title",
   "description": "Description",
   "phone": "Phone",
-  "price": "Price"
+  "price": "Price",
+  "removeEvent": "Remove event"
 }

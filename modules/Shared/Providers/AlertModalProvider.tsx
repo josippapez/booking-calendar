@@ -11,7 +11,7 @@ const AlertContext = createContext<{
   showAlert(
     alertInfotext: string,
     showOnlyConfirmOption?: boolean,
-    confirmOption?: () => () => void | Promise<void>
+    confirmOption?: () => void | Promise<void>
   ): void;
   alertInfotext: string;
   showOnlyConfirmOption?: boolean;
@@ -22,7 +22,7 @@ const AlertContext = createContext<{
   showAlert: (
     alertInfotext: string,
     showOnlyConfirmOption?: boolean,
-    confirmOption?: () => () => void | Promise<void>
+    confirmOption?: () => void | Promise<void>
   ) => {},
   alertInfotext: '',
   showOnlyConfirmOption: false,
@@ -38,27 +38,29 @@ export function AlertModalProvider({ children }: any) {
   const [show, setShow] = useState(false);
   const [alertInfotext, setAlertInfotext] = useState('');
   const [showOnlyConfirmOption, setShowOnlyConfirmOption] = useState(false);
-  const [confirmFunction, setConfirmFunction] = useState(() => () => {});
+  const [confirmFunction, setConfirmFunction] = useState<
+    () => () => void | Promise<void>
+  >(() => () => {});
 
   const closeModal = useCallback(() => {
     setAlertInfotext('');
     setShowOnlyConfirmOption(false);
-    setConfirmFunction(() => {});
+    setConfirmFunction(() => () => {});
     setShow(false);
   }, []);
 
-  const handleConfirmOption = async () => {
+  const handleConfirmOption = useCallback(async () => {
     await confirmFunction();
     closeModal();
-  };
+  }, [confirmFunction, closeModal]);
 
   const showAlert = useCallback(
     (
       alertInfotext: string,
       showOnlyConfirmOption: boolean,
-      confirmOption: () => () => void | Promise<void>
+      confirmOption: () => void | Promise<void>
     ) => {
-      setConfirmFunction(confirmOption || (() => {}));
+      setConfirmFunction(() => confirmOption);
       setAlertInfotext(alertInfotext);
       setShowOnlyConfirmOption(showOnlyConfirmOption);
       setShow(true);

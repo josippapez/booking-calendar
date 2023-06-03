@@ -453,15 +453,10 @@ export const Apartments: FC = () => {
                       className='font-medium text-blue-600 hover:underline dark:text-blue-500'
                       onClick={e => {
                         e.stopPropagation();
-                        showAlert(
-                          t('remove_apartment'),
-                          false,
-                          () => () =>
-                            dispatch(
-                              removeApartment(
-                                apartments.apartments[apartment].id
-                              )
-                            )
+                        showAlert(t('remove_apartment'), false, () =>
+                          dispatch(
+                            removeApartment(apartments.apartments[apartment].id)
+                          )
                         );
                       }}
                     >

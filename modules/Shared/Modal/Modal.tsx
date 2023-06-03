@@ -1,7 +1,7 @@
 import { useKeyPress, useWindowSize } from '@modules/Shared/Hooks';
 import { getAnimation } from '@modules/Shared/Modal/getAnimations';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import style from './Modal.module.scss';
 
@@ -40,14 +40,20 @@ export const Modal: FC<Props> = ({
   const windowSize = useWindowSize();
   const escPressed = useKeyPress('Escape');
   const animate = getAnimation(animation);
+  const [startClosing, setStartClosing] = useState(false);
 
   useEffect(() => {
-    if (escPressed) closeModal();
+    if (escPressed) setStartClosing(true);
   }, [escPressed, closeModal]);
 
   return createPortal(
-    <AnimatePresence>
-      {show && (
+    <AnimatePresence
+      onExitComplete={() => {
+        closeModal();
+        setStartClosing(false);
+      }}
+    >
+      {show && !startClosing && (
         <motion.div
           data-testid={testid}
           initial={'hide'}
@@ -79,7 +85,7 @@ export const Modal: FC<Props> = ({
             ${style.overlay}
             ${style[`${position}`]}
           `}
-          onMouseDown={() => closeModal()}
+          onMouseDown={() => setStartClosing(true)}
           onTouchStart={e => e.stopPropagation()}
         >
           <motion.div

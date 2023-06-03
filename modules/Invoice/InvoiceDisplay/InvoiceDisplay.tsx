@@ -61,9 +61,6 @@ export const InvoiceDisplay = (props: Props) => {
     <>
       <div
         className={`documentPDFView relative flex flex-col items-center justify-center drop-shadow-xl 2xl:w-4/5`}
-        style={{
-          // height: 842 * scale,
-        }}
       >
         <div
           className='document-display'

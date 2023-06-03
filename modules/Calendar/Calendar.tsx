@@ -317,6 +317,9 @@ export const Calendar: FC = () => {
                   ) {
                     setSelectedDay(day.date);
                     setShowDayDetails(true);
+                  } else {
+                    setSelectedDay(day.date);
+                    setAddNewEvent(true);
                   }
                 }}
               >
@@ -381,29 +384,35 @@ export const Calendar: FC = () => {
             );
           })}
         </div>
-        <DayDetails
-          show={showDayDetails}
-          setShow={setShowDayDetails}
-          setShowEdit={setShowEditEvent}
-          setSelectedDay={setSelectedDay}
-          setSelectedEventToEdit={setSelectedEventToEdit}
-          events={
-            selectedDay && eventsData[selectedDay.split('-')[0]]
-              ? eventsData[selectedDay.split('-')[0]][selectedDay]
-              : []
-          }
-          isMobileView={mobileView}
-          removeEvent={event => dispatch(removeEventForApartment(event.id))}
-        />
-        <CreateNewEvent
-          show={addNewEvent}
-          showEdit={showEditEvent}
-          setShowEdit={setShowEditEvent}
-          setShow={setAddNewEvent}
-          selectedEventToEdit={selectedEventToEdit}
-          events={eventsData}
-          setEvents={events => dispatch(saveEventsForApartment(events))}
-        />
+        {showDayDetails && (
+          <DayDetails
+            show={true}
+            setShow={setShowDayDetails}
+            setShowEdit={setShowEditEvent}
+            setSelectedDay={setSelectedDay}
+            setSelectedEventToEdit={setSelectedEventToEdit}
+            setAddNewEvent={setAddNewEvent}
+            events={
+              selectedDay && eventsData[selectedDay.split('-')[0]]
+                ? eventsData[selectedDay.split('-')[0]][selectedDay]
+                : []
+            }
+            isMobileView={mobileView}
+            removeEvent={event => dispatch(removeEventForApartment(event.id))}
+          />
+        )}
+        {(addNewEvent || showEditEvent) && (
+          <CreateNewEvent
+            events={eventsData}
+            show={addNewEvent}
+            showEdit={showEditEvent}
+            selectedDay={selectedDay}
+            selectedEventToEdit={selectedEventToEdit}
+            setShowEdit={setShowEditEvent}
+            setShow={setAddNewEvent}
+            setEvents={events => dispatch(saveEventsForApartment(events))}
+          />
+        )}
       </div>
       <div className='fixed bottom-0 right-0 w-fit p-3 drop-shadow-md'>
         <button

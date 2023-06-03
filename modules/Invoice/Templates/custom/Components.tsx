@@ -298,7 +298,7 @@ export const CustomDocument: FC<PropsDocument> = ({ children, ...rest }) => {
           isolation: 'isolate',
           left: 0,
           right: 0,
-          height: '100%',
+          minHeight: '100%',
         }}
       >
         {children}

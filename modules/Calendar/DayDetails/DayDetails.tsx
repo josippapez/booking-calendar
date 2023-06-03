@@ -1,5 +1,7 @@
 import { Event } from '@modules/Calendar/CalendarTypes';
+import { AlertModal } from '@modules/Shared';
 import { Modal } from '@modules/Shared/Modal/Modal';
+import { useAlert } from '@modules/Shared/Providers';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import style from './DayDetails.module.scss';
@@ -10,6 +12,7 @@ type Props = {
   setShowEdit: (state: boolean) => void;
   setSelectedEventToEdit: (event: Event) => void;
   setSelectedDay: (day: string | null) => void;
+  setAddNewEvent: (state: boolean) => void;
   events: Event[];
   isMobileView: boolean;
   removeEvent: (event: Event) => void;
@@ -24,8 +27,10 @@ export const DayDetails: FC<Props> = ({
   setShowEdit,
   setSelectedEventToEdit,
   setSelectedDay,
+  setAddNewEvent,
 }) => {
   const { t } = useTranslation('DayDetails');
+  const { showAlert } = useAlert();
 
   const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
 
@@ -46,11 +51,17 @@ export const DayDetails: FC<Props> = ({
       closeModal={() => setShow(false)}
     >
       <div
-        className='rounded-md bg-white p-4'
+        className='flex flex-col rounded-md bg-white p-4'
         style={{
           width: isMobileView ? '90vw' : '50vw',
         }}
       >
+        <button
+          className='w-fit self-center rounded bg-blue-500 px-4 py-2 text-lg font-bold text-white hover:bg-neutral-400'
+          onClick={() => setAddNewEvent(true)}
+        >
+          +
+        </button>
         {events &&
           events.length &&
           events.map((event, index) => (
@@ -100,7 +111,9 @@ export const DayDetails: FC<Props> = ({
                     className={`rounded-md px-4 py-2 hover:bg-neutral-200 ${style.removeButton}`}
                     onClick={e => {
                       e.stopPropagation();
-                      removeEvent(event);
+                      showAlert(t('removeEvent'), false, () =>
+                        removeEvent(event)
+                      );
                     }}
                   />
                 </div>
@@ -124,6 +137,7 @@ export const DayDetails: FC<Props> = ({
             </div>
           ))}
       </div>
+      <AlertModal />
     </Modal>
   );
 };

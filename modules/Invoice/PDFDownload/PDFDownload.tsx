@@ -2,6 +2,7 @@ import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Compo
 import { Modal } from '@modules/Shared/Modal/Modal';
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   PdfInstance?: () => JSX.Element;
@@ -16,8 +17,9 @@ export const PDFDownload = ({
   closeModal,
   pdfBlob,
 }: Props) => {
+  const { t } = useTranslation('PDFDownload');
   const { isHTML, setHtml } = usePDFComponentsAreHTML();
-  const [cvName, setCvName] = useState('CV');
+  const [documentName, setDocumentName] = useState('');
   const [download, setDownload] = useState(false);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export const PDFDownload = ({
     >
       <div className='text-almost-black relative h-fit w-fit flex-col bg-white p-5'>
         <div className='flex items-center justify-between'>
-          <h1 className='text-2xl font-bold'>Download CV</h1>
+          <h1 className='text-2xl font-bold'>{t('download-invoice')}</h1>
           <button
             className='absolute right-3 top-1 rounded-full font-bold hover:bg-slate-500 hover:text-white'
             style={{
@@ -55,13 +57,15 @@ export const PDFDownload = ({
           </button>
         </div>
         <div className='mt-4 flex justify-center'>
-          <span className='mr-3 w-auto self-center font-bold'>CV PDF name</span>
+          <span className='mr-3 w-auto self-center font-bold'>
+            {t('invoice-document-name')}
+          </span>
           <input
             className='w-auto border border-gray-400 p-2'
             type='text'
-            placeholder='Enter CV name'
-            value={cvName}
-            onChange={e => setCvName(e.target.value)}
+            placeholder={t('invoice-document-placeholder').toString()}
+            value={documentName}
+            onChange={e => setDocumentName(e.target.value)}
           />
         </div>
         <div className='mt-4 flex justify-center'>
@@ -69,7 +73,7 @@ export const PDFDownload = ({
             <a
               className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
               href={pdfBlob?.url || ''}
-              download={`${cvName}.pdf`}
+              download={`${documentName}.pdf`}
             >
               Download
             </a>
@@ -80,11 +84,11 @@ export const PDFDownload = ({
               <PDFDownloadLink
                 className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
                 document={!isHTML ? <PdfInstance /> : <></>}
-                fileName={`${cvName}.pdf`}
+                fileName={`${documentName}.pdf`}
               >
                 {({ blob, url, loading, error }) => {
-                  if (loading) return 'Loading document...';
-                  return 'Download now!';
+                  if (loading) return t('loading-document');
+                  return t('download');
                 }}
               </PDFDownloadLink>
             ) : (
@@ -92,7 +96,7 @@ export const PDFDownload = ({
                 className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
                 onClick={() => setDownload(true)}
               >
-                Download
+                {t('generate-invoice')}
               </button>
             ))}
         </div>

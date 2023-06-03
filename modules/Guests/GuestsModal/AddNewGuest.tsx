@@ -59,7 +59,7 @@ export const AddNewGuest: FC<Props> = ({
   const [errors, setErrors] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState<string>('');
 
-  const requiredFileds = [
+  const requiredFields = [
     'name',
     'PID',
     'dateOfBirth',
@@ -69,7 +69,7 @@ export const AddNewGuest: FC<Props> = ({
 
   const checkForRequiredFields = () => {
     const errors: string[] = [];
-    requiredFileds.forEach((field: string) => {
+    requiredFields.forEach((field: string) => {
       if (!guestInfo[field as keyof Guest]) {
         errors.push(field);
       }
@@ -138,28 +138,30 @@ export const AddNewGuest: FC<Props> = ({
                         }
                         onClick={() => setShowDatePicker(key)}
                       />
-                      <DatePicker
-                        type='date'
-                        hideOnlyYearButton
-                        closeDatePicker={() => setShowDatePicker('')}
-                        showDatePicker={showDatePicker === key ? true : false}
-                        initialDate={guestInfo[key as keyof Guest]}
-                        setDate={(date: string) => {
-                          setErrors(prev => {
-                            return prev.filter(error => error !== key);
-                          });
-                          setGuestInfo({
-                            ...guestInfo,
-                            [key as keyof Guest]: date,
-                          });
-                        }}
-                        resetData={() => {
-                          setGuestInfo({
-                            ...guestInfo,
-                            [key as keyof Guest]: '',
-                          });
-                        }}
-                      />
+                      {showDatePicker === key && (
+                        <DatePicker
+                          type='date'
+                          hideOnlyYearButton
+                          closeDatePicker={() => setShowDatePicker('')}
+                          showDatePicker={true}
+                          initialDate={guestInfo[key as keyof Guest]}
+                          setDate={(date: string) => {
+                            setErrors(prev => {
+                              return prev.filter(error => error !== key);
+                            });
+                            setGuestInfo({
+                              ...guestInfo,
+                              [key as keyof Guest]: date,
+                            });
+                          }}
+                          resetData={() => {
+                            setGuestInfo({
+                              ...guestInfo,
+                              [key as keyof Guest]: '',
+                            });
+                          }}
+                        />
+                      )}
                     </>
                   ) : (
                     <input
@@ -197,7 +199,7 @@ export const AddNewGuest: FC<Props> = ({
             <button
               className='rounded-md bg-red-700 p-2 font-bold text-white hover:bg-red-500'
               onClick={async () => {
-                showAlert(t('remove_guest'), false, () => async () => {
+                showAlert(t('remove_guest'), false, async () => {
                   await dispatch(
                     deleteGuestForApartment(selectedGuestId, selectedGuest)
                   );

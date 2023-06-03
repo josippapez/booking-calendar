@@ -297,27 +297,18 @@ export const PublicCalendar: FC<Props> = ({
         </div>
         <div className={style.calendarGrid}>
           {dates.map((day, index) => {
+            const dayEventsExist =
+              events && events[day.year] && events[day.year][day.date]?.length;
+
             const startingDay =
-              index > 0 &&
-              events &&
-              events[day.year] &&
-              events[day.year][day.date]?.length &&
-              !(index > 0
-                ? events[day.year][dates[index - 1].date]?.length ||
-                  events[Number(day.year) - 1]?.[dates[index - 1].date]?.length
-                : events[lastMonthDates[lastMonthDates.length - 1].year][
-                    lastMonthDates[lastMonthDates.length - 1].date
-                  ]?.length);
+              dayEventsExist &&
+              !events[day.year][day.date].find(
+                event => event.start !== day.date
+              );
 
             const endingDay =
-              events &&
-              events[day.year] &&
-              events[day.year][day.date]?.length &&
-              !(index < dates.length - 1
-                ? events[day.year][dates[index + 1].date]?.length ||
-                  events[Number(day.year) + 1]?.[dates[index + 1].date]?.length
-                : events[nextMonthDates[0].year][nextMonthDates[0].date]
-                    ?.length);
+              dayEventsExist &&
+              !events[day.year][day.date].find(event => event.end !== day.date);
 
             return DateTime.fromISO(day.date).diffNow('day').days > -1 ? (
               <div
@@ -386,12 +377,14 @@ export const PublicCalendar: FC<Props> = ({
           })}
         </div>
       </div>
-      <CreateNewReservation
-        show={displayNewReservation}
-        setShow={setDisplayNewReservation}
-        currentReservations={events}
-        apartmentEmail={apartmentEmail}
-      />
+      {displayNewReservation && (
+        <CreateNewReservation
+          show={true}
+          setShow={setDisplayNewReservation}
+          currentReservations={events}
+          apartmentEmail={apartmentEmail}
+        />
+      )}
     </div>
   );
 };

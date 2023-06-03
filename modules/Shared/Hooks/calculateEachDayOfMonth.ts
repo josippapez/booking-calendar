@@ -1,15 +1,16 @@
-import { Day } from "@modules/Calendar/CalendarTypes";
-import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { Day } from '@modules/Calendar/CalendarTypes';
+import { DateTime } from 'luxon';
+import { useCallback, useMemo, useState } from 'react';
 
 type Props = {
   startMonth: number;
   startYear: number;
 };
 
-export const useCalculateEachDayOfMonth = (
-  props: Props
-): {
+export const useCalculateEachDayOfMonth = ({
+  startMonth,
+  startYear,
+}: Props): {
   month: number;
   year: number;
   setmonth: (month: number) => void;
@@ -22,7 +23,6 @@ export const useCalculateEachDayOfMonth = (
   lastMonthDates: Day[];
   nextMonthDates: Day[];
 } => {
-  const { startMonth, startYear } = props;
   const [month, setmonth] = useState(startMonth);
   const [year, setyear] = useState(startYear);
 
@@ -38,40 +38,60 @@ export const useCalculateEachDayOfMonth = (
     nextMonthYear++;
     nextMonth = 1;
   }
-  const calculateDates = (
-    start: DateTime,
-    end: DateTime,
-    lastOrNextMonth: boolean
-  ): Day[] => {
-    const monthDates: Day[] = [];
-    const daysInMonth = end.diff(start, "days");
-    for (let i = 0; i <= daysInMonth.days; i++) {
-      const day = start.plus({ days: i });
+  const calculateDates = useCallback(
+    (start: DateTime, end: DateTime): Day[] => {
+      const monthDates: Day[] = [];
+      const daysInMonth = end.diff(start, 'days');
+      for (let i = 0; i <= daysInMonth.days; i++) {
+        const day = start.plus({ days: i });
 
-      if (i === 0 && !lastOrNextMonth) {
-        for (let index = start.get("weekday") - 1; index > 0; index--) {
-          const dayOfLastMonth = start.minus({ days: index });
-          monthDates.push({
-            day: dayOfLastMonth.day,
-            date: dayOfLastMonth.toFormat("yyyy-MM-dd"),
-            name: dayOfLastMonth.toFormat("EEEE"),
-            year: dayOfLastMonth.toFormat("yyyy"),
-            lastMonth: true,
-            weekNumber: dayOfLastMonth.weekNumber,
-          });
+        if (i === 0) {
+          for (let index = start.get('weekday') - 1; index > 0; index--) {
+            const dayOfLastMonth = start.minus({ days: index });
+            monthDates.push({
+              day: dayOfLastMonth.day,
+              date: dayOfLastMonth.toFormat('yyyy-MM-dd'),
+              name: dayOfLastMonth.toFormat('EEEE'),
+              year: dayOfLastMonth.toFormat('yyyy'),
+              lastMonth: true,
+              weekNumber: dayOfLastMonth.weekNumber,
+            });
+          }
         }
+        monthDates.push({
+          day: day.day,
+          date: day.toFormat('yyyy-MM-dd'),
+          name: day.toFormat('EEEE'),
+          year: day.toFormat('yyyy'),
+          lastMonth: false,
+          weekNumber: day.weekNumber,
+        });
       }
-      monthDates.push({
-        day: day.day,
-        date: day.toFormat("yyyy-MM-dd"),
-        name: day.toFormat("EEEE"),
-        year: day.toFormat("yyyy"),
-        lastMonth: false,
-        weekNumber: day.weekNumber,
-      });
-    }
-    return monthDates;
-  };
+      return monthDates;
+    },
+    []
+  );
+
+  const lastMonthDates = useMemo(() => {
+    const start = DateTime.local(lastMonthYear, lastMonth).startOf('month');
+    const end = DateTime.local(lastMonthYear, lastMonth).endOf('month');
+
+    return calculateDates(start, end);
+  }, [calculateDates, lastMonth, lastMonthYear]);
+
+  const nextMonthDates = useMemo(() => {
+    const start = DateTime.local(nextMonthYear, nextMonth).startOf('month');
+    const end = DateTime.local(nextMonthYear, nextMonth).endOf('month');
+
+    return calculateDates(start, end);
+  }, [calculateDates, nextMonth, nextMonthYear]);
+
+  const thisMonthDates = useMemo(() => {
+    const start = DateTime.local(year, month).startOf('month');
+    const end = DateTime.local(year, month).endOf('month');
+
+    return calculateDates(start, end);
+  }, [calculateDates, month, year]);
 
   return {
     month,
@@ -82,23 +102,8 @@ export const useCalculateEachDayOfMonth = (
     lastMonthYear,
     nextMonth,
     nextMonthYear,
-    lastMonthDates: useMemo(() => {
-      const start = DateTime.local(lastMonthYear, lastMonth).startOf("month");
-      const end = DateTime.local(lastMonthYear, lastMonth).endOf("month");
-
-      return calculateDates(start, end, true);
-    }, [lastMonth, lastMonthYear]),
-    dates: useMemo(() => {
-      const start = DateTime.local(year, month).startOf("month");
-      const end = DateTime.local(year, month).endOf("month");
-
-      return calculateDates(start, end, false);
-    }, [month, year]),
-    nextMonthDates: useMemo(() => {
-      const start = DateTime.local(nextMonthYear, nextMonth).startOf("month");
-      const end = DateTime.local(nextMonthYear, nextMonth).endOf("month");
-
-      return calculateDates(start, end, true);
-    }, [nextMonth, nextMonthYear]),
+    lastMonthDates,
+    dates: thisMonthDates,
+    nextMonthDates,
   };
 };
