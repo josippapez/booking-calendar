@@ -4,7 +4,7 @@ import { PageLoader } from '@modules/Shared/Loader/PageLoader';
 import { Settings } from 'luxon';
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
-import '../public/Styles/globals.css';
+import '@public/Styles/globals.css';
 
 declare global {
   interface Window {

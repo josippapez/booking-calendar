@@ -1,9 +1,7 @@
 import { EventsByYear } from '@modules/Calendar/CalendarTypes';
-import { CreateNewReservation } from '@modules/PublicCalendar/CreateNewReservation';
-import {
-  FirebaseCollectionActions,
-  useCalculateEachDayOfMonth,
-} from '@modules/Shared/Hooks';
+import { CreateNewReservation } from '@modules/PublicCalendar/CreateNewReservation/CreateNewReservation';
+import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
+import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import Images from '@public/Styles/Assets/Images/Images';
 import { Unsubscribe } from 'firebase/firestore';
@@ -31,15 +29,7 @@ export const PublicCalendar: FC<Props> = ({
   const [displayNewReservation, setDisplayNewReservation] =
     useState<boolean>(false);
 
-  const {
-    lastMonthDates,
-    dates,
-    nextMonthDates,
-    year,
-    month,
-    setyear,
-    setmonth,
-  } = useCalculateEachDayOfMonth({
+  const { dates, year, month, setyear, setmonth } = useCalculateEachDayOfMonth({
     startYear: DateTime.local().year,
     startMonth: DateTime.local().month,
   });

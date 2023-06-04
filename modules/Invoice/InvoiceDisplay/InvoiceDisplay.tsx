@@ -1,11 +1,9 @@
 import { useAppSelector } from '@/store/hooks';
-import {
-  InvoiceTemplate,
-  PDFDownload,
-  TransactionInvoiceData,
-  usePDFComponentsAreHTML,
-} from '@modules/Invoice';
-import { useWindowSize } from '@modules/Shared/Hooks';
+import { TransactionInvoiceData } from '@modules/Invoice/Invoice';
+import { PDFDownload } from '@modules/Invoice/PDFDownload/PDFDownload';
+import { InvoiceTemplate } from '@modules/Invoice/Templates/InvoiceTemplate';
+import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Components';
+import { useWindowSize } from '@modules/Shared/Hooks/useWindowSize';
 import { useCallback, useEffect, useState } from 'react';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -55,7 +53,12 @@ export const InvoiceDisplay = (props: Props) => {
   return (
     <>
       <div
-        className={`documentPDFView relative flex flex-col items-center justify-center drop-shadow-xl 2xl:w-4/5`}
+        className={`documentPDFView relative flex flex-col items-center justify-center self-center drop-shadow-xl 2xl:w-4/5`}
+        style={{
+          width: 595 * scale,
+          height: 842 * scale,
+          aspectRatio: 1.414213562,
+        }}
       >
         <div
           className='document-display'

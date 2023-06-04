@@ -1,7 +1,7 @@
 import { Event } from '@modules/Calendar/CalendarTypes';
-import { AlertModal } from '@modules/Shared';
+import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
 import { Modal } from '@modules/Shared/Modal/Modal';
-import { useAlert } from '@modules/Shared/Providers';
+import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import style from './DayDetails.module.scss';

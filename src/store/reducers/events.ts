@@ -1,4 +1,4 @@
-import { Event } from '@modules/Calendar';
+import { Event } from '@modules/Calendar/CalendarTypes';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PURGE } from 'redux-persist';
 

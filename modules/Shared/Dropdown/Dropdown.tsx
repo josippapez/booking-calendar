@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import Images from '../../../public/Styles/Assets/Images/Images';
+import Images from '@public/Styles/Assets/Images/Images';
 import style from './Dropdown.module.scss';
 
 type Props = {

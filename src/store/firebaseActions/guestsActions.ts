@@ -1,7 +1,7 @@
 import { Guests, setGuests } from '@/store/reducers/guests';
 import { AppDispatch, AppState } from '@/store/store';
-import { Guest } from '@modules/Guests';
-import { FirebaseCollectionActions } from '@modules/Shared';
+import { Guest } from '@modules/Guests/GuestsModal/AddNewGuest';
+import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
 import { DocumentData } from 'firebase/firestore';
 
 const { addById, getById } = FirebaseCollectionActions('guests');

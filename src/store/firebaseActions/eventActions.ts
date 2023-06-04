@@ -1,7 +1,11 @@
 import { FirebaseService } from '@/store/FirebaseService';
 import { setEvents } from '@/store/reducers/events';
 import { AppDispatch, AppState } from '@/store/store';
-import { Event, EventsByYear, PublicEventsByYear } from '@modules/Calendar';
+import {
+  Event,
+  EventsByYear,
+  PublicEventsByYear,
+} from '@modules/Calendar/CalendarTypes';
 import { doc, setDoc } from 'firebase/firestore';
 
 const firebase = FirebaseService.getInstance();
@@ -9,7 +13,7 @@ const firebase = FirebaseService.getInstance();
 export const saveEventsForApartment = (events: {
   [key: string]: { [key: string]: Event[] };
 }) => {
-  return (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppState) => {
     const selectedApartment = getState().apartments.selectedApartment;
 
     dispatch(setEvents(events));
@@ -26,7 +30,7 @@ export const saveEventsForApartment = (events: {
         });
       });
 
-      setDoc(
+      await setDoc(
         doc(
           firebase.getFirestore(),
           `events/${selectedApartment.id}/data`,
@@ -34,7 +38,7 @@ export const saveEventsForApartment = (events: {
         ),
         events
       );
-      setDoc(
+      await setDoc(
         doc(
           firebase.getFirestore(),
           `events/${selectedApartment.id}/data`,
@@ -47,7 +51,7 @@ export const saveEventsForApartment = (events: {
 };
 
 export const removeEventForApartment = (eventId: string) => {
-  return (dispatch: AppDispatch, getState: AppState) => {
+  return async (dispatch: AppDispatch, getState: AppState) => {
     const selectedApartment = getState().apartments.selectedApartment;
     const events = getState().events.events;
 
@@ -81,7 +85,7 @@ export const removeEventForApartment = (eventId: string) => {
     dispatch(setEvents(removedEvents));
 
     if (selectedApartment && selectedApartment.id) {
-      setDoc(
+      await setDoc(
         doc(
           firebase.getFirestore(),
           `events/${selectedApartment.id}/data`,
@@ -89,7 +93,7 @@ export const removeEventForApartment = (eventId: string) => {
         ),
         removedEvents
       );
-      setDoc(
+      await setDoc(
         doc(
           firebase.getFirestore(),
           `events/${selectedApartment.id}/data`,

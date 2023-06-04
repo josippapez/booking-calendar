@@ -1,11 +1,12 @@
-import { Day, Event } from '@modules/Calendar';
-import { DatePickerDates, DatePickerHeader } from '@modules/Shared/DatePicker';
-import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks';
+import { Events } from '@/store/reducers/events';
+import { Day, Event } from '@modules/Calendar/CalendarTypes';
+import { DatePickerDates } from '@modules/Shared/DatePicker/Dates/DatePickerDates';
+import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
+import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime, Interval } from 'luxon';
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Events } from '@/store/reducers/events';
 import style from './DateRangePicker.module.scss';
 
 type Props = {

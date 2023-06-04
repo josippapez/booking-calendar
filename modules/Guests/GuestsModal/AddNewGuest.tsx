@@ -3,8 +3,8 @@ import {
   saveGuestForApartment,
 } from '@/store/firebaseActions/guestsActions';
 import { useAppDispatch } from '@/store/hooks';
-import { AlertModal } from '@modules/Shared';
-import { DatePicker } from '@modules/Shared/DatePicker';
+import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
+import { DatePicker } from '@modules/Shared/DatePicker/DatePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { DateTime } from 'luxon';

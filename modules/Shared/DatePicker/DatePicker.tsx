@@ -1,10 +1,8 @@
-import { Day } from '@modules/Calendar';
-import {
-  DatePickerDates,
-  DatePickerHeader,
-  Months,
-  Years,
-} from '@modules/Shared/DatePicker';
+import { Day } from '@modules/Calendar/CalendarTypes';
+import { DatePickerDates } from '@modules/Shared/DatePicker/Dates/DatePickerDates';
+import { Months } from '@modules/Shared/DatePicker/Dates/Months';
+import { Years } from '@modules/Shared/DatePicker/Dates/Years';
+import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
@@ -61,11 +59,7 @@ export const DatePicker: FC<Props> = ({
   }, [initialDate]);
 
   return (
-    <Modal
-      animation='fade'
-      show={showDatePicker}
-      closeModal={closeDatePicker}
-    >
+    <Modal animation='fade' show={showDatePicker} closeModal={closeDatePicker}>
       <div className='text-almost-black relative rounded-md bg-white p-4'>
         <DatePickerHeader
           type={selectedType}

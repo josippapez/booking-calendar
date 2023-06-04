@@ -1,4 +1,4 @@
-import { DatePicker } from '@modules/Shared/DatePicker';
+import { DatePicker } from '@modules/Shared/DatePicker/DatePicker';
 import { DateTime, DateTimeFormatOptions } from 'luxon';
 import { useState } from 'react';
 

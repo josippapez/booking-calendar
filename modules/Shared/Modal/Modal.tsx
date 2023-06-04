@@ -1,4 +1,5 @@
-import { useKeyPress, useWindowSize } from '@modules/Shared/Hooks';
+import { useKeyPress } from '@modules/Shared/Hooks/useKeyPress';
+import { useWindowSize } from '@modules/Shared/Hooks/useWindowSize';
 import { getAnimation } from '@modules/Shared/Modal/getAnimations';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC, useEffect, useState } from 'react';

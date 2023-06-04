@@ -5,7 +5,7 @@ import {
   setApartments,
 } from '@/store/reducers/apartments';
 import { AppDispatch, AppState } from '@/store/store';
-import { FirebaseCollectionActions } from '@modules/Shared';
+import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
 import { doc, setDoc } from 'firebase/firestore';
 import {
   deleteObject,
@@ -91,7 +91,7 @@ const saveApartmentData = async (
       async () => {
         setProgress(0);
         imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-        dispatch(setApartmentDataTofirebase(apartment, imageUrl));
+        await dispatch(setApartmentDataTofirebase(apartment, imageUrl));
       }
     );
   }
@@ -147,20 +147,20 @@ export const removeApartment = (apartmentId: string) => {
     );
     delete tempApartments[apartmentId];
 
-    listAll(storageRef).then((files: any) => {
+    await listAll(storageRef).then((files: any) => {
       files.items.forEach(async (fileRef: any) => {
         await deleteObject(ref(storage, fileRef.fullPath));
       });
     });
     dispatch(setApartments(tempApartments));
     dispatch(selectApartment(null));
-    deleteById(apartmentId, () => {
+    await deleteById(apartmentId, () => {
       const removedString = t('removed_apartment', {
         ns: 'FirebaseActions',
       });
       toast(removedString, { type: 'success', position: 'bottom-right' });
     });
-    setDoc(
+    await setDoc(
       doc(firebase.getFirestore(), 'apartments', getState().user.user.id),
       tempApartments
     );
@@ -196,7 +196,7 @@ const setApartmentDataTofirebase = (
     dispatch(selectApartment({ ...apartment, image: imageUrl }));
     dispatch(setApartments(tempApartments));
 
-    dispatch(
+    await dispatch(
       addByIdApartments(tempApartments, () => {
         const savedAparmtent = t('saved_apartment_data', {
           ns: 'FirebaseActions',
@@ -204,12 +204,12 @@ const setApartmentDataTofirebase = (
         toast(savedAparmtent, { type: 'success', position: 'bottom-right' });
       })
     );
-    dispatch(
+    await dispatch(
       addByIdGuests(apartment.id, {
         userId: getState().user.user.id,
       })
     );
-    dispatch(
+    await dispatch(
       addByIdEvents(apartment.id, {
         userId: getState().user.user.id,
         apartmentName: apartment.name,

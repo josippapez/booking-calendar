@@ -1,4 +1,4 @@
-import { Apartment } from '@modules/Apartments/models';
+import { Apartment } from '@modules/Apartments/models/Apartment';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PURGE } from 'redux-persist';
 

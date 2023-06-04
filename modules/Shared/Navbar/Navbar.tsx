@@ -1,5 +1,6 @@
 import { logout } from '@/store/firebaseActions/authActions';
-import { useCloseOnClickOutside, useDarkMode } from '@modules/Shared/Hooks';
+import { useCloseOnClickOutside } from '@modules/Shared/Hooks/useCloseOnClickOutside';
+import { useDarkMode } from '@modules/Shared/Hooks/useDarkMode';
 import { Routes } from 'consts';
 import { Settings } from 'luxon';
 import Link from 'next/link';
@@ -44,7 +45,7 @@ export function Navbar(props: Props) {
       {userAuthenticated && (
         <nav
           ref={component}
-          className={`page-container select-none py-2.5 relative border-b dark:bg-gray-800`}
+          className={`page-container relative select-none border-b py-2.5 dark:bg-gray-800`}
         >
           <div className='flex flex-wrap items-center justify-between'>
             <div className='flex gap-[20px]'>

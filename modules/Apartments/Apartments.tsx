@@ -1,12 +1,3 @@
-import { AlertModal, useDebouncedValue } from '@modules/Shared';
-import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
-import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
-import { Routes } from 'consts';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   editApartment,
   getApartmentsForUser,
@@ -16,7 +7,17 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectApartment, setApartments } from '@/store/reducers/apartments';
 import { setEvents } from '@/store/reducers/events';
-import { Apartment } from '@modules/Apartments/models';
+import { Apartment } from '@modules/Apartments/models/Apartment';
+import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
+import { useDebouncedValue } from '@modules/Shared/Hooks/useDebouncedValue';
+import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
+import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
+import { Routes } from 'consts';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { FC, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Apartments: FC = () => {
   const { showAlert } = useAlert();

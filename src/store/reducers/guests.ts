@@ -1,6 +1,6 @@
-import { Guest } from "@modules/Guests";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PURGE } from "redux-persist";
+import { Guest } from '@modules/Guests/GuestsModal/AddNewGuest';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PURGE } from 'redux-persist';
 
 export type Guests = {
   [key: string]: {
@@ -16,7 +16,7 @@ const initialState: GuestsData = {
 };
 
 export const guests = createSlice({
-  name: "guests",
+  name: 'guests',
   initialState,
   reducers: {
     setGuests: (state, action: PayloadAction<Guests>) => {

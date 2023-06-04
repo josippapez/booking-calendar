@@ -1,4 +1,4 @@
-import { Invoice } from '@modules/Invoice';
+import { Invoice } from '@modules/Invoice/Invoice';
 import { PageLoader } from '@modules/Shared/Loader/PageLoader';
 import { NextPage } from 'next';
 import { Suspense } from 'react';

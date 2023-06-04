@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
 const DynamicLoginPage = dynamic(
-  () => import('@modules/LoginPage').then(mod => mod.LoginPage),
+  () => import('@modules/LoginPage/LoginPage').then(mod => mod.LoginPage),
   {
     suspense: true,
   }

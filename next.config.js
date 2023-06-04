@@ -7,8 +7,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
     process.env.ANALYZE === 'true' && process.env.NODE_ENV === 'production',
 });
 
-// const pdfWorkerPath = require.resolve(`pdfjs-dist/build/pdf.worker.min.js`);
-
 const regexEqual = (x, y) => {
   return (
     x instanceof RegExp &&

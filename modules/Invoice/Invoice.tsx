@@ -1,10 +1,11 @@
 import { getApartmentsForUser } from '@/store/firebaseActions/apartmentActions';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectApartment } from '@/store/reducers/apartments';
-import { Dropdown } from '@modules/Shared/Dropdown';
-import { InvoiceDisplay, InvoiceInputs } from '@modules/Invoice';
+import { Apartment } from '@modules/Apartments/models/Apartment';
+import { InvoiceDisplay } from '@modules/Invoice/InvoiceDisplay/InvoiceDisplay';
+import { InvoiceInputs } from '@modules/Invoice/InvoiceInputs/InvoiceInputs';
+import { Dropdown } from '@modules/Shared/Dropdown/Dropdown';
 import { FC, useEffect, useState } from 'react';
-import { Apartment } from '@modules/Apartments/models';
 import { useTranslation } from 'react-i18next';
 
 export type TransactionInvoiceData = {
@@ -113,7 +114,7 @@ export const Invoice: FC = () => {
           />
         </div>
         {selectedApartment && (
-          <div className='mt-5 flex flex-col justify-around gap-5 2xl:flex-row'>
+          <div className='mt-5 flex h-full flex-col justify-around gap-5 2xl:flex-row'>
             <InvoiceInputs
               invoiceData={transactionInvoiceData}
               setInvoiceData={setTransactionInvoiceData}

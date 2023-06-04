@@ -1,5 +1,5 @@
 import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
-import { DateRangePicker } from '@modules/Shared';
+import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
 import { FC, useCallback, useEffect, useState } from 'react';

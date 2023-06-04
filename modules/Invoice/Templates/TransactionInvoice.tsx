@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 });
 
 export const TransactionInvoice = (props: Props): JSX.Element => {
-  const { translate, locale, apartmentData, invoiceData, recipientData: recepientData } =
+  const { translate, locale, apartmentData, invoiceData, recipientData: recipientData } =
     props;
 
   return (
@@ -135,9 +135,9 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
           </View>
         </View>
         <View style={[styles.column, { marginBottom: 40 }]}>
-          <Text>{recepientData.recipientName}</Text>
-          <Text>{recepientData.recipientAddress}</Text>
-          <Text>{recepientData.recipientPID}</Text>
+          <Text>{recipientData.recipientName}</Text>
+          <Text>{recipientData.recipientAddress}</Text>
+          <Text>{recipientData.recipientPID}</Text>
         </View>
         <View style={[styles.row, { marginBottom: 40 }]}>
           <View style={[styles.column, { left: 40 }]}>

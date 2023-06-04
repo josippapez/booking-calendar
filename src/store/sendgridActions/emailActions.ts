@@ -1,5 +1,5 @@
-import { DateTime } from "luxon";
-import { AppDispatch, AppState } from "../store";
+import { DateTime } from 'luxon';
+import { AppDispatch, AppState } from '../store';
 
 export const sendEmail = (
   reservation: {
@@ -12,16 +12,16 @@ export const sendEmail = (
   email: string
 ) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
-    fetch("api/sendEmail", {
-      method: "POST",
+    await fetch('api/sendEmail', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         msg: {
           to: email,
-          from: "booking.calendar.os.app@gmail.com",
-          subject: "New reservation !!!!",
+          from: 'booking.calendar.os.app@gmail.com',
+          subject: 'New reservation !!!!',
           dynamic_template_data: {
             start_date: DateTime.fromISO(reservation.start).toLocaleString(
               DateTime.DATE_HUGE

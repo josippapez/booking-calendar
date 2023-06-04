@@ -299,6 +299,7 @@ export const CustomDocument: FC<PropsDocument> = ({ children, ...rest }) => {
           left: 0,
           right: 0,
           minHeight: '100%',
+          height: '100%',
         }}
       >
         {children}

@@ -1,4 +1,6 @@
-import { DateInput, ImageInput, ServiceInput } from '@modules/Shared/Inputs';
+import { DateInput } from '@modules/Shared/Inputs/DateInput';
+import { ImageInput } from '@modules/Shared/Inputs/ImageInput';
+import { ServiceInput } from '@modules/Shared/Inputs/ServiceInput';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TransactionInvoiceData } from '../Invoice';
