@@ -10,9 +10,7 @@ import { doc, setDoc } from 'firebase/firestore';
 
 const firebase = FirebaseService.getInstance();
 
-export const saveEventsForApartment = (events: {
-  [key: string]: { [key: string]: Event[] };
-}) => {
+export const saveEventsForApartment = (events: EventsByYear) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
     const selectedApartment = getState().apartments.selectedApartment;
 
@@ -55,7 +53,9 @@ export const removeEventForApartment = (eventId: string) => {
     const selectedApartment = getState().apartments.selectedApartment;
     const events = getState().events.events;
 
-    const removedEvents = {} as EventsByYear;
+    if (!events) return;
+
+    const removedEvents: { [key: string]: { [key: string]: Event[] } } = {};
     Object.keys(events).forEach(key => {
       removedEvents[key] = {};
       Object.keys(events[key]).forEach(eventKey => {

@@ -1,4 +1,4 @@
-import { EventsByYear } from '@modules/Calendar/CalendarTypes';
+import { Events } from '@/store/reducers/events';
 import { CreateNewReservation } from '@modules/PublicCalendar/CreateNewReservation/CreateNewReservation';
 import { PublicCalendarDay } from '@modules/PublicCalendar/PublicCalendarDay';
 import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
@@ -26,7 +26,7 @@ export const PublicCalendar: FC<Props> = ({
   const mobileView = useMobileView();
   const router = useRouter();
 
-  const [events, setEvents] = useState<EventsByYear>({});
+  const [events, setEvents] = useState<Events>(undefined);
   const [displayNewReservation, setDisplayNewReservation] =
     useState<boolean>(false);
 
@@ -45,7 +45,7 @@ export const PublicCalendar: FC<Props> = ({
     const { listenById } = FirebaseCollectionActions('events');
 
     unsubscribe.current = listenById(`${router.query.id}/data/public`, data => {
-      setEvents(data as EventsByYear);
+      setEvents(data as Events);
     });
 
     return () => {

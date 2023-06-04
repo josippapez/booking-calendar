@@ -5,8 +5,8 @@ import {
 } from '@/store/firebaseActions/eventActions';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectApartment } from '@/store/reducers/apartments';
-import { setEvents } from '@/store/reducers/events';
-import { Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
+import { Events, setEvents } from '@/store/reducers/events';
+import { Event } from '@modules/Calendar/CalendarTypes';
 import { CreateNewEvent } from '@modules/Calendar/CreateNewEvent/CreateNewEvent';
 import { DayDetails } from '@modules/Calendar/DayDetails/DayDetails';
 import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
@@ -103,7 +103,7 @@ export const Calendar: FC = () => {
           .plus({ days: index })
           .toFormat('yyyy-MM-dd');
         if (
-          eventsData[DateTime.fromISO(startDate).year] &&
+          eventsData?.[DateTime.fromISO(startDate).year] &&
           eventsData[DateTime.fromISO(startDate).year][tempDate]
         ) {
           const newIndex = eventsData[DateTime.fromISO(startDate).year][
@@ -129,7 +129,7 @@ export const Calendar: FC = () => {
       ).then(doc => doc.data());
 
       if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
-        dispatch(setEvents(event as EventsByYear));
+        dispatch(setEvents(event as Events));
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -154,7 +154,7 @@ export const Calendar: FC = () => {
   const calculateBiggestIndexByWeekNumber = useCallback(() => {
     let biggestIndex = 0;
     for (const day of dates) {
-      if (eventsData[day.year] && eventsData[day.year][day.date]) {
+      if (eventsData?.[day.year] && eventsData[day.year][day.date]) {
         const eventsForDay = eventsData[day.year][day.date];
         if (eventsForDay && eventsForDay.length > biggestIndex) {
           biggestIndex = eventsForDay.length;
@@ -393,7 +393,7 @@ export const Calendar: FC = () => {
             setSelectedEventToEdit={setSelectedEventToEdit}
             setAddNewEvent={setAddNewEvent}
             events={
-              selectedDay && eventsData[selectedDay.split('-')[0]]
+              selectedDay && eventsData?.[selectedDay.split('-')[0]]
                 ? eventsData[selectedDay.split('-')[0]][selectedDay]
                 : []
             }

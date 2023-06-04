@@ -1,11 +1,12 @@
-import { Day, EventsByYear } from '@modules/Calendar/CalendarTypes';
+import { Events } from '@/store/reducers/events';
+import { Day } from '@modules/Calendar/CalendarTypes';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import { DateTime } from 'luxon';
 import { FC } from 'react';
 import style from './PublicCalendar.module.scss';
 
 type Props = {
-  events: EventsByYear;
+  events: Events;
   day: Day;
 };
 
@@ -19,7 +20,8 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
     ? 'opacity-50'
     : dayIsDifferentMonth;
 
-  const dayEventsExist = events[day.year][day.date]?.length > 0;
+  const dayEventsExist =
+    events?.[day.year] && events[day.year][day.date]?.length > 0;
 
   const startingDay =
     dayEventsExist &&
@@ -32,7 +34,25 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
   //only show current and new reservations
   const dateIsAfterToday = DateTime.fromISO(day.date).diffNow('day').days > -1;
 
-  return dateIsAfterToday ? (
+  if (!events || dateIsAfterToday) {
+    return (
+      <div
+        className={`relative shadow-[0_-1px_1px_#cbd5e1]
+      hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
+        mobileView ? style.mobileGridItem : style.gridItem
+      }`}
+      >
+        <div
+          className={`flex h-full select-none flex-col overflow-hidden
+        font-semibold ${dayIsWeekendOrDifferentMonth}`}
+        >
+          <div className='absolute left-0 top-0'>{day.day}</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div
       className={`relative shadow-[0_-1px_1px_#cbd5e1]
       hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
@@ -57,20 +77,6 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
               : '',
           }}
         />
-      </div>
-    </div>
-  ) : (
-    <div
-      className={`relative shadow-[0_-1px_1px_#cbd5e1]
-    hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
-      mobileView ? style.mobileGridItem : style.gridItem
-    }`}
-    >
-      <div
-        className={`flex h-full select-none flex-col overflow-hidden
-      font-semibold ${dayIsWeekendOrDifferentMonth}`}
-      >
-        <div className='absolute left-0 top-0'>{day.day}</div>
       </div>
     </div>
   );

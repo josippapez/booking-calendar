@@ -1,3 +1,4 @@
+import { Events } from '@/store/reducers/events';
 import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
@@ -13,7 +14,7 @@ type Props = {
   setShowEdit: (state: boolean) => void;
   selectedEventToEdit: Event | null;
   setEvents: (events: EventsByYear) => void;
-  events: EventsByYear;
+  events: Events;
   selectedDay: string | null;
 };
 
