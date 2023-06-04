@@ -1,6 +1,6 @@
 import { useAppDispatch } from '@/store/hooks';
-import { Events } from '@/store/reducers/events';
 import { sendEmail } from '@/store/sendgridActions/emailActions';
+import { EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
-  currentReservations: Events;
+  currentReservations: EventsByYear;
   apartmentEmail: string;
 };
 

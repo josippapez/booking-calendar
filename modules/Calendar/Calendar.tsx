@@ -5,8 +5,8 @@ import {
 } from '@/store/firebaseActions/eventActions';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectApartment } from '@/store/reducers/apartments';
-import { Events, setEvents } from '@/store/reducers/events';
-import { Event } from '@modules/Calendar/CalendarTypes';
+import { setEvents } from '@/store/reducers/events';
+import { Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { CreateNewEvent } from '@modules/Calendar/CreateNewEvent/CreateNewEvent';
 import { DayDetails } from '@modules/Calendar/DayDetails/DayDetails';
 import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
@@ -129,7 +129,7 @@ export const Calendar: FC = () => {
       ).then(doc => doc.data());
 
       if (JSON.stringify(eventsData) !== JSON.stringify(event)) {
-        dispatch(setEvents(event as Events));
+        dispatch(setEvents(event as EventsByYear));
       }
     } catch (error) {
       if (error instanceof FirebaseError) {

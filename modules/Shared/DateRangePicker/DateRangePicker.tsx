@@ -1,5 +1,4 @@
-import { Events } from '@/store/reducers/events';
-import { Day, Event } from '@modules/Calendar/CalendarTypes';
+import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DatePickerDates } from '@modules/Shared/DatePicker/Dates/DatePickerDates';
 import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
@@ -15,7 +14,7 @@ type Props = {
   event: Event;
   setEvent: (event: Event) => void;
   disableForCurrentReservations?: boolean;
-  currentReservations?: Events;
+  currentReservations?: EventsByYear;
 };
 
 export const DateRangePicker: FC<Props> = ({

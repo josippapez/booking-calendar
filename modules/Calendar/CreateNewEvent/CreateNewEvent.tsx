@@ -1,4 +1,3 @@
-import { Events } from '@/store/reducers/events';
 import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
@@ -14,7 +13,7 @@ type Props = {
   setShowEdit: (state: boolean) => void;
   selectedEventToEdit: Event | null;
   setEvents: (events: EventsByYear) => void;
-  events: Events;
+  events: EventsByYear;
   selectedDay: string | null;
 };
 
@@ -290,7 +289,7 @@ export const CreateNewEvent: FC<Props> = ({
                   (acc: EventsByYear, date: Day) => ({
                     ...acc,
                     [date.year]: {
-                      ...acc[date.year],
+                      ...acc?.[date.year],
                       [date.date]: [
                         ...((editedEvents[date.year] &&
                           editedEvents[date.year][date.date]) ||
@@ -299,14 +298,15 @@ export const CreateNewEvent: FC<Props> = ({
                       ],
                     },
                   }),
-                  {}
+                  undefined
                 );
-                Object.keys(newDates).map(year => {
-                  editedEvents[year] = {
-                    ...editedEvents[year],
-                    ...newDates[year],
-                  };
-                });
+                if (newDates)
+                  Object.keys(newDates).map(year => {
+                    editedEvents[year] = {
+                      ...editedEvents[year],
+                      ...newDates?.[year],
+                    };
+                  });
                 setEvents(editedEvents);
                 setShow(false);
                 setShowEdit(false);

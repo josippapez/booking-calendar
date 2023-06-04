@@ -12,6 +12,7 @@ const firebase = FirebaseService.getInstance();
 
 export const saveEventsForApartment = (events: EventsByYear) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
+    if (!events) return;
     const selectedApartment = getState().apartments.selectedApartment;
 
     dispatch(setEvents(events));
@@ -50,10 +51,11 @@ export const saveEventsForApartment = (events: EventsByYear) => {
 
 export const removeEventForApartment = (eventId: string) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
-    const selectedApartment = getState().apartments.selectedApartment;
     const events = getState().events.events;
 
     if (!events) return;
+
+    const selectedApartment = getState().apartments.selectedApartment;
 
     const removedEvents: { [key: string]: { [key: string]: Event[] } } = {};
     Object.keys(events).forEach(key => {

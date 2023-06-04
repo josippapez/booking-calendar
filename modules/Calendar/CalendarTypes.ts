@@ -32,10 +32,13 @@ export type Event = {
   weekNumber?: number;
 };
 
-export type PublicEventsByYear = {
-  [key: string]: { [key: string]: { start: string; end: string }[] };
-};
-export type EventsByYear = { [key: string]: { [key: string]: Event[] } };
+export type PublicEventsByYear = Record<
+  string,
+  { [key: string]: { start: string; end: string }[] }
+>;
+export type EventsByYear =
+  | Record<string, { [key: string]: Event[] }>
+  | undefined;
 
 export type PublicEvent = {
   id: string;

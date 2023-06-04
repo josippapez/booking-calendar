@@ -1,12 +1,11 @@
-import { Events } from '@/store/reducers/events';
-import { Day } from '@modules/Calendar/CalendarTypes';
+import { Day, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import { DateTime } from 'luxon';
 import { FC } from 'react';
 import style from './PublicCalendar.module.scss';
 
 type Props = {
-  events: Events;
+  events: EventsByYear;
   day: Day;
 };
 
@@ -20,21 +19,20 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
     ? 'opacity-50'
     : dayIsDifferentMonth;
 
-  const dayEventsExist =
-    events?.[day.year] && events[day.year][day.date]?.length > 0;
+  const yearEvents = events?.[day.year];
+  const dayEvents = yearEvents?.[day.date];
+  const dayEventsExist = dayEvents && dayEvents.length > 0;
 
   const startingDay =
-    dayEventsExist &&
-    !events[day.year][day.date].find(event => event.start !== day.date);
+    dayEventsExist && !dayEvents.find(event => event.start !== day.date);
 
   const endingDay =
-    dayEventsExist &&
-    !events[day.year][day.date].find(event => event.end !== day.date);
+    dayEventsExist && !dayEvents.find(event => event.end !== day.date);
 
   //only show current and new reservations
   const dateIsAfterToday = DateTime.fromISO(day.date).diffNow('day').days > -1;
 
-  if (!events || dateIsAfterToday) {
+  if (!dayEvents || !dateIsAfterToday) {
     return (
       <div
         className={`relative shadow-[0_-1px_1px_#cbd5e1]
