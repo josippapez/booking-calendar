@@ -1,21 +1,22 @@
-import { Invoice } from '@modules/Invoice/Invoice';
 import { PageLoader } from '@modules/Shared/Loader/PageLoader';
 import { NextPage } from 'next';
-import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
+const DynamicInvoicePage = dynamic(
+  () => import('@modules/Invoice/Invoice').then(mod => mod.Invoice),
+  {
+    suspense: true,
+    loading: () => <PageLoader isLoading />,
+  }
+);
 
 const InvoicePage: NextPage = () => {
   return (
-    <Suspense fallback={<PageLoader isLoading />}>
+    <>
       <title>Invoice</title>
-      <Invoice />
-    </Suspense>
+      <DynamicInvoicePage />
+    </>
   );
-};
-
-export const getStaticProps = async () => {
-  return {
-    props: {},
-  };
 };
 
 export default InvoicePage;
