@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import style from './Navbar.module.scss';
+import { CalendarNavbarDropdown } from '@modules/Shared/Navbar/CalendarNavbarDropdown';
 
 type Props = { userAuthenticated: boolean };
 
@@ -80,6 +81,9 @@ export function Navbar(props: Props) {
                     >
                       {t('guests_link_name')}
                     </Link>
+                  </li>
+                  <li>
+                    <CalendarNavbarDropdown />
                   </li>
                 </ul>
               </div>

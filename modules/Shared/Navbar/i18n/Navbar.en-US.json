@@ -3,5 +3,6 @@
   "sign_out": "Sign Out",
   "apartments_link_name": "Apartments",
   "invoice_link_name": "Invoice",
-  "guests_link_name": "Guests"
+  "guests_link_name": "Guests",
+  "calendar": "Calendar"
 }

@@ -3,5 +3,6 @@
   "sign_out": "Odjava",
   "apartments_link_name": "Apartmani",
   "invoice_link_name": "Računi",
-  "guests_link_name": "Gosti"
+  "guests_link_name": "Gosti",
+  "calendar": "Kalendar"
 }
