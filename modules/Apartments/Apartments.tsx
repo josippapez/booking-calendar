@@ -243,17 +243,17 @@ export const Apartments: FC = () => {
                   }
                   className='rounded bg-blue-700 px-4 py-2 font-bold text-white shadow-md hover:bg-blue-500 disabled:bg-gray-400'
                   type='button'
-                  onClick={() => {
+                  onClick={async () => {
                     if (
                       newApartment.address &&
                       newApartment.name &&
                       emailRegex.test(newApartment.email)
                     ) {
                       if (newApartment.id) {
-                        dispatch(
+                        await dispatch(
                           editApartment(newApartment, setProgress, setError)
                         );
-                        setNewApartment({
+                        return setNewApartment({
                           id: '',
                           name: '',
                           address: '',
@@ -263,9 +263,8 @@ export const Apartments: FC = () => {
                           iban: '',
                           owner: '',
                         });
-                        return;
                       }
-                      dispatch(
+                      await dispatch(
                         saveApartment(
                           {
                             ...newApartment,
@@ -277,7 +276,7 @@ export const Apartments: FC = () => {
                           setError
                         )
                       );
-                      setNewApartment({
+                      return setNewApartment({
                         id: '',
                         name: '',
                         address: '',

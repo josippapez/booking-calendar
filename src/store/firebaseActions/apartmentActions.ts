@@ -5,6 +5,7 @@ import {
   setApartments,
 } from '@/store/reducers/apartments';
 import { AppDispatch, AppState } from '@/store/store';
+import { Apartment } from '@modules/Apartments/models/Apartment';
 import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
 import { doc, setDoc } from 'firebase/firestore';
 import {
@@ -38,7 +39,7 @@ const saveApartmentData = async (
   dispatch: AppDispatch
 ) => {
   if (typeof apartment.image === 'string') {
-    dispatch(setApartmentDataTofirebase(apartment, apartment.image));
+    await dispatch(setApartmentDataTofirebase(apartment, apartment.image));
   } else {
     const metadata = {
       contentType: apartment.image.type,
@@ -167,19 +168,7 @@ export const removeApartment = (apartmentId: string) => {
   };
 };
 
-const setApartmentDataTofirebase = (
-  apartment: {
-    id: string;
-    name: string;
-    address: string;
-    email: string;
-    image: File | string;
-    iban: string;
-    pid: string;
-    owner: string;
-  },
-  imageUrl: string
-) => {
+const setApartmentDataTofirebase = (apartment: Apartment, imageUrl: string) => {
   return async (dispatch: AppDispatch, getState: AppState) => {
     const { addByUserId: addByIdApartments } =
       FirebaseCollectionActions('apartments');
@@ -188,31 +177,36 @@ const setApartmentDataTofirebase = (
     const { addByCustomId: addByIdEvents } =
       FirebaseCollectionActions('events');
 
+    const tempNewApartment = { ...apartment, image: imageUrl };
+    delete tempNewApartment.pricePerNight;
+
     const tempApartments = {
       ...getState().apartments.apartments,
-      [apartment.id]: { ...apartment, image: imageUrl },
+      [apartment.id]: tempNewApartment,
     };
 
-    dispatch(selectApartment({ ...apartment, image: imageUrl }));
-    dispatch(setApartments(tempApartments));
+    dispatch(selectApartment(tempNewApartment));
 
     await dispatch(
-      addByIdApartments(tempApartments, () => {
+      addByIdApartments(tempApartments, async () => {
+        await dispatch(
+          addByIdGuests(apartment.id, {
+            userId: getState().user.user.id,
+          })
+        );
+        await dispatch(
+          addByIdEvents(apartment.id, {
+            userId: getState().user.user.id,
+            apartmentName: apartment.name,
+          })
+        );
+
         const savedAparmtent = t('saved_apartment_data', {
           ns: 'FirebaseActions',
         });
         toast(savedAparmtent, { type: 'success', position: 'bottom-right' });
-      })
-    );
-    await dispatch(
-      addByIdGuests(apartment.id, {
-        userId: getState().user.user.id,
-      })
-    );
-    await dispatch(
-      addByIdEvents(apartment.id, {
-        userId: getState().user.user.id,
-        apartmentName: apartment.name,
+
+        dispatch(setApartments(tempApartments));
       })
     );
   };
