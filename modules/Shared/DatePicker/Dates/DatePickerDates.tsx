@@ -1,7 +1,7 @@
-import { useCalculateEachDayOfMonth } from "@modules/Shared/Hooks/calculateEachDayOfMonth";
-import { Day } from "@modules/Calendar/CalendarTypes";
-import { DateTime, Info } from "luxon";
-import style from "./DatePickerDates.module.scss";
+import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
+import { Day } from '@modules/Calendar/CalendarTypes';
+import { DateTime, Info } from 'luxon';
+import style from './DatePickerDates.module.scss';
 
 type Props = {
   dates: ReturnType<typeof useCalculateEachDayOfMonth>;
@@ -32,7 +32,7 @@ export const DatePickerDates = (props: Props) => {
   };
 
   const defaultDisplayDate = (day: Day, index: number) => {
-    const isToday = DateTime.local().hasSame(DateTime.fromISO(day.date), "day");
+    const isToday = DateTime.local().hasSame(DateTime.fromISO(day.date), 'day');
     const disabled = disabledCondition;
 
     return (
@@ -40,14 +40,14 @@ export const DatePickerDates = (props: Props) => {
         key={index}
         className={`cursor-pointer transition-all hover:rounded-md hover:bg-blue-200
         ${initialDate === day.date && style.selectedDate}
-        ${isToday && "border-2 border-blue-500"}
-        ${style["dateRange-Day"]} select-none font-bold
+        ${isToday && 'border-2 border-blue-500'}
+        ${style['dateRange-Day']} select-none font-bold
         ${
-          ["Saturday", "Sunday"].includes(day.name)
-            ? "bg-opacity-60 text-neutral-500"
-            : day.lastMonth
-            ? "font-normal opacity-30"
-            : ""
+          ['Saturday', 'Sunday'].includes(day.name)
+            ? 'bg-opacity-60 text-neutral-500'
+            : day.lastMonth || day.nextMonth
+            ? 'font-normal opacity-30'
+            : ''
         }`}
         onMouseUp={() => {
           if (!disabled && setDate) {
@@ -63,11 +63,11 @@ export const DatePickerDates = (props: Props) => {
   const daysHeader = (month: number, year: number) => {
     return (
       <div>
-        <div className="flex gap-2 px-2 pb-2 text-xl font-extrabold drop-shadow-md">
-          {DateTime.local().set({ month, year }).toFormat("LLLL yyyy")}
+        <div className='flex gap-2 px-2 pb-2 text-xl font-extrabold drop-shadow-md'>
+          {DateTime.local().set({ month, year }).toFormat('LLLL yyyy')}
         </div>
         <div className={style.calendarGridHeader}>
-          {Info.weekdaysFormat("short").map((day, index) => (
+          {Info.weekdaysFormat('short').map((day, index) => (
             <div
               key={index}
               className={`${style.dayName} select-none font-semibold`}
@@ -84,7 +84,7 @@ export const DatePickerDates = (props: Props) => {
     dates && (
       <>
         {showPreviousMonth && (
-          <div className="rounded-md bg-gray-100 p-4 shadow-inner">
+          <div className='rounded-md bg-gray-100 p-4 shadow-inner'>
             {daysHeader(dates.lastMonth, dates.lastMonthYear)}
             <div className={`${style.calendarGrid}`}>
               {dates.lastMonthDates.map((day, index) =>
@@ -93,14 +93,14 @@ export const DatePickerDates = (props: Props) => {
             </div>
           </div>
         )}
-        <div className="rounded-md bg-gray-100 p-4 shadow-inner">
+        <div className='rounded-md bg-gray-100 p-4 shadow-inner'>
           {daysHeader(dates.month, dates.year)}
           <div className={`${style.calendarGrid}`}>
             {dates.dates.map((day, index) => displayDate(day, index))}
           </div>
         </div>
         {showNextMonth && (
-          <div className="rounded-md bg-gray-100 p-4 shadow-inner">
+          <div className='rounded-md bg-gray-100 p-4 shadow-inner'>
             {daysHeader(dates.nextMonth, dates.nextMonthYear)}
             <div className={`${style.calendarGrid}`}>
               {dates.nextMonthDates.map((day, index) =>

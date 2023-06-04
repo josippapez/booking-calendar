@@ -116,7 +116,7 @@ export const DateRangePicker: FC<Props> = ({
         ${
           ['Saturday', 'Sunday'].includes(day.name)
             ? 'bg-opacity-60 text-neutral-500'
-            : day.lastMonth
+            : day.lastMonth || day.nextMonth
             ? 'font-normal opacity-30'
             : ''
         }

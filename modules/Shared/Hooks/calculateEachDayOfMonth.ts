@@ -41,7 +41,7 @@ export const useCalculateEachDayOfMonth = ({
   const calculateDates = useCallback(
     (start: DateTime, end: DateTime): Day[] => {
       const monthDates: Day[] = [];
-      const daysInMonth = end.diff(start, 'days');
+      const daysInMonth = end.diff(start, ['days', 'hours']);
       for (let i = 0; i <= daysInMonth.days; i++) {
         const day = start.plus({ days: i });
 
@@ -63,9 +63,21 @@ export const useCalculateEachDayOfMonth = ({
           date: day.toFormat('yyyy-MM-dd'),
           name: day.toFormat('EEEE'),
           year: day.toFormat('yyyy'),
-          lastMonth: false,
           weekNumber: day.weekNumber,
         });
+        if (i === daysInMonth.days && end.get('weekday') !== 7) {
+          for (let index = 1; index <= 7 - end.get('weekday'); index++) {
+            const dayOfNextMonth = end.plus({ days: index });
+            monthDates.push({
+              day: dayOfNextMonth.day,
+              date: dayOfNextMonth.toFormat('yyyy-MM-dd'),
+              name: dayOfNextMonth.toFormat('EEEE'),
+              year: dayOfNextMonth.toFormat('yyyy'),
+              nextMonth: true,
+              weekNumber: dayOfNextMonth.weekNumber,
+            });
+          }
+        }
       }
       return monthDates;
     },

@@ -327,7 +327,7 @@ export const Calendar: FC = () => {
                   className={`flex h-full select-none flex-col ${
                     ['Saturday', 'Sunday'].includes(day.name)
                       ? 'opacity-50'
-                      : day.lastMonth
+                      : day.lastMonth || day.nextMonth
                       ? 'font-normal opacity-30'
                       : 'opacity-100'
                   } ${mobileView ? style.mobileDayText : style.dayText}`}

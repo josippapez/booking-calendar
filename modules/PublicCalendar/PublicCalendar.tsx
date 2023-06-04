@@ -1,5 +1,6 @@
 import { EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { CreateNewReservation } from '@modules/PublicCalendar/CreateNewReservation/CreateNewReservation';
+import { PublicCalendarDay } from '@modules/PublicCalendar/PublicCalendarDay';
 import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
@@ -286,95 +287,23 @@ export const PublicCalendar: FC<Props> = ({
           )}
         </div>
         <div className={style.calendarGrid}>
-          {dates.map((day, index) => {
-            const dayEventsExist =
-              events && events[day.year] && events[day.year][day.date]?.length;
-
-            const startingDay =
-              dayEventsExist &&
-              !events[day.year][day.date].find(
-                event => event.start !== day.date
-              );
-
-            const endingDay =
-              dayEventsExist &&
-              !events[day.year][day.date].find(event => event.end !== day.date);
-
-            return DateTime.fromISO(day.date).diffNow('day').days > -1 ? (
-              <div
-                key={index}
-                className={`relative shadow-[0_-1px_1px_#cbd5e1]
-                hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
-                  mobileView ? style.mobileGridItem : style.gridItem
-                }`}
-              >
-                <div
-                  className={`flex h-full select-none flex-col overflow-hidden
-                  font-semibold ${
-                    ['Saturday', 'Sunday'].includes(day.name)
-                      ? 'opacity-50'
-                      : day.lastMonth
-                      ? 'font-normal opacity-30'
-                      : 'opacity-100'
-                  } ${
-                    events &&
-                    events[day.year] &&
-                    events[day.year][day.date]?.length > 0 &&
-                    'text-white'
-                  } ${startingDay && 'text-black'}`}
-                >
-                  <div className='absolute left-0 top-0'>{day.day}</div>
-                  <div
-                    className={`h-full ${
-                      events &&
-                      events[day.year] &&
-                      events[day.year][day.date]?.length > 0 &&
-                      'bg-red-600'
-                    }
-                    `}
-                    style={{
-                      background: startingDay
-                        ? 'linear-gradient(to right bottom, transparent 50%, #DC2726 50.3%)'
-                        : endingDay
-                        ? 'linear-gradient(to right bottom, #DC2726 50%, transparent 50.3%)'
-                        : '',
-                    }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div
-                key={index}
-                className={`relative shadow-[0_-1px_1px_#cbd5e1]
-              hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
-                mobileView ? style.mobileGridItem : style.gridItem
-              }`}
-              >
-                <div
-                  className={`flex h-full select-none flex-col overflow-hidden
-                font-semibold ${
-                  ['Saturday', 'Sunday'].includes(day.name)
-                    ? 'opacity-50'
-                    : day.lastMonth
-                    ? 'font-normal opacity-30'
-                    : 'opacity-100'
-                }`}
-                >
-                  <div className='absolute left-0 top-0'>{day.day}</div>
-                </div>
-              </div>
-            );
-          })}
+          {dates.map((day, index) => (
+            <PublicCalendarDay
+              key={index + day.date}
+              day={day}
+              events={events}
+            />
+          ))}
         </div>
       </div>
-      {displayNewReservation && (
+      {displayNewReservation ? (
         <CreateNewReservation
           show={true}
           setShow={setDisplayNewReservation}
           currentReservations={events}
           apartmentEmail={apartmentEmail}
         />
-      )}
+      ) : null}
     </div>
   );
 };
