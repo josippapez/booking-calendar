@@ -6,7 +6,6 @@ import { AuthProvider } from '@modules/Shared/Providers/AuthProvider';
 import { Routes } from 'consts';
 import Cookies from 'js-cookie';
 import { AppProps } from 'next/app';
-import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,14 +13,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
   const mobileView = useMobileView();
-
-  useEffect(() => {
-    const element = document.getElementById('__next');
-    if (mobileView && element !== null) {
-      element.style.maxHeight = window.innerHeight + 'px';
-      element.style.height = window.innerHeight + 'px';
-    }
-  }, [router, mobileView]);
 
   return (
     <Provider store={store}>
