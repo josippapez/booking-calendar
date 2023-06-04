@@ -5,7 +5,6 @@ import { Settings } from 'luxon';
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import '../public/Styles/globals.css';
-import Head from 'next/head';
 
 declare global {
   interface Window {

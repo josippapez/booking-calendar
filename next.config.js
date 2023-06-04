@@ -98,19 +98,12 @@ const nextConfig = {
     config.plugins.push(
       new CopyPlugin({
         patterns: [
-          // {
-          //   from: path.join(
-          //     path.dirname(require.resolve("pdfjs-dist/package.json")),
-          //     "build",
-          //     "pdf.worker.min.js"
-          //   ),
-          // },
           {
             from: path.join(
-              path.dirname(require.resolve('pdfjs-dist/package.json')),
-              'cmaps'
+              __dirname,
+              'node_modules/pdfjs-dist/build/pdf.worker.min.js'
             ),
-            to: 'cmaps/',
+            to: path.join(__dirname, 'public'),
           },
         ],
       })

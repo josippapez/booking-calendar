@@ -9,10 +9,10 @@ import { useTranslation } from 'react-i18next';
 
 export type TransactionInvoiceData = {
   apartmentData: Apartment;
-  recepientData: {
-    recepientName: string;
-    recepientAddress: string;
-    recepientPID: string;
+  recipientData: {
+    recipientName: string;
+    recipientAddress: string;
+    recipientPID: string;
   };
   invoiceData: {
     invoiceName: string;
@@ -54,10 +54,10 @@ export const Invoice: FC = () => {
         email: '',
         pricePerNight: undefined,
       },
-      recepientData: {
-        recepientName: '',
-        recepientAddress: '',
-        recepientPID: '',
+      recipientData: {
+        recipientName: '',
+        recipientAddress: '',
+        recipientPID: '',
       },
       invoiceData: {
         invoiceName: t('invoiceNamePlaceholder', {

@@ -17,7 +17,7 @@ type Props = {
   translate: TFunction;
   locale: string;
   apartmentData: TransactionInvoiceData['apartmentData'];
-  recepientData: TransactionInvoiceData['recepientData'];
+  recipientData: TransactionInvoiceData['recipientData'];
   invoiceData: TransactionInvoiceData['invoiceData'];
 };
 
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 });
 
 export const TransactionInvoice = (props: Props): JSX.Element => {
-  const { translate, locale, apartmentData, invoiceData, recepientData } =
+  const { translate, locale, apartmentData, invoiceData, recipientData: recepientData } =
     props;
 
   return (
@@ -135,9 +135,9 @@ export const TransactionInvoice = (props: Props): JSX.Element => {
           </View>
         </View>
         <View style={[styles.column, { marginBottom: 40 }]}>
-          <Text>{recepientData.recepientName}</Text>
-          <Text>{recepientData.recepientAddress}</Text>
-          <Text>{recepientData.recepientPID}</Text>
+          <Text>{recepientData.recipientName}</Text>
+          <Text>{recepientData.recipientAddress}</Text>
+          <Text>{recepientData.recipientPID}</Text>
         </View>
         <View style={[styles.row, { marginBottom: 40 }]}>
           <View style={[styles.column, { left: 40 }]}>

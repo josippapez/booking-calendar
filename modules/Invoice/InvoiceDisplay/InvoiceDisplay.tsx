@@ -11,16 +11,11 @@ import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 type Props = {
   invoiceData: TransactionInvoiceData;
   setInvoiceData: (data: TransactionInvoiceData) => void;
-};
-
-const options = {
-  cMapUrl: 'cmaps/',
-  cMapPacked: true,
 };
 
 export const InvoiceDisplay = (props: Props) => {

@@ -5,12 +5,12 @@ import { TransactionInvoiceData } from '../Invoice';
 
 type Props = {
   apartmentData: TransactionInvoiceData['apartmentData'];
-  recepientData: TransactionInvoiceData['recepientData'];
+  recipientData: TransactionInvoiceData['recipientData'];
   invoiceData: TransactionInvoiceData['invoiceData'];
 };
 
 export const InvoiceTemplate = (props: Props): JSX.Element => {
-  const { apartmentData, invoiceData, recepientData } = props;
+  const { apartmentData, invoiceData, recipientData } = props;
   const { t, i18n } = useTranslation('TransactionInvoice');
   const options = useMemo(() => {
     return {
@@ -18,9 +18,9 @@ export const InvoiceTemplate = (props: Props): JSX.Element => {
       locale: i18n.language,
       apartmentData,
       invoiceData,
-      recepientData,
+      recipientData,
     };
-  }, [i18n.language, apartmentData, invoiceData, recepientData, t]);
+  }, [i18n.language, apartmentData, invoiceData, recipientData, t]);
 
   return useMemo(() => {
     return TransactionInvoice(options);

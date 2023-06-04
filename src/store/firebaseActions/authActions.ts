@@ -4,6 +4,7 @@ import { persistor, store } from '@/store/store';
 import { FirebaseError } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  browserLocalPersistence,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -20,6 +21,7 @@ export const signInWithGoogle = async () => {
   try {
     const auth = firebase.getAuth();
     const db = firebase.getFirestore();
+    await auth.setPersistence(browserLocalPersistence);
     const res = await signInWithPopup(auth, googleProvider);
     const user = res.user;
     const q = query(collection(db, 'users'), where('uid', '==', user.uid));
@@ -51,6 +53,7 @@ export const registerWithEmailAndPassword = async (
   try {
     const auth = firebase.getAuth();
     const db = firebase.getFirestore();
+    await auth.setPersistence(browserLocalPersistence);
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
     await addDoc(collection(db, 'users'), {
@@ -87,6 +90,7 @@ export const signInEmailAndPassword = async (
 ) => {
   try {
     const auth = firebase.getAuth();
+    await auth.setPersistence(browserLocalPersistence);
     const res = await signInWithEmailAndPassword(auth, email, password);
     const user = res.user;
     if (user) {
