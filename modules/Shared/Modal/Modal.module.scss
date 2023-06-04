@@ -28,7 +28,7 @@
 #modal-children {
   z-index: 2;
   cursor: default;
-  // overflow-y: auto;
+  overflow-y: auto;
 }
 #modal-children > * > *[class*='modal-body'] {
   flex-grow: 1;

@@ -24,6 +24,9 @@ interface Props {
     | 'slide-bottom';
 }
 
+// This is a counter to keep track of how many modals are opened at the same time
+let opened = 0;
+
 export const Modal: FC<Props> = ({
   closeModal = () => {
     return;
@@ -46,6 +49,20 @@ export const Modal: FC<Props> = ({
   useEffect(() => {
     if (escPressed) setStartClosing(true);
   }, [escPressed, closeModal]);
+
+  useEffect(() => {
+    if (opened === 0) {
+      document.body.style.overflow = show ? 'hidden' : 'auto';
+    }
+    if (show) {
+      opened++;
+    }
+    return () => {
+      if (show) {
+        opened--;
+      }
+    };
+  }, [show]);
 
   return createPortal(
     <AnimatePresence
