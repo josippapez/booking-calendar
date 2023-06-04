@@ -30,13 +30,11 @@ export const ProtectedRoutes = ({ Component, pageProps, router }: AppProps) => {
           <AlertModalProvider>
             <Navbar userAuthenticated={!!Cookies.get('accessToken')} />
             <div
-              className={`min-w-screen page-container w-full overflow-x-hidden ${
+              className={`min-w-screen page-container h-fit w-full overflow-x-hidden ${
                 mobileView
-                  ? router.asPath !== Routes.LOGIN &&
-                    'min-h-[calc(100%_-_5rem)] py-10'
-                  : router.asPath !== Routes.LOGIN &&
-                    'min-h-[calc(100%_-_8rem)] py-16'
-              } relative select-none`}
+                  ? router.asPath !== Routes.LOGIN && 'py-10'
+                  : router.asPath !== Routes.LOGIN && 'py-16'
+              } select-none`}
             >
               <ToastContainer />
               <Component {...pageProps} />
