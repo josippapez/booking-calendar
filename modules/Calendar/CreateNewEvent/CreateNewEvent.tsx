@@ -74,15 +74,6 @@ export const CreateNewEvent: FC<Props> = ({
   }, [selectedEventToEdit, showEdit]);
 
   useEffect(() => {
-    if (selectedDay) {
-      setNewEvent(prev => ({
-        ...prev,
-        start: selectedDay,
-      }));
-    }
-  }, [selectedDay]);
-
-  useEffect(() => {
     return () => {
       if (!show && !showEdit) {
         setNewEvent({
