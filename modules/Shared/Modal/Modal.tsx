@@ -64,6 +64,14 @@ export const Modal: FC<Props> = ({
     };
   }, [show]);
 
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
+  if (typeof window === 'undefined') return null;
+
   return createPortal(
     <AnimatePresence
       onExitComplete={() => {
