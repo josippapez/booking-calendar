@@ -66,7 +66,7 @@ export const Modal: FC<Props> = ({
 
   useEffect(() => {
     return () => {
-      document.body.style.overflow = 'auto';
+      if (!show) document.body.style.overflow = 'auto';
     };
   }, []);
 
