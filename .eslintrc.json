@@ -1,27 +1,4 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:import/recommended",
-    "eslint:recommended",
-    "plugin:import/typescript"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "settings": {
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true,
-        "project": "./tsconfig.json"
-      }
-    }
-  },
-  "rules": {
-    "no-unused-vars": "warn"
-  },
-  "globals": {
-    "JSX": "readonly"
-  },
-  "ignorePatterns": ["**/*.d.ts", "pdf.worker.js"]
+  "extends": ["next/core-web-vitals"],
+  "ignorePatterns": ["pdf.worker.js"]
 }

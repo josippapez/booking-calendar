@@ -1,3 +1,5 @@
+'use client';
+
 import { logout } from '@/store/firebaseActions/authActions';
 import { useCloseOnClickOutside } from '@modules/Shared/Hooks/useCloseOnClickOutside';
 import { useDarkMode } from '@modules/Shared/Hooks/useDarkMode';
@@ -9,11 +11,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import style from './Navbar.module.scss';
 import { CalendarNavbarDropdown } from '@modules/Shared/Navbar/CalendarNavbarDropdown';
+import Cookies from 'js-cookie';
 
-type Props = { userAuthenticated: boolean };
-
-export function Navbar(props: Props) {
-  const { userAuthenticated } = props;
+export function Navbar() {
+  const userAuthenticated = Cookies.get('accessToken');
   const { t, i18n } = useTranslation('Navbar');
   const darkmode = useDarkMode();
   const router = useRouter();

@@ -1,25 +1,42 @@
+'use client';
+
+import { useAuthenticationControllerLogIn } from '@/api';
+import Google from '@public/Styles/Assets/Images/google.svg';
 import { Routes } from 'consts';
+import Cookies from 'js-cookie';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  signInEmailAndPassword,
-  signInWithGoogle,
-} from '@/store/firebaseActions/authActions';
-import { useAppDispatch } from '@/store/hooks';
-import { setUser } from '@/store/reducers/user';
-import style from './LoginPage.module.scss';
+import { toast } from 'react-toastify';
 
 type Props = {};
 
 export const LoginPage: NextPage = (props: Props) => {
-  const { t } = useTranslation('LoginPage');
+  const t = useTranslations('LoginPage');
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  const { mutate: loginWithEmailAndPassword, isPending } =
+    useAuthenticationControllerLogIn({
+      mutation: {
+        mutationKey: ['login-email-password'],
+        onMutate: async () => {
+          setLoginError('');
+        },
+        onError: error => {
+          toast.error(t(error.response?.data.message));
+        },
+        onSuccess: data => {
+          Cookies.set('accessToken', data.accessToken);
+          Cookies.set('refreshToken', data.refreshToken);
+          router.push(Routes.APARTMENTS);
+        },
+      },
+    });
 
   return (
     <div className='flex h-screen items-center justify-center'>
@@ -62,47 +79,34 @@ export const LoginPage: NextPage = (props: Props) => {
               }}
             />
           </div>
-          <div className='mb-6 text-red-500'>{t(loginError)}</div>
+          {loginError && (
+            <div className='mb-6 text-red-500'>{t(loginError)}</div>
+          )}
           <div className='flex items-center justify-center'>
             <button
-              className='focus:shadow-outline rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500 focus:outline-none'
+              className='focus:shadow-outline rounded bg-blue-700 px-4 py-2 font-bold text-white transition-all hover:bg-blue-500 focus:outline-none'
               type='button'
+              disabled={isPending}
               onClick={() => {
-                setLoginError('');
-                signInEmailAndPassword(email, password).then(
-                  (error: string | undefined) => {
-                    if (error) {
-                      setLoginError(error);
-                    } else {
-                      router.push(Routes.APARTMENTS);
-                    }
-                  }
-                );
+                loginWithEmailAndPassword({
+                  data: {
+                    email,
+                    password,
+                  },
+                });
               }}
             >
               {t('sign_in')}
             </button>
           </div>
           <div className='flex items-center justify-evenly'>
-            <button
-              className={`focus:shadow-outline mt-4 rounded bg-gray-200 p-6 hover:bg-gray-100 focus:outline-none ${style.google}`}
-              type='button'
-              onClick={async () => {
-                setLoginError('');
-                await signInWithGoogle().then(async (res) => {
-                  if (res && res.id && res.email && res.accessToken) {
-                    dispatch(
-                      setUser({
-                        id: res.id,
-                        email: res.email,
-                        accessToken: res.accessToken,
-                      })
-                    );
-                    await router.push(Routes.APARTMENTS);
-                  }
-                });
-              }}
-            />
+            <Link
+              href={Routes.GOOGLE_LOGIN}
+              target='_blank'
+              className={`focus:shadow-outline mt-4 rounded bg-gray-200 p-3 transition-all hover:bg-gray-100 focus:outline-none`}
+            >
+              <Google />
+            </Link>
           </div>
         </form>
       </div>

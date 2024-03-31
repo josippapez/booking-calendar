@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 
-const CopyPlugin = require('copy-webpack-plugin');
-const path = require('path');
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+import withNextIntl from 'next-intl/plugin';
+import NextBundleAnalyzer from '@next/bundle-analyzer';
+import CopyPlugin from 'copy-webpack-plugin';
+import path from 'path';
+
+const withBundleAnalyzer = NextBundleAnalyzer({
   enabled:
-    process.env.ANALYZE === 'true' && process.env.NODE_ENV === 'production',
+    process.env.NODE_ENV === 'production' && process.env.ANALYZE === 'true',
 });
 
 const regexEqual = (x, y) => {
@@ -31,6 +34,11 @@ function cssLoaderOptions(modules) {
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   images: {
     domains: ['firebasestorage.googleapis.com', 'localhost'],
   },
@@ -97,11 +105,8 @@ const nextConfig = {
       new CopyPlugin({
         patterns: [
           {
-            from: path.join(
-              __dirname,
-              'node_modules/pdfjs-dist/build/pdf.worker.min.js'
-            ),
-            to: path.join(__dirname, 'public'),
+            from: './node_modules/pdfjs-dist/build/pdf.worker.min.js',
+            to: './public',
           },
         ],
       })
@@ -111,4 +116,6 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+export default withBundleAnalyzer(
+  withNextIntl('modules/translations/i18n.ts')(nextConfig)
+);

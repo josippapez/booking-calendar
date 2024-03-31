@@ -1,51 +1,64 @@
+'use client';
+
 import { FirebaseService } from '@/store/FirebaseService';
-import { User } from 'firebase/auth';
+import {
+  useFilterQuery,
+  useSearchParams,
+} from '@modules/Shared/Hooks/useFilterQuery';
+import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import Cookies from 'js-cookie';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 
 const firebase = FirebaseService.getInstance();
 
-const AuthContext = createContext<{ user: User | null }>({
-  user: null,
-});
+const AuthContext = createContext({});
 
 export const useAuth = () => {
   return useContext(AuthContext);
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const { handleFilterRemoveAll } = useFilterQuery();
+  const params = useSearchParams();
+
+  const accessToken = params.params.get('accessToken');
+  const refreshToken = params.params.get('refreshToken');
 
   // listen for token changes
   // call setUser and write new token as a cookie
   useEffect(() => {
-    return firebase.getAuth().onIdTokenChanged(async user => {
-      if (!user) {
-        setUser(null);
-        Cookies.remove('accessToken');
-        Cookies.remove('refreshToken');
-      } else {
-        const token = await user.getIdToken();
-        const refreshToken = user.refreshToken;
-        setUser(user);
-        Cookies.set('accessToken', token, { expires: 14 });
-        Cookies.set('refreshToken', refreshToken, { expires: 14 });
-      }
-    });
-  }, []);
+    // return firebase.getAuth().onIdTokenChanged(async user => {
+    //   if (!user) {
+    //     setUser(null);
+    //     Cookies.remove('accessToken');
+    //     Cookies.remove('refreshToken');
+    //   } else {
+    //     const token = await user.getIdToken();
+    //     const refreshToken = user.refreshToken;
+    //     setUser(user);
+    //     Cookies.set('accessToken', token, { expires: 14 });
+    //     Cookies.set('refreshToken', refreshToken, { expires: 14 });
+    //   }
+    // });
+    if (accessToken) {
+      Cookies.set('accessToken', accessToken, { expires: 14 });
+    }
+    if (refreshToken) {
+      Cookies.set('refreshToken', refreshToken, { expires: 14 });
+    }
+    handleFilterRemoveAll();
+  }, [accessToken, handleFilterRemoveAll, refreshToken]);
 
   // force refresh the token every 10 minutes
-  useEffect(() => {
-    const handle = setInterval(async () => {
-      const user = firebase.getAuth().currentUser;
-      if (user) await user.getIdToken(true);
-    }, 10 * 60 * 1000);
+  // useEffect(() => {
+  //   const handle = setInterval(async () => {
+  //     const user = firebase.getAuth().currentUser;
+  //     if (user) await user.getIdToken(true);
+  //   }, 10 * 60 * 1000);
 
-    // clean up setInterval
-    return () => clearInterval(handle);
-  }, []);
+  //   // clean up setInterval
+  //   return () => clearInterval(handle);
+  // }, []);
 
-  return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
 }

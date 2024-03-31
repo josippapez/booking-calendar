@@ -1,6 +1,7 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ES2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -8,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -17,9 +18,16 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@api/*": ["src/api/*"],
       "@public/*": ["public/*"],
-      "@modules/*": ["modules/*"]
-    }
+      "@modules/*": ["modules/*"],
+      "@styles/*": ["public/styles/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "ts-node": {
     "compilerOptions": {
@@ -27,6 +35,14 @@
       "isolatedModules": false
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "next.config.mjs"
+  ],
   "exclude": ["node_modules"]
 }

@@ -10,6 +10,11 @@
   "auth": {
     "weak-password": "Weak password",
     "wrong-password": "Wrong password",
-    "too-many-requests": "Too many requests, try again later"
+    "too-many-requests": "Too many requests, try again later",
+    "DOES_NOT_EXIST": "User does not exist"
+  },
+  "Metadata": {
+    "title": "Sign in or Sign up",
+    "description": "Sign in or Sign up"
   }
 }

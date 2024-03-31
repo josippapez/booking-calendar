@@ -1,3 +1,5 @@
+'use client';
+
 import { persistor, store } from '@/store/store';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import { Navbar } from '@modules/Shared/Navbar/Navbar';
