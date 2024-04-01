@@ -1,7 +1,6 @@
 import { EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { CreateNewReservation } from '@modules/PublicCalendar/CreateNewReservation/CreateNewReservation';
 import { PublicCalendarDay } from '@modules/PublicCalendar/PublicCalendarDay';
-import { FirebaseCollectionActions } from '@modules/Shared/Hooks/FirebaseCollectionActions';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import Images from '@public/Styles/Assets/Images/Images';
@@ -19,7 +18,6 @@ export const PublicCalendar: React.FC<{
   apartmentEmail: string;
 }> = ({ apartmentEmail, apartmentLogo, apartmentName }) => {
   const t = useTranslations('PublicCalendar');
-  console.log(t);
 
   return null;
   // const { t, i18n } = useTranslation('PublicCalendar');

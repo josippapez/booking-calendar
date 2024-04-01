@@ -18,5 +18,11 @@
   "address": "Address",
   "email": "Email",
   "image_size_error": "Image size should be less than {{size}} MB",
-  "remove_apartment": "Are you sure you want to remove this apartment?"
+  "remove_apartment": "Are you sure you want to remove this apartment?",
+  "apartment_created": "Apartment created",
+  "apartment_updated": "Apartment updated",
+  "Metadata": {
+    "title": "Apartments",
+    "description": "Apartments view"
+  }
 }

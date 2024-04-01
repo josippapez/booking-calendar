@@ -4,8 +4,8 @@ import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHe
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime, Interval } from 'luxon';
+import { useTranslations } from 'next-intl';
 import { FC, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import style from './DateRangePicker.module.scss';
 
 type Props = {
@@ -25,7 +25,7 @@ export const DateRangePicker: FC<Props> = ({
   currentReservations,
   disableForCurrentReservations,
 }) => {
-  const { t } = useTranslation('DateRangePicker');
+  const t = useTranslations('DateRangePicker');
 
   const eventStartingDate = event.start ? DateTime.fromISO(event.start) : null;
   const startYear = eventStartingDate?.year ?? DateTime.local().year;

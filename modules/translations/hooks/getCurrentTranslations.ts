@@ -1,6 +1,6 @@
-import { countries } from '@modules/translations/const';
+import { CountryCodes, countries } from '@modules/translations/const';
 
-export async function getCurrentTranslations(locale: string | undefined) {
+export async function getCurrentTranslations(locale: CountryCodes | undefined) {
   let translations;
 
   if (!locale) return;
@@ -11,11 +11,11 @@ export async function getCurrentTranslations(locale: string | undefined) {
 
   try {
     translations = await import(`@public/translations/${language}.json`).then(
-      (module) => module.default,
+      module => module.default
     );
   } catch (error) {
     translations = await import(`@public/translations/en-US.json`).then(
-      (module) => module.default,
+      module => module.default
     );
   }
 

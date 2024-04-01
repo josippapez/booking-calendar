@@ -1,6 +1,7 @@
 import Axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
-import { getAuth, getIdToken, signOut } from 'firebase/auth';
 import Cookies from 'js-cookie';
+
+const isServer = typeof window === 'undefined';
 
 export const AXIOS_INSTANCE = Axios.create({
   baseURL: process.env.NEXT_PUBLIC_BE_API_URL,
@@ -43,8 +44,9 @@ AXIOS_INSTANCE.interceptors.response.use(
   },
   error => {
     if (error.response?.status === 401) {
-      const auth = getAuth();
-      signOut(auth);
+      Cookies.remove('accessToken');
+      Cookies.remove('refreshToken');
+      if (!isServer) localStorage.clear();
     }
     return Promise.reject(error);
   }

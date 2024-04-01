@@ -5,12 +5,13 @@
  * Booking calendar API description
  * OpenAPI spec version: 1.0
  */
+import type { CreateApartmentDtoImage } from './createApartmentDtoImage';
 
 export interface CreateApartmentDto {
   address: string;
   email: string;
   iban?: string;
-  image?: string;
+  image?: CreateApartmentDtoImage;
   name: string;
   owner?: string;
   pid?: string;

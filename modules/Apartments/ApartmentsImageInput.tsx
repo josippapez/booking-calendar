@@ -1,13 +1,13 @@
-import { Apartment } from '@modules/Apartments/models/Apartment';
+import { ModifiedSingleApartmentDto } from '@modules/Apartments/Apartments';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   progress: number;
-  apartment: Apartment;
-  setApartment: (apartment: Apartment) => void;
+  apartment: ModifiedSingleApartmentDto;
+  setApartment: (apartment: ModifiedSingleApartmentDto) => void;
   error: string | null;
   setError: (error: string | null) => void;
 };
@@ -19,7 +19,7 @@ export const ApartmentsImageInput: FC<Props> = ({
   apartment,
   progress,
 }) => {
-  const { t } = useTranslation('Apartments');
+  const t = useTranslations('Apartments');
   const mobileView = useMobileView();
 
   return (

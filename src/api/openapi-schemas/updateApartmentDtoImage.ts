@@ -6,6 +6,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface User {
-  _id: string;
-}
+export type UpdateApartmentDtoImage = string | Blob;

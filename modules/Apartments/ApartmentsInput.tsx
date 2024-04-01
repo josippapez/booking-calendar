@@ -1,32 +1,25 @@
 import {
-  editApartment,
-  saveApartment,
-} from '@/store/firebaseActions/apartmentActions';
-import { useAppDispatch } from '@/store/hooks';
+  useApartmentsControllerCreate,
+  useApartmentsControllerUpdate,
+} from '@/api';
+import { ModifiedSingleApartmentDto } from '@modules/Apartments/Apartments';
 import { ApartmentsImageInput } from '@modules/Apartments/ApartmentsImageInput';
-import { Apartment } from '@modules/Apartments/models/Apartment';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
+import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
+import { useTranslations } from 'next-intl';
+import { FC, useCallback, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 type Props = {
-  apartment: Apartment;
-  setApartment: (value: Apartment) => void;
+  apartment: ModifiedSingleApartmentDto;
+  setApartment: (value: ModifiedSingleApartmentDto) => void;
 };
 
 export const ApartmentsInput: FC<Props> = ({
   apartment: newApartment,
   setApartment: setNewApartment,
 }) => {
-  const { t } = useTranslation('Apartments');
-  const dispatch = useAppDispatch();
+  const t = useTranslations('Apartments');
   const mobileView = useMobileView();
 
   const [progress, setProgress] = useState(0);
@@ -37,6 +30,46 @@ export const ApartmentsInput: FC<Props> = ({
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     []
   );
+
+  const { mutate: createApartment, isPending: createApartmentIsPending } =
+    useApartmentsControllerCreate({
+      mutation: {
+        mutationKey: ['apartments-create'],
+        onSuccess: data => {
+          setProgress(0);
+          setError(null);
+          toast.success(t('apartment_created'));
+          resetApartment();
+          queryClient.invalidateQueries({
+            queryKey: ['apartments'],
+          });
+        },
+        onError: error => {
+          setProgress(0);
+          toast.error(error.response?.data.message);
+        },
+      },
+    });
+
+  const { mutate: updateApartment, isPending: updateApartmentIsPending } =
+    useApartmentsControllerUpdate({
+      mutation: {
+        mutationKey: ['apartments-update'],
+        onSuccess: data => {
+          setProgress(0);
+          setError(null);
+          toast.success(t('apartment_updated'));
+          resetApartment();
+          queryClient.invalidateQueries({
+            queryKey: ['apartments'],
+          });
+        },
+        onError: error => {
+          setProgress(0);
+          toast.error(error.response?.data.message);
+        },
+      },
+    });
 
   const resetApartment = useCallback(
     () =>
@@ -60,24 +93,16 @@ export const ApartmentsInput: FC<Props> = ({
       emailRegex.test(newApartment.email)
     ) {
       if (newApartment.id) {
-        dispatch(editApartment(newApartment, setProgress, setError)).then(
-          resetApartment,
-          resetApartment
-        );
-        return;
+        return updateApartment({
+          id: newApartment.id,
+          data: newApartment,
+        });
       }
-      dispatch(
-        saveApartment(
-          {
-            ...newApartment,
-            id: crypto.getRandomValues(new Uint8Array(16)).join(''),
-          },
-          setProgress,
-          setError
-        )
-      ).then(resetApartment, resetApartment);
+      return createApartment({
+        data: newApartment,
+      });
     }
-  }, [dispatch, emailRegex, newApartment, resetApartment]);
+  }, [createApartment, emailRegex, newApartment, updateApartment]);
 
   return (
     <div
@@ -260,7 +285,9 @@ export const ApartmentsInput: FC<Props> = ({
               disabled={
                 !newApartment.address ||
                 !newApartment.name ||
-                !emailRegex.test(newApartment.email)
+                !emailRegex.test(newApartment.email) ||
+                createApartmentIsPending ||
+                updateApartmentIsPending
               }
               className='rounded bg-blue-700 px-4 py-2 font-bold text-white shadow-md hover:bg-blue-500 disabled:bg-gray-400'
               type='button'

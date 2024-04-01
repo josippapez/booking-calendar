@@ -3,6 +3,7 @@ import { AlertModalProvider } from '@modules/Shared/Providers/AlertModalProvider
 import { AuthProvider } from '@modules/Shared/Providers/AuthProvider';
 import { TanstackQueryProvider } from '@modules/Shared/Providers/TanstackQueryProvider';
 import {
+  CountryCodes,
   DEFAULT_LANGUAGE,
   getCurrentTranslations,
 } from '@modules/translations';
@@ -16,31 +17,30 @@ export default async function LocaleLayout({
   params: { locale = DEFAULT_LANGUAGE },
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale: CountryCodes };
 }) {
   const currentTranslations = await getCurrentTranslations(locale);
   const config = {
     messages: currentTranslations,
     locale: locale || DEFAULT_LANGUAGE,
-    defaultLocale: DEFAULT_LANGUAGE,
   };
 
   return (
     <html lang={locale}>
       <body id='__next' className='relative'>
-        <TanstackQueryProvider>
+        <Suspense>
           <NextIntlClientProvider {...config}>
-            <AuthProvider>
-              <AlertModalProvider>
-                <Suspense>
-                  {/* <Navbar /> */}
+            <TanstackQueryProvider>
+              <AuthProvider>
+                <AlertModalProvider>
+                  <Navbar />
                   {children}
-                </Suspense>
-                <ToastContainer />
-              </AlertModalProvider>
-            </AuthProvider>
+                  <ToastContainer />
+                </AlertModalProvider>
+              </AuthProvider>
+            </TanstackQueryProvider>
           </NextIntlClientProvider>
-        </TanstackQueryProvider>
+        </Suspense>
       </body>
     </html>
   );

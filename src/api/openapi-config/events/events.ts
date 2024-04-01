@@ -27,13 +27,13 @@ import type { ErrorType, BodyType } from '../../custom-client';
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 export const eventsControllerAddNew = (
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   createEventDto: BodyType<CreateEventDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
   return customClient<CreateEventDto>(
     {
-      url: `/events/${id}`,
+      url: `/events/${apartmentId}`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: createEventDto,
@@ -49,25 +49,25 @@ export const getEventsControllerAddNewMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof eventsControllerAddNew>>,
     TError,
-    { id: string; data: BodyType<CreateEventDto> },
+    { apartmentId: string; data: BodyType<CreateEventDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof eventsControllerAddNew>>,
   TError,
-  { id: string; data: BodyType<CreateEventDto> },
+  { apartmentId: string; data: BodyType<CreateEventDto> },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof eventsControllerAddNew>>,
-    { id: string; data: BodyType<CreateEventDto> }
+    { apartmentId: string; data: BodyType<CreateEventDto> }
   > = props => {
-    const { id, data } = props ?? {};
+    const { apartmentId, data } = props ?? {};
 
-    return eventsControllerAddNew(id, data, requestOptions);
+    return eventsControllerAddNew(apartmentId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -86,7 +86,7 @@ export const useEventsControllerAddNew = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof eventsControllerAddNew>>,
     TError,
-    { id: string; data: BodyType<CreateEventDto> },
+    { apartmentId: string; data: BodyType<CreateEventDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
@@ -96,13 +96,13 @@ export const useEventsControllerAddNew = <
   return useMutation(mutationOptions);
 };
 export const eventsControllerUpdateExisting = (
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   updateEventDto: BodyType<UpdateEventDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
   return customClient<void>(
     {
-      url: `/events/${id}`,
+      url: `/events/${apartmentId}`,
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       data: updateEventDto,
@@ -118,25 +118,25 @@ export const getEventsControllerUpdateExistingMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof eventsControllerUpdateExisting>>,
     TError,
-    { id: string; data: BodyType<UpdateEventDto> },
+    { apartmentId: string; data: BodyType<UpdateEventDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof eventsControllerUpdateExisting>>,
   TError,
-  { id: string; data: BodyType<UpdateEventDto> },
+  { apartmentId: string; data: BodyType<UpdateEventDto> },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof eventsControllerUpdateExisting>>,
-    { id: string; data: BodyType<UpdateEventDto> }
+    { apartmentId: string; data: BodyType<UpdateEventDto> }
   > = props => {
-    const { id, data } = props ?? {};
+    const { apartmentId, data } = props ?? {};
 
-    return eventsControllerUpdateExisting(id, data, requestOptions);
+    return eventsControllerUpdateExisting(apartmentId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -156,7 +156,7 @@ export const useEventsControllerUpdateExisting = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof eventsControllerUpdateExisting>>,
     TError,
-    { id: string; data: BodyType<UpdateEventDto> },
+    { apartmentId: string; data: BodyType<UpdateEventDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
@@ -167,27 +167,27 @@ export const useEventsControllerUpdateExisting = <
   return useMutation(mutationOptions);
 };
 export const eventsControllerFindAllForUser = (
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   options?: SecondParameter<typeof customClient>,
   signal?: AbortSignal
 ) => {
   return customClient<void>(
-    { url: `/events/${id}`, method: 'GET', signal },
+    { url: `/events/${apartmentId}`, method: 'GET', signal },
     options
   );
 };
 
 export const getEventsControllerFindAllForUserQueryKey = (
-  id: string | undefined | null
+  apartmentId: string | undefined | null
 ) => {
-  return [`/events/${id}`] as const;
+  return [`/events/${apartmentId}`] as const;
 };
 
 export const getEventsControllerFindAllForUserQueryOptions = <
   TData = Awaited<ReturnType<typeof eventsControllerFindAllForUser>>,
   TError = ErrorType<unknown>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -202,17 +202,18 @@ export const getEventsControllerFindAllForUserQueryOptions = <
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getEventsControllerFindAllForUserQueryKey(id);
+    queryOptions?.queryKey ??
+    getEventsControllerFindAllForUserQueryKey(apartmentId);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof eventsControllerFindAllForUser>>
   > = ({ signal }) =>
-    eventsControllerFindAllForUser(id, requestOptions, signal);
+    eventsControllerFindAllForUser(apartmentId, requestOptions, signal);
 
   return {
     queryKey,
     queryFn,
-    enabled: !!id,
+    enabled: !!apartmentId,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof eventsControllerFindAllForUser>>,
@@ -230,7 +231,7 @@ export const useEventsControllerFindAllForUser = <
   TData = Awaited<ReturnType<typeof eventsControllerFindAllForUser>>,
   TError = ErrorType<unknown>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -243,7 +244,7 @@ export const useEventsControllerFindAllForUser = <
   }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getEventsControllerFindAllForUserQueryOptions(
-    id,
+    apartmentId,
     options
   );
 
@@ -260,7 +261,7 @@ export const getEventsControllerFindAllForUserSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof eventsControllerFindAllForUser>>,
   TError = ErrorType<unknown>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -275,17 +276,18 @@ export const getEventsControllerFindAllForUserSuspenseQueryOptions = <
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getEventsControllerFindAllForUserQueryKey(id);
+    queryOptions?.queryKey ??
+    getEventsControllerFindAllForUserQueryKey(apartmentId);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof eventsControllerFindAllForUser>>
   > = ({ signal }) =>
-    eventsControllerFindAllForUser(id, requestOptions, signal);
+    eventsControllerFindAllForUser(apartmentId, requestOptions, signal);
 
   return {
     queryKey,
     queryFn,
-    enabled: !!id,
+    enabled: !!apartmentId,
     ...queryOptions,
   } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof eventsControllerFindAllForUser>>,
@@ -304,7 +306,7 @@ export const useEventsControllerFindAllForUserSuspense = <
   TData = Awaited<ReturnType<typeof eventsControllerFindAllForUser>>,
   TError = ErrorType<unknown>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -317,7 +319,7 @@ export const useEventsControllerFindAllForUserSuspense = <
   }
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getEventsControllerFindAllForUserSuspenseQueryOptions(
-    id,
+    apartmentId,
     options
   );
 
@@ -332,13 +334,13 @@ export const useEventsControllerFindAllForUserSuspense = <
 };
 
 export const eventsControllerRemoveEvent = (
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
   removeEventDto: BodyType<RemoveEventDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
   return customClient<void>(
     {
-      url: `/events/${id}`,
+      url: `/events/${apartmentId}`,
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       data: removeEventDto,
@@ -354,25 +356,25 @@ export const getEventsControllerRemoveEventMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof eventsControllerRemoveEvent>>,
     TError,
-    { id: string; data: BodyType<RemoveEventDto> },
+    { apartmentId: string; data: BodyType<RemoveEventDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof eventsControllerRemoveEvent>>,
   TError,
-  { id: string; data: BodyType<RemoveEventDto> },
+  { apartmentId: string; data: BodyType<RemoveEventDto> },
   TContext
 > => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof eventsControllerRemoveEvent>>,
-    { id: string; data: BodyType<RemoveEventDto> }
+    { apartmentId: string; data: BodyType<RemoveEventDto> }
   > = props => {
-    const { id, data } = props ?? {};
+    const { apartmentId, data } = props ?? {};
 
-    return eventsControllerRemoveEvent(id, data, requestOptions);
+    return eventsControllerRemoveEvent(apartmentId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -391,7 +393,7 @@ export const useEventsControllerRemoveEvent = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof eventsControllerRemoveEvent>>,
     TError,
-    { id: string; data: BodyType<RemoveEventDto> },
+    { apartmentId: string; data: BodyType<RemoveEventDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;

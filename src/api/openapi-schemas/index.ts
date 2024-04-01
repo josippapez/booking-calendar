@@ -8,6 +8,7 @@
 
 export * from './apiErrorResponse';
 export * from './createApartmentDto';
+export * from './createApartmentDtoImage';
 export * from './createEventDto';
 export * from './createGuestDto';
 export * from './createUserDto';
@@ -17,7 +18,9 @@ export * from './oldEvent';
 export * from './oldGuestInfo';
 export * from './removeEventDto';
 export * from './removeGuestDto';
+export * from './singleApartmentDto';
 export * from './updateApartmentDto';
+export * from './updateApartmentDtoImage';
 export * from './updateEvent';
 export * from './updateEventDto';
 export * from './user';

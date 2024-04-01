@@ -1,5 +1,3 @@
-/** @type {import('next').NextConfig} */
-
 import withNextIntl from 'next-intl/plugin';
 import NextBundleAnalyzer from '@next/bundle-analyzer';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -31,6 +29,7 @@ function cssLoaderOptions(modules) {
   };
 }
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,

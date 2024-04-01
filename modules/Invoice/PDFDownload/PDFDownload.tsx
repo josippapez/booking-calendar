@@ -1,8 +1,8 @@
 import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Components';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   PdfInstance?: () => JSX.Element;
@@ -17,7 +17,7 @@ export const PDFDownload = ({
   closeModal,
   pdfBlob,
 }: Props) => {
-  const { t } = useTranslation('PDFDownload');
+  const t = useTranslations('PDFDownload');
   const { isHTML, setHtml } = usePDFComponentsAreHTML();
   const [documentName, setDocumentName] = useState('');
   const [download, setDownload] = useState(false);

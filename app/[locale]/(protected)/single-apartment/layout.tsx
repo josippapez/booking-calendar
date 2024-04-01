@@ -14,7 +14,7 @@ export async function generateMetadata({
     locale: string;
   };
 }) {
-  const t = await getTranslations({ locale, namespace: 'LoginPage.Metadata' });
+  const t = await getTranslations({ locale, namespace: 'Calendar.Metadata' });
 
   return generateSeo({
     title: t('title'),

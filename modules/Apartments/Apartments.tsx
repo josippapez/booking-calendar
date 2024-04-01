@@ -1,49 +1,69 @@
+'use client';
+
 import {
-  getApartmentsForUser,
-  removeApartment,
-} from '@/store/firebaseActions/apartmentActions';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { selectApartment, setApartments } from '@/store/reducers/apartments';
-import { setEvents } from '@/store/reducers/events';
+  SingleApartmentDto,
+  useApartmentsControllerFindAllSuspense,
+  useApartmentsControllerRemove,
+} from '@/api';
+import { Button } from '@/components/Button';
 import { ApartmentsInput } from '@modules/Apartments/ApartmentsInput';
-import { Apartment } from '@modules/Apartments/models/Apartment';
 import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
 import { useDebouncedValue } from '@modules/Shared/Hooks/useDebouncedValue';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
+import { Modify } from '@modules/Shared/utils';
+import { Link, useRouter } from '@modules/translations';
 import { Routes } from 'consts';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+
+export type ModifiedSingleApartmentDto = Modify<
+  SingleApartmentDto,
+  {
+    image?: Blob | string;
+  }
+>;
 
 export const Apartments: FC = () => {
   const { showAlert } = useAlert();
-  const { t } = useTranslation('Apartments');
-  const dispatch = useAppDispatch();
+  const t = useTranslations('Apartments');
   const mobileView = useMobileView();
   const navigate = useRouter();
-  const apartments = useAppSelector(state => state.apartments);
 
-  const [newApartment, setNewApartment] = useDebouncedValue<Apartment>({
-    id: '',
-    name: '',
-    address: '',
-    email: '',
-    image: '',
-    pid: '',
-    iban: '',
-    owner: '',
-    pricePerNight: undefined,
-  });
-
-  useEffect(() => {
-    dispatch(getApartmentsForUser()).then(data => {
-      if (data) {
-        setApartments(data);
-      }
+  const { data: apartments, refetch: refetchApartments } =
+    useApartmentsControllerFindAllSuspense({
+      query: {
+        queryKey: ['apartments'],
+      },
     });
-  }, []);
+
+  const { mutate: removeApartment, isPending: removeApartmentIsPending } =
+    useApartmentsControllerRemove({
+      mutation: {
+        mutationKey: ['apartments-remove'],
+        onSuccess: data => {
+          toast.success(t('apartment_removed'));
+          refetchApartments();
+        },
+        onError: error => {
+          toast.error(error.response?.data.message);
+        },
+      },
+    });
+
+  const [newApartment, setNewApartment] =
+    useDebouncedValue<ModifiedSingleApartmentDto>({
+      id: '',
+      name: '',
+      address: '',
+      email: '',
+      image: '',
+      pid: '',
+      iban: '',
+      owner: '',
+      pricePerNight: undefined,
+    });
 
   return (
     <>
@@ -81,88 +101,60 @@ export const Apartments: FC = () => {
             </tr>
           </thead>
           <tbody>
-            {apartments?.apartments &&
-              Object.keys(apartments.apartments).map(apartment => (
-                <tr
-                  className='cursor-pointer border-b bg-white duration-150 first:rounded-t-lg hover:bg-blue-50 hover:transition-colors'
-                  key={apartments.apartments[apartment].id}
-                  onClick={() => {
-                    if (
-                      apartments.selectedApartment?.id !==
-                      apartments.apartments[apartment].id
-                    ) {
-                      dispatch(setEvents({}));
-                    }
-                    dispatch(selectApartment(apartments.apartments[apartment]));
-                    navigate.push({
-                      pathname: Routes.APARTMENT,
-                      query: {
-                        id: apartments.apartments[apartment].id,
-                      },
-                    });
-                  }}
+            {apartments.map(apartment => (
+              <tr
+                className='cursor-pointer border-b bg-white duration-150 first:rounded-t-lg hover:bg-blue-50 hover:transition-colors'
+                key={apartment.id}
+                onClick={() => {
+                  navigate.push(`${Routes.APARTMENT}?id=${apartment.id}`);
+                }}
+              >
+                <td className='whitespace-nowrap px-6 py-4 font-bold text-gray-900 dark:text-white'>
+                  {apartment.name}
+                </td>
+                <td className='px-6 py-4 font-bold'>{apartment.address}</td>
+                <td className='px-6 py-4 font-bold'>{apartment.email}</td>
+                <td
+                  className={`px-6 py-4 text-right ${mobileView ? 'flex' : ''}`}
                 >
-                  <td className='whitespace-nowrap px-6 py-4 font-bold text-gray-900 dark:text-white'>
-                    {apartments.apartments[apartment].name}
-                  </td>
-                  <td className='px-6 py-4 font-bold'>
-                    {apartments.apartments[apartment].address}
-                  </td>
-                  <td className='px-6 py-4 font-bold'>
-                    {apartments.apartments[apartment].email}
-                  </td>
-                  <td
-                    className={`px-6 py-4 text-right ${
-                      mobileView ? 'flex' : ''
-                    }`}
+                  <Button
+                    size='small'
+                    className='w-fit'
+                    text={t('remove')}
+                    variation='accent'
+                    onClick={e => {
+                      e.stopPropagation();
+                      showAlert(t('remove_apartment'), false, () =>
+                        removeApartment({
+                          id: apartment.id,
+                        })
+                      );
+                    }}
+                    disabled={removeApartmentIsPending}
+                  />
+                  <button
+                    className='ml-4 font-medium text-blue-600 hover:underline dark:text-blue-500'
+                    onClick={e => {
+                      e.stopPropagation();
+                      setNewApartment({
+                        ...apartment,
+                      });
+                    }}
                   >
-                    <button
-                      className='font-medium text-blue-600 hover:underline dark:text-blue-500'
-                      onClick={e => {
-                        e.stopPropagation();
-                        showAlert(t('remove_apartment'), false, () =>
-                          dispatch(
-                            removeApartment(apartments.apartments[apartment].id)
-                          )
-                        );
-                      }}
-                    >
-                      {t('remove')}
-                    </button>
-                    <button
+                    {t('edit')}
+                  </button>
+                  {!mobileView && (
+                    <Link
+                      key={apartment.id}
+                      href={`${Routes.APARTMENT}?id=${apartment.id}`}
                       className='ml-4 font-medium text-blue-600 hover:underline dark:text-blue-500'
-                      onClick={e => {
-                        e.stopPropagation();
-                        setNewApartment({
-                          ...apartments.apartments[apartment],
-                        });
-                      }}
                     >
-                      {t('edit')}
-                    </button>
-                    {!mobileView && (
-                      <Link
-                        key={apartments.apartments[apartment].id}
-                        href={`/apartments/${apartments.apartments[apartment].id}`}
-                        className='ml-4 font-medium text-blue-600 hover:underline dark:text-blue-500'
-                        onClick={() => {
-                          if (
-                            apartments.selectedApartment?.id !==
-                            apartments.apartments[apartment].id
-                          ) {
-                            dispatch(setEvents({}));
-                          }
-                          dispatch(
-                            selectApartment(apartments.apartments[apartment])
-                          );
-                        }}
-                      >
-                        {t('select')}
-                      </Link>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                      {t('select')}
+                    </Link>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -4,7 +4,7 @@ export const useMobileView = (): boolean => {
   const [isMobileView, setIsMobileView] = useState(false);
 
   const handleResize = useCallback(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const userAgent = navigator.userAgent || navigator.vendor;
 
     setIsMobileView(userAgent.includes('Mobile') || window.innerWidth <= 768);
   }, []);

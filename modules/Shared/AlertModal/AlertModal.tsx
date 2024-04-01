@@ -1,7 +1,9 @@
+'use client';
+
 import { Modal } from '@modules/Shared/Modal/Modal';
-import { useTranslation } from 'react-i18next';
-import style from './AlertModal.module.scss';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
+import { useTranslations } from 'next-intl';
+import style from './AlertModal.module.scss';
 
 type Props = {};
 
@@ -14,7 +16,7 @@ export const AlertModal = (props: Props) => {
     closeModal,
   } = useAlert();
 
-  const { t } = useTranslation('AlertModal');
+  const t = useTranslations('AlertModal');
 
   return (
     <Modal

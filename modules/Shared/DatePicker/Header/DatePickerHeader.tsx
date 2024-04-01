@@ -2,8 +2,8 @@ import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
 import ArrowLeft from '@public/Styles/Assets/Images/left-arrow.svg';
 import ArrowRight from '@public/Styles/Assets/Images/right-arrow.svg';
 import { DateTime } from 'luxon';
+import { useTranslations } from 'next-intl';
 import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   type?: 'date' | 'month' | 'year';
@@ -31,7 +31,7 @@ export const DatePickerHeader = (props: Props) => {
     setShowYearPicker,
     hideOnlyYearButton = false,
   } = props;
-  const { t } = useTranslation('DatePicker');
+  const t = useTranslations('DatePicker');
   const mobileView = useMobileView();
 
   const shouldShowSelectMonth =
@@ -73,7 +73,7 @@ export const DatePickerHeader = (props: Props) => {
                 }
                 setSelectedMonth(selectedMonth - 1);
               }}
-              className='rounded-l-md transition-all hover:bg-stone-200 p-2'
+              className='rounded-l-md p-2 transition-all hover:bg-stone-200'
             >
               <ArrowLeft height={30} />
             </button>
@@ -91,7 +91,7 @@ export const DatePickerHeader = (props: Props) => {
                 }
                 setSelectedMonth(selectedMonth + 1);
               }}
-              className='rounded-r-md transition-all hover:bg-stone-200 p-2'
+              className='rounded-r-md p-2 transition-all hover:bg-stone-200'
             >
               <ArrowRight height={30} />
             </button>
@@ -143,7 +143,7 @@ const YearRangeHeader: FC<{
         onClick={() => {
           setSelectedYear(selectedYear - 8);
         }}
-        className='rounded-l-md transition-all hover:bg-stone-200 p-2'
+        className='rounded-l-md p-2 transition-all hover:bg-stone-200'
       >
         <ArrowLeft height={30} />
       </button>
@@ -154,7 +154,7 @@ const YearRangeHeader: FC<{
         onClick={() => {
           setSelectedYear(selectedYear + 8);
         }}
-        className='rounded-r-md transition-all hover:bg-stone-200 p-2'
+        className='rounded-r-md p-2 transition-all hover:bg-stone-200'
       >
         <ArrowRight height={30} />
       </button>
@@ -172,7 +172,7 @@ const YearHeader: FC<{
         onClick={() => {
           setSelectedYear(selectedYear - 1);
         }}
-        className='rounded-l-md transition-all hover:bg-stone-200 p-2'
+        className='rounded-l-md p-2 transition-all hover:bg-stone-200'
       >
         <ArrowLeft height={30} />
       </button>
@@ -183,7 +183,7 @@ const YearHeader: FC<{
         onClick={() => {
           setSelectedYear(selectedYear + 1);
         }}
-        className='rounded-r-md transition-all hover:bg-stone-200 p-2'
+        className='rounded-r-md p-2 transition-all hover:bg-stone-200'
       >
         <ArrowRight height={30} />
       </button>

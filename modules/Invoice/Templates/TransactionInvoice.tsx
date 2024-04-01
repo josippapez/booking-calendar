@@ -10,11 +10,10 @@ import InterBold from '@public/Styles/Assets/Fonts/Inter-Bold.ttf';
 import InterLight from '@public/Styles/Assets/Fonts/Inter-Light.ttf';
 import InterRegular from '@public/Styles/Assets/Fonts/Inter-Regular.ttf';
 import { Font, StyleSheet } from '@react-pdf/renderer';
-import { TFunction } from 'i18next';
 import { DateTime } from 'luxon';
 
 type Props = {
-  translate: TFunction;
+  translate: any; // TODO: fix type
   locale: string;
   apartmentData: TransactionInvoiceData['apartmentData'];
   recipientData: TransactionInvoiceData['recipientData'];

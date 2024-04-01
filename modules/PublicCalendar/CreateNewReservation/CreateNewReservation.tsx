@@ -1,11 +1,9 @@
-import { useAppDispatch } from '@/store/hooks';
-import { sendEmail } from '@/store/sendgridActions/emailActions';
 import { EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
+import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   show: boolean;
@@ -20,8 +18,8 @@ export const CreateNewReservation: FC<Props> = ({
   currentReservations,
   apartmentEmail,
 }) => {
-  const { t } = useTranslation('CreateNewReservation');
-  const dispatch = useAppDispatch();
+  const t = useTranslations('CreateNewReservation');
+  // const dispatch = useAppDispatch();
 
   const [newReservation, setNewReservation] = useState({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
@@ -143,7 +141,7 @@ export const CreateNewReservation: FC<Props> = ({
                     return;
                   }
                   setShow(false);
-                  dispatch(sendEmail(newReservation, apartmentEmail));
+                  // dispatch(sendEmail(newReservation, apartmentEmail));
                 }}
               >
                 {t('send')}

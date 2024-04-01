@@ -2,8 +2,8 @@ import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
+import { useTranslations } from 'next-intl';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import style from './CreateNewEvent.module.scss';
 
 type Props = {
@@ -27,7 +27,7 @@ export const CreateNewEvent: FC<Props> = ({
   selectedEventToEdit,
   selectedDay,
 }) => {
-  const { t } = useTranslation('CreateNewEvent');
+  const t = useTranslations('CreateNewEvent');
 
   const [newEvent, setNewEvent] = useState<Event>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),

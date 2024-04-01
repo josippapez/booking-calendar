@@ -1,15 +1,12 @@
-import { getApartmentsForUser } from '@/store/firebaseActions/apartmentActions';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { selectApartment } from '@/store/reducers/apartments';
-import { Apartment } from '@modules/Apartments/models/Apartment';
+import { SingleApartmentDto } from '@/api';
 import { InvoiceDisplay } from '@modules/Invoice/InvoiceDisplay/InvoiceDisplay';
 import { InvoiceInputs } from '@modules/Invoice/InvoiceInputs/InvoiceInputs';
 import { Dropdown } from '@modules/Shared/Dropdown/Dropdown';
+import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 export type TransactionInvoiceData = {
-  apartmentData: Apartment;
+  apartmentData: SingleApartmentDto;
   recipientData: {
     recipientName: string;
     recipientAddress: string;
@@ -35,12 +32,12 @@ export type TransactionInvoiceData = {
 };
 
 export const Invoice: FC = () => {
-  const { t } = useTranslation('InvoiceInputs');
-  const dispatch = useAppDispatch();
-  const { apartments } = useAppSelector(state => state.apartments);
-  const selectedApartment = useAppSelector(
-    state => state.apartments.selectedApartment
-  );
+  const t = useTranslations('InvoiceInputs');
+  // const dispatch = useAppDispatch();
+  // const { apartments } = useAppSelector(state => state.apartments);
+  // const selectedApartment = useAppSelector(
+  //   state => state.apartments.selectedApartment
+  // );
 
   const [transactionInvoiceData, setTransactionInvoiceData] =
     useState<TransactionInvoiceData>({
@@ -83,51 +80,53 @@ export const Invoice: FC = () => {
       },
     });
 
-  useEffect(() => {
-    if (!apartments) {
-      dispatch(getApartmentsForUser());
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!apartments) {
+  //     dispatch(getApartmentsForUser());
+  //   }
+  // }, []);
 
-  const renderInvoice = () => {
-    return (
-      <div>
-        <div className='w-56'>
-          <Dropdown
-            placeholder='Select apartment'
-            data={
-              apartments &&
-              Object.keys(apartments).map(key => {
-                return {
-                  id: apartments[key].id,
-                  name: apartments[key].name,
-                  value: apartments[key],
-                };
-              })
-            }
-            selected={selectedApartment?.id as string}
-            setData={item => {
-              if (item.id !== (selectedApartment?.id as string)) {
-                dispatch(selectApartment(apartments[item.id]));
-              }
-            }}
-          />
-        </div>
-        {selectedApartment && (
-          <div className='mt-5 flex h-full flex-col justify-around gap-5 2xl:flex-row'>
-            <InvoiceInputs
-              invoiceData={transactionInvoiceData}
-              setInvoiceData={setTransactionInvoiceData}
-            />
-            <InvoiceDisplay
-              invoiceData={transactionInvoiceData}
-              setInvoiceData={setTransactionInvoiceData}
-            />
-          </div>
-        )}
-      </div>
-    );
-  };
+  return null;
 
-  return renderInvoice();
+  // const renderInvoice = () => {
+  //   return (
+  //     <div>
+  //       <div className='w-56'>
+  //         <Dropdown
+  //           placeholder='Select apartment'
+  //           data={
+  //             apartments &&
+  //             Object.keys(apartments).map(key => {
+  //               return {
+  //                 id: apartments[key].id,
+  //                 name: apartments[key].name,
+  //                 value: apartments[key],
+  //               };
+  //             })
+  //           }
+  //           selected={selectedApartment?.id as string}
+  //           setData={item => {
+  //             if (item.id !== (selectedApartment?.id as string)) {
+  //               dispatch(selectApartment(apartments[item.id]));
+  //             }
+  //           }}
+  //         />
+  //       </div>
+  //       {selectedApartment && (
+  //         <div className='mt-5 flex h-full flex-col justify-around gap-5 2xl:flex-row'>
+  //           <InvoiceInputs
+  //             invoiceData={transactionInvoiceData}
+  //             setInvoiceData={setTransactionInvoiceData}
+  //           />
+  //           <InvoiceDisplay
+  //             invoiceData={transactionInvoiceData}
+  //             setInvoiceData={setTransactionInvoiceData}
+  //           />
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
+  // return renderInvoice();
 };

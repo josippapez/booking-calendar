@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+'use client';
+
+import { useEffect, useState } from 'react';
+
+const isServer = typeof window === 'undefined';
 
 export const useDarkMode = () => {
-  const [enabled, setEnabled] = useState(localStorage.getItem("dark-theme"));
+  const [enabled, setEnabled] = useState(
+    !isServer ? localStorage.getItem('dark-theme') : undefined
+  );
 
   useEffect(() => {
-    const className = "dark";
+    const className = 'dark';
     const bodyClass = window.document.body.classList;
 
     enabled ? bodyClass.add(className) : bodyClass.remove(className);
@@ -15,10 +21,10 @@ export const useDarkMode = () => {
     toggle: () => {
       if (enabled) {
         setEnabled(null);
-        localStorage.removeItem("dark-theme");
+        localStorage.removeItem('dark-theme');
       } else {
-        setEnabled("enabled");
-        localStorage.setItem("dark-theme", "enabled");
+        setEnabled('enabled');
+        localStorage.setItem('dark-theme', 'enabled');
       }
     },
   };

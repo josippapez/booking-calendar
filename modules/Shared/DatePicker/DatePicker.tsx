@@ -6,8 +6,8 @@ import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHe
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
+import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   type: 'date' | 'month' | 'year';
@@ -36,7 +36,7 @@ export const DatePicker: FC<Props> = ({
   hideYear,
   customDisplayDate,
 }) => {
-  const { t } = useTranslation('DatePicker');
+  const t = useTranslations('DatePicker');
   const [tempDate, setTempDate] = useState(initialDate || '');
   const [showYearPicker, setShowYearPicker] = useState(
     initialDate?.length === 4

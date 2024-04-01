@@ -1,4 +1,3 @@
-import { useAppSelector } from '@/store/hooks';
 import { TransactionInvoiceData } from '@modules/Invoice/Invoice';
 import { PDFDownload } from '@modules/Invoice/PDFDownload/PDFDownload';
 import { InvoiceTemplate } from '@modules/Invoice/Templates/InvoiceTemplate';
@@ -21,9 +20,9 @@ export const InvoiceDisplay = (props: Props) => {
   const windowSize = useWindowSize();
   const { isHTML } = usePDFComponentsAreHTML();
 
-  const selectedApartment = useAppSelector(
-    state => state.apartments.selectedApartment
-  );
+  // const selectedApartment = useAppSelector(
+  //   state => state.apartments.selectedApartment
+  // );
 
   const [displayDownloadModal, setDisplayDownloadModal] = useState(false);
 
@@ -33,17 +32,17 @@ export const InvoiceDisplay = (props: Props) => {
   );
   const Template = () => InvoiceTemplate(invoiceData);
 
-  useEffect(() => {
-    if (selectedApartment) {
-      setInvoiceData({
-        ...invoiceData,
-        apartmentData: {
-          ...selectedApartment,
-          pricePerNight: selectedApartment?.pricePerNight ?? 0,
-        },
-      });
-    }
-  }, [selectedApartment]);
+  // useEffect(() => {
+  //   if (selectedApartment) {
+  //     setInvoiceData({
+  //       ...invoiceData,
+  //       apartmentData: {
+  //         ...selectedApartment,
+  //         pricePerNight: selectedApartment?.pricePerNight ?? 0,
+  //       },
+  //     });
+  //   }
+  // }, [selectedApartment]);
 
   const scale =
     windowSize.width * 1.414213562 < windowSize.height

@@ -2,9 +2,9 @@ import { DateInput } from '@modules/Shared/Inputs/DateInput';
 import { ImageInput } from '@modules/Shared/Inputs/ImageInput';
 import { ServiceInput } from '@modules/Shared/Inputs/ServiceInput';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { TransactionInvoiceData } from '../Invoice';
 import style from './InvoiceInputs.module.scss';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   invoiceData: TransactionInvoiceData;
@@ -14,7 +14,7 @@ type Props = {
 export const InvoiceInputs = (props: Props) => {
   const { invoiceData, setInvoiceData } = props;
 
-  const { t } = useTranslation('InvoiceInputs');
+  const t = useTranslations('InvoiceInputs');
 
   const [displayInputSection, setDisplayInputSection] =
     useState('apartmentData');

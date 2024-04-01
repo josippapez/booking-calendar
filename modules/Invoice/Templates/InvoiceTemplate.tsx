@@ -1,6 +1,6 @@
 import { TransactionInvoice } from '@modules/Invoice/Templates/TransactionInvoice';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { TransactionInvoiceData } from '../Invoice';
 
 type Props = {
@@ -11,16 +11,17 @@ type Props = {
 
 export const InvoiceTemplate = (props: Props): JSX.Element => {
   const { apartmentData, invoiceData, recipientData } = props;
-  const { t, i18n } = useTranslation('TransactionInvoice');
+  const locale = useLocale();
+  const t = useTranslations('TransactionInvoice');
   const options = useMemo(() => {
     return {
       translate: t,
-      locale: i18n.language,
+      locale: locale,
       apartmentData,
       invoiceData,
       recipientData,
     };
-  }, [i18n.language, apartmentData, invoiceData, recipientData, t]);
+  }, [locale, apartmentData, invoiceData, recipientData, t]);
 
   return useMemo(() => {
     return TransactionInvoice(options);

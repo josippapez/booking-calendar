@@ -18,5 +18,11 @@
   "address": "Adresa",
   "email": "Email",
   "image_size_error": "Veličina slike mora biti manja od {{size}} MB",
-  "remove_apartment": "Jeste li sigurni da želite obrisati apartman?"
+  "remove_apartment": "Jeste li sigurni da želite obrisati apartman?",
+  "apartment_created": "Apartman uspješno dodan",
+  "apartment_updated": "Apartman uspješno ažuriran",
+  "Metadata": {
+    "title": "Apartmani",
+    "description": "Pregled apartmana"
+  }
 }

@@ -6,7 +6,10 @@ export type Locale = {
   host?: string;
   pathPrefix?: string;
 };
-export const countries: Record<string, Locale> = {
+
+export type CountryCodes = 'hr' | 'en-US';
+
+export const countries: Record<CountryCodes | string, Locale> = {
   hr: {
     language: 'HR',
     country: 'HR',
@@ -22,7 +25,7 @@ export const countries: Record<string, Locale> = {
   },
 };
 
-export const getCountryVariables = (locale: string) => {
+export const getCountryVariables = (locale: CountryCodes) => {
   return {
     country: countries[locale].country,
     language: countries[locale].language,

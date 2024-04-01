@@ -17,7 +17,9 @@ import type {
   UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 import type {
+  ApiErrorResponse,
   CreateApartmentDto,
+  SingleApartmentDto,
   UpdateApartmentDto,
 } from '../../openapi-schemas';
 import { customClient } from '../../custom-client';
@@ -29,19 +31,36 @@ export const apartmentsControllerCreate = (
   createApartmentDto: BodyType<CreateApartmentDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
-  return customClient<void>(
+  const formData = new FormData();
+  formData.append('name', createApartmentDto.name);
+  if (createApartmentDto.image !== undefined) {
+    formData.append('image', createApartmentDto.image);
+  }
+  formData.append('address', createApartmentDto.address);
+  if (createApartmentDto.owner !== undefined) {
+    formData.append('owner', createApartmentDto.owner);
+  }
+  if (createApartmentDto.pid !== undefined) {
+    formData.append('pid', createApartmentDto.pid);
+  }
+  if (createApartmentDto.iban !== undefined) {
+    formData.append('iban', createApartmentDto.iban);
+  }
+  formData.append('email', createApartmentDto.email);
+
+  return customClient<SingleApartmentDto>(
     {
       url: `/apartments`,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      data: createApartmentDto,
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
     },
     options
   );
 };
 
 export const getApartmentsControllerCreateMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -76,10 +95,11 @@ export type ApartmentsControllerCreateMutationResult = NonNullable<
 >;
 export type ApartmentsControllerCreateMutationBody =
   BodyType<CreateApartmentDto>;
-export type ApartmentsControllerCreateMutationError = ErrorType<unknown>;
+export type ApartmentsControllerCreateMutationError =
+  ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerCreate = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -98,7 +118,7 @@ export const apartmentsControllerFindAll = (
   options?: SecondParameter<typeof customClient>,
   signal?: AbortSignal
 ) => {
-  return customClient<void>(
+  return customClient<SingleApartmentDto[]>(
     { url: `/apartments`, method: 'GET', signal },
     options
   );
@@ -110,7 +130,7 @@ export const getApartmentsControllerFindAllQueryKey = () => {
 
 export const getApartmentsControllerFindAllQueryOptions = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindAll>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -140,11 +160,11 @@ export const getApartmentsControllerFindAllQueryOptions = <
 export type ApartmentsControllerFindAllQueryResult = NonNullable<
   Awaited<ReturnType<typeof apartmentsControllerFindAll>>
 >;
-export type ApartmentsControllerFindAllQueryError = ErrorType<unknown>;
+export type ApartmentsControllerFindAllQueryError = ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerFindAll = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindAll>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -168,7 +188,7 @@ export const useApartmentsControllerFindAll = <
 
 export const getApartmentsControllerFindAllSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindAll>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(options?: {
   query?: Partial<
     UseSuspenseQueryOptions<
@@ -198,11 +218,12 @@ export const getApartmentsControllerFindAllSuspenseQueryOptions = <
 export type ApartmentsControllerFindAllSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof apartmentsControllerFindAll>>
 >;
-export type ApartmentsControllerFindAllSuspenseQueryError = ErrorType<unknown>;
+export type ApartmentsControllerFindAllSuspenseQueryError =
+  ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerFindAllSuspense = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindAll>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(options?: {
   query?: Partial<
     UseSuspenseQueryOptions<
@@ -231,7 +252,7 @@ export const apartmentsControllerFindOne = (
   options?: SecondParameter<typeof customClient>,
   signal?: AbortSignal
 ) => {
-  return customClient<void>(
+  return customClient<SingleApartmentDto>(
     { url: `/apartments/${id}`, method: 'GET', signal },
     options
   );
@@ -245,7 +266,7 @@ export const getApartmentsControllerFindOneQueryKey = (
 
 export const getApartmentsControllerFindOneQueryOptions = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindOne>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(
   id: string | undefined | null,
   options?: {
@@ -283,11 +304,11 @@ export const getApartmentsControllerFindOneQueryOptions = <
 export type ApartmentsControllerFindOneQueryResult = NonNullable<
   Awaited<ReturnType<typeof apartmentsControllerFindOne>>
 >;
-export type ApartmentsControllerFindOneQueryError = ErrorType<unknown>;
+export type ApartmentsControllerFindOneQueryError = ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerFindOne = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindOne>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(
   id: string | undefined | null,
   options?: {
@@ -314,7 +335,7 @@ export const useApartmentsControllerFindOne = <
 
 export const getApartmentsControllerFindOneSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindOne>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(
   id: string | undefined | null,
   options?: {
@@ -352,11 +373,12 @@ export const getApartmentsControllerFindOneSuspenseQueryOptions = <
 export type ApartmentsControllerFindOneSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof apartmentsControllerFindOne>>
 >;
-export type ApartmentsControllerFindOneSuspenseQueryError = ErrorType<unknown>;
+export type ApartmentsControllerFindOneSuspenseQueryError =
+  ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerFindOneSuspense = <
   TData = Awaited<ReturnType<typeof apartmentsControllerFindOne>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<ApiErrorResponse>
 >(
   id: string | undefined | null,
   options?: {
@@ -390,19 +412,36 @@ export const apartmentsControllerUpdate = (
   updateApartmentDto: BodyType<UpdateApartmentDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
-  return customClient<void>(
+  const formData = new FormData();
+  formData.append('name', updateApartmentDto.name);
+  if (updateApartmentDto.image !== undefined) {
+    formData.append('image', updateApartmentDto.image);
+  }
+  formData.append('address', updateApartmentDto.address);
+  if (updateApartmentDto.owner !== undefined) {
+    formData.append('owner', updateApartmentDto.owner);
+  }
+  if (updateApartmentDto.pid !== undefined) {
+    formData.append('pid', updateApartmentDto.pid);
+  }
+  if (updateApartmentDto.iban !== undefined) {
+    formData.append('iban', updateApartmentDto.iban);
+  }
+  formData.append('email', updateApartmentDto.email);
+
+  return customClient<SingleApartmentDto>(
     {
       url: `/apartments/${id}`,
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      data: updateApartmentDto,
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
     },
     options
   );
 };
 
 export const getApartmentsControllerUpdateMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -437,10 +476,11 @@ export type ApartmentsControllerUpdateMutationResult = NonNullable<
 >;
 export type ApartmentsControllerUpdateMutationBody =
   BodyType<UpdateApartmentDto>;
-export type ApartmentsControllerUpdateMutationError = ErrorType<unknown>;
+export type ApartmentsControllerUpdateMutationError =
+  ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerUpdate = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -459,14 +499,14 @@ export const apartmentsControllerRemove = (
   id: string | undefined | null,
   options?: SecondParameter<typeof customClient>
 ) => {
-  return customClient<void>(
+  return customClient<SingleApartmentDto>(
     { url: `/apartments/${id}`, method: 'DELETE' },
     options
   );
 };
 
 export const getApartmentsControllerRemoveMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -500,10 +540,11 @@ export type ApartmentsControllerRemoveMutationResult = NonNullable<
   Awaited<ReturnType<typeof apartmentsControllerRemove>>
 >;
 
-export type ApartmentsControllerRemoveMutationError = ErrorType<unknown>;
+export type ApartmentsControllerRemoveMutationError =
+  ErrorType<ApiErrorResponse>;
 
 export const useApartmentsControllerRemove = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<

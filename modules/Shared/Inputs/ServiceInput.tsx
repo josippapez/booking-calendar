@@ -1,5 +1,5 @@
+import { useLocale, useTranslations } from 'next-intl';
 import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   inputKey?: any;
@@ -19,7 +19,8 @@ export const ServiceInput = (props: Props) => {
     removeService,
     serviceTotal,
   } = props;
-  const { t, i18n } = useTranslation('ServiceInput');
+  const locale = useLocale();
+  const t = useTranslations('ServiceInput');
 
   const handleRemoveService = useCallback(() => {
     removeService();
@@ -39,19 +40,19 @@ export const ServiceInput = (props: Props) => {
       <input
         className='w-1/6 appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
         type={'number'}
-        lang={i18n.language}
+        lang={locale}
         placeholder={t('amount').toString()}
         onChange={e => setServiceAmount(e.target.value)}
       />
       <input
         className='w-1/6 appearance-none rounded-md border leading-tight text-gray-700 focus:border-blue-500'
         type={'number'}
-        lang={i18n.language}
+        lang={locale}
         placeholder={t('price').toString()}
         onChange={e => setServicePrice(e.target.value)}
       />
       <div className='flex w-1/6 appearance-none items-center justify-center rounded-md border bg-gray-200 leading-tight text-gray-700 focus:border-blue-500'>
-        {Number(serviceTotal).toLocaleString(i18n.language, {
+        {Number(serviceTotal).toLocaleString(locale, {
           minimumFractionDigits: 2,
         })}
       </div>

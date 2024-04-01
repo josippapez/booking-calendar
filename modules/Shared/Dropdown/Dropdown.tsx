@@ -5,7 +5,7 @@ import style from './Dropdown.module.scss';
 
 type Props = {
   placeholder: string;
-  selected: string;
+  selected: string | null;
   data?: {
     id: string;
     name: string;

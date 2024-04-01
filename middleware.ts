@@ -139,5 +139,8 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     '/((?!api|_next/static|_next/image|_vercel|assets|logo.png|favicon.ico|Styles/Assets|sw.js).*)',
+    // Set a cookie to remember the previous locale for
+    // all requests that have a locale prefix
+    '/(hr|en-US)/:path*',
   ],
 };

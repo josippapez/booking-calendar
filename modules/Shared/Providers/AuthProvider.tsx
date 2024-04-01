@@ -1,15 +1,11 @@
 'use client';
 
-import { FirebaseService } from '@/store/FirebaseService';
 import {
   useFilterQuery,
   useSearchParams,
 } from '@modules/Shared/Hooks/useFilterQuery';
-import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import Cookies from 'js-cookie';
 import React, { createContext, useContext, useEffect } from 'react';
-
-const firebase = FirebaseService.getInstance();
 
 const AuthContext = createContext({});
 
@@ -18,7 +14,7 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { handleFilterRemoveAll } = useFilterQuery();
+  const { handleFilterRemove } = useFilterQuery();
   const params = useSearchParams();
 
   const accessToken = params.params.get('accessToken');
@@ -42,12 +38,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // });
     if (accessToken) {
       Cookies.set('accessToken', accessToken, { expires: 14 });
+      handleFilterRemove('accessToken');
     }
     if (refreshToken) {
       Cookies.set('refreshToken', refreshToken, { expires: 14 });
+      handleFilterRemove('refreshToken');
     }
-    handleFilterRemoveAll();
-  }, [accessToken, handleFilterRemoveAll, refreshToken]);
+  }, [accessToken, handleFilterRemove, refreshToken]);
 
   // force refresh the token every 10 minutes
   // useEffect(() => {

@@ -2,8 +2,8 @@ import { Event } from '@modules/Calendar/CalendarTypes';
 import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
+import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import style from './DayDetails.module.scss';
 
 type Props = {
@@ -29,7 +29,7 @@ export const DayDetails: FC<Props> = ({
   setSelectedDay,
   setAddNewEvent,
 }) => {
-  const { t } = useTranslation('DayDetails');
+  const t = useTranslations('DayDetails');
   const { showAlert } = useAlert();
 
   const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
