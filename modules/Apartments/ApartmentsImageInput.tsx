@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { FC } from 'react';
 
 type Props = {
-  progress: number;
+  progress?: number;
   apartment: ModifiedSingleApartmentDto;
   setApartment: (apartment: ModifiedSingleApartmentDto) => void;
   error: string | null;
