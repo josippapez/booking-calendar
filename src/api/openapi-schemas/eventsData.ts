@@ -7,7 +7,6 @@
  */
 import type { EventObject } from './eventObject';
 
-export interface UpdateEventDto {
-  oldEvent: EventObject;
-  updatedEvent: EventObject;
-}
+export type EventsData = {
+  [key: string]: { [key: string]: EventObject[] | null } | null;
+} | null;

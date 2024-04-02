@@ -1,10 +1,14 @@
+import { useEventsControllerRemoveEvent } from '@/api';
 import { Event } from '@modules/Calendar/CalendarTypes';
 import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
+import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import style from './DayDetails.module.scss';
+import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 
 type Props = {
   show: boolean;
@@ -15,7 +19,6 @@ type Props = {
   setAddNewEvent: (state: boolean) => void;
   events: Event[];
   isMobileView: boolean;
-  removeEvent: (event: Event) => void;
 };
 
 export const DayDetails: FC<Props> = ({
@@ -23,16 +26,32 @@ export const DayDetails: FC<Props> = ({
   setShow,
   events,
   isMobileView,
-  removeEvent,
   setShowEdit,
   setSelectedEventToEdit,
   setSelectedDay,
   setAddNewEvent,
 }) => {
+  const { params } = useSearchParams();
+  const apartmentId = params.get('id') || '';
   const t = useTranslations('DayDetails');
   const { showAlert } = useAlert();
 
   const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
+
+  const { mutate: removeEvent, isPending: removeEventPending } =
+    useEventsControllerRemoveEvent({
+      mutation: {
+        onError: error => {
+          toast.error(error.response?.data.message);
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['events', apartmentId],
+          });
+          toast.success('Event removed');
+        },
+      },
+    });
 
   useEffect(() => {
     if (!events || events.length === 0) {
@@ -112,7 +131,12 @@ export const DayDetails: FC<Props> = ({
                     onClick={e => {
                       e.stopPropagation();
                       showAlert(t('removeEvent'), false, () =>
-                        removeEvent(event)
+                        removeEvent({
+                          apartmentId,
+                          data: {
+                            id: event.id,
+                          },
+                        })
                       );
                     }}
                   />

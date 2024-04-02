@@ -7,14 +7,5 @@
  */
 
 export interface RemoveEventDto {
-  booking?: boolean;
-  color?: string;
-  description?: string;
-  end: string;
-  id?: string;
-  name: string;
-  phone: string;
-  price?: string;
-  start: string;
-  weekNumber?: number;
+  id: string;
 }

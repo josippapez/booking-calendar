@@ -5,9 +5,10 @@
  * Booking calendar API description
  * OpenAPI spec version: 1.0
  */
-import type { EventObject } from './eventObject';
+import type { EventsData } from './eventsData';
 
-export interface UpdateEventDto {
-  oldEvent: EventObject;
-  updatedEvent: EventObject;
+export interface Events {
+  apartmentId: string;
+  data: EventsData;
+  userId: string;
 }

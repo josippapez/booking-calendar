@@ -1,36 +1,50 @@
-import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
+import {
+  CreateEventDto,
+  useEventsControllerAddNew,
+  useEventsControllerUpdateExisting,
+} from '@/api';
+import { Day } from '@modules/Calendar/CalendarTypes';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
+import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { Modal } from '@modules/Shared/Modal/Modal';
+import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { FC, useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import style from './CreateNewEvent.module.scss';
+import { Modify } from '@modules/Shared/utils';
+
+type ModifiedEvent = Modify<
+  CreateEventDto,
+  {
+    id: string;
+  }
+>;
 
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
   showEdit: boolean;
   setShowEdit: (state: boolean) => void;
-  selectedEventToEdit: Event | null;
-  setEvents: (events: EventsByYear) => void;
-  events: EventsByYear;
+  selectedEventToEdit: ModifiedEvent | null;
   selectedDay: string | null;
 };
 
 export const CreateNewEvent: FC<Props> = ({
   show,
   setShow,
-  events,
-  setEvents,
   setShowEdit,
   showEdit,
   selectedEventToEdit,
   selectedDay,
 }) => {
   const t = useTranslations('CreateNewEvent');
+  const { params } = useSearchParams();
+  const apartmentId = params.get('id') || '';
 
-  const [newEvent, setNewEvent] = useState<Event>({
-    id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
+  const [newEvent, setNewEvent] = useState<ModifiedEvent>({
+    id: '',
     title: '',
     start: selectedDay ?? '',
     end: '',
@@ -44,28 +58,29 @@ export const CreateNewEvent: FC<Props> = ({
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [openedDropdown, setOpenedDropdown] = useState(false);
 
-  const eachDayOfRange = useCallback((startDate: string, endDate: string) => {
-    const start = DateTime.fromISO(startDate);
-    const end = DateTime.fromISO(endDate);
-    const monthDates: Day[] = [];
+  const { mutate: createEvent, isPending: createEventPending } =
+    useEventsControllerAddNew({
+      mutation: {
+        onSuccess: () => {
+          toast.success('Event created');
+          queryClient.invalidateQueries({
+            queryKey: ['events', apartmentId],
+          });
+        },
+      },
+    });
 
-    const daysInMonth = end.diff(start, 'days');
-    for (let i = 0; i <= daysInMonth.days; i++) {
-      const day = start.plus({ days: i });
-      monthDates.push({
-        day: day.day,
-        date: day.toFormat('yyyy-MM-dd'),
-        name: day.toFormat('EEEE'),
-        year: day.year.toString(),
-        lastMonth: false,
-        weekNumber: day.weekNumber,
-        startingDay: i === 0,
-        endingDay: i === daysInMonth.days,
-      });
-    }
-
-    return monthDates;
-  }, []);
+  const { mutate: updateEvent, isPending: updateEventPending } =
+    useEventsControllerUpdateExisting({
+      mutation: {
+        onSuccess: () => {
+          toast.success('Event updated');
+          queryClient.invalidateQueries({
+            queryKey: ['events', apartmentId],
+          });
+        },
+      },
+    });
 
   useEffect(() => {
     if (showEdit && selectedEventToEdit && selectedEventToEdit.id) {
@@ -77,7 +92,7 @@ export const CreateNewEvent: FC<Props> = ({
     return () => {
       if (!show && !showEdit) {
         setNewEvent({
-          id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
+          id: '',
           title: '',
           start: '',
           end: '',
@@ -249,59 +264,22 @@ export const CreateNewEvent: FC<Props> = ({
           <button
             className='font-bold'
             onClick={() => {
-              if (newEvent.start && newEvent.end && newEvent.color) {
-                let editedEvents = { ...events };
-                if (showEdit && selectedEventToEdit) {
-                  const datesToEdit = eachDayOfRange(
-                    selectedEventToEdit.start,
-                    selectedEventToEdit.end
-                  );
-                  datesToEdit.map(date => {
-                    if (editedEvents[date.year][date.date]) {
-                      const eventForDayIndex = editedEvents[date.year][
-                        date.date
-                      ].findIndex(event => event.id === newEvent.id);
-
-                      if (eventForDayIndex !== -1) {
-                        editedEvents[date.year] = {
-                          ...editedEvents[date.year],
-                          [date.date]: [
-                            ...editedEvents[date.year][date.date].filter(
-                              event => event.id !== newEvent.id
-                            ),
-                          ],
-                        };
-                      }
-                    }
-                  });
-                }
-                const dates = eachDayOfRange(newEvent.start, newEvent.end);
-                const newDates = dates.reduce(
-                  (acc: EventsByYear, date: Day) => ({
-                    ...acc,
-                    [date.year]: {
-                      ...acc?.[date.year],
-                      [date.date]: [
-                        ...((editedEvents[date.year] &&
-                          editedEvents[date.year][date.date]) ||
-                          []),
-                        { ...newEvent, weekNumber: date.weekNumber },
-                      ],
-                    },
-                  }),
-                  undefined
-                );
-                if (newDates)
-                  Object.keys(newDates).map(year => {
-                    editedEvents[year] = {
-                      ...editedEvents[year],
-                      ...newDates?.[year],
-                    };
-                  });
-                setEvents(editedEvents);
-                setShow(false);
-                setShowEdit(false);
+              if (showEdit && selectedEventToEdit) {
+                updateEvent({
+                  apartmentId,
+                  data: {
+                    oldEvent: selectedEventToEdit,
+                    updatedEvent: newEvent,
+                  },
+                });
+              } else {
+                createEvent({
+                  apartmentId,
+                  data: newEvent,
+                });
               }
+              setShow(false);
+              setShowEdit(false);
             }}
             style={{
               backgroundImage: `url(/Styles/Assets/Images/check.svg)`,

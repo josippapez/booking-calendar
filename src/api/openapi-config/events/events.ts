@@ -17,7 +17,9 @@ import type {
   UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 import type {
+  ApiErrorResponse,
   CreateEventDto,
+  Events,
   RemoveEventDto,
   UpdateEventDto,
 } from '../../openapi-schemas';
@@ -31,7 +33,7 @@ export const eventsControllerAddNew = (
   createEventDto: BodyType<CreateEventDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
-  return customClient<CreateEventDto>(
+  return customClient<Events>(
     {
       url: `/events/${apartmentId}`,
       method: 'POST',
@@ -171,7 +173,7 @@ export const eventsControllerFindAllForUser = (
   options?: SecondParameter<typeof customClient>,
   signal?: AbortSignal
 ) => {
-  return customClient<void>(
+  return customClient<Events>(
     { url: `/events/${apartmentId}`, method: 'GET', signal },
     options
   );
@@ -350,7 +352,7 @@ export const eventsControllerRemoveEvent = (
 };
 
 export const getEventsControllerRemoveEventMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -384,10 +386,11 @@ export type EventsControllerRemoveEventMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerRemoveEvent>>
 >;
 export type EventsControllerRemoveEventMutationBody = BodyType<RemoveEventDto>;
-export type EventsControllerRemoveEventMutationError = ErrorType<unknown>;
+export type EventsControllerRemoveEventMutationError =
+  ErrorType<ApiErrorResponse>;
 
 export const useEventsControllerRemoveEvent = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<

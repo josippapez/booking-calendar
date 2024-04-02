@@ -1,3 +1,4 @@
+import { EventObject } from '@/api';
 import { Day, Event, EventsByYear } from '@modules/Calendar/CalendarTypes';
 import { DatePickerDates } from '@modules/Shared/DatePicker/Dates/DatePickerDates';
 import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
@@ -11,7 +12,7 @@ import style from './DateRangePicker.module.scss';
 type Props = {
   showDateRangePicker: boolean;
   setShowDateRangePicker: (state: boolean) => void;
-  event: Event;
+  event: EventObject;
   setEvent: (event: Event) => void;
   disableForCurrentReservations?: boolean;
   currentReservations?: EventsByYear;

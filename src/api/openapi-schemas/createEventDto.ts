@@ -11,10 +11,9 @@ export interface CreateEventDto {
   color?: string;
   description?: string;
   end: string;
-  id?: string;
-  name: string;
   phone: string;
   price?: string;
   start: string;
+  title: string;
   weekNumber?: number;
 }

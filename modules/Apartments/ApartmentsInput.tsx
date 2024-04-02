@@ -22,7 +22,7 @@ export const ApartmentsInput: FC<Props> = ({
   const t = useTranslations('Apartments');
   const mobileView = useMobileView();
 
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState<number | undefined>(0);
   const [error, setError] = useState<null | string>(null);
 
   const emailRegex = useMemo(
@@ -49,6 +49,11 @@ export const ApartmentsInput: FC<Props> = ({
           toast.error(error.response?.data.message);
         },
       },
+      request: {
+        onUploadProgress(progressEvent) {
+          setProgress(progressEvent.progress);
+        },
+      },
     });
 
   const { mutate: updateApartment, isPending: updateApartmentIsPending } =
@@ -67,6 +72,11 @@ export const ApartmentsInput: FC<Props> = ({
         onError: error => {
           setProgress(0);
           toast.error(error.response?.data.message);
+        },
+      },
+      request: {
+        onUploadProgress(progressEvent) {
+          setProgress(progressEvent.progress);
         },
       },
     });

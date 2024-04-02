@@ -6,15 +6,15 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface OldEvent {
+export interface EventObject {
   booking?: boolean;
   color?: string;
   description?: string;
   end: string;
   id: string;
-  name: string;
   phone: string;
   price?: string;
   start: string;
+  title: string;
   weekNumber?: number;
 }
