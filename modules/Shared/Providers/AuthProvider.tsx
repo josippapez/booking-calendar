@@ -17,45 +17,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { handleFilterRemove } = useFilterQuery();
   const params = useSearchParams();
 
-  const accessToken = params.params.get('accessToken');
-  const refreshToken = params.params.get('refreshToken');
+  const accessTokenParam = params.params.get('accessToken');
+  const refreshTokenParam = params.params.get('refreshToken');
 
   // listen for token changes
   // call setUser and write new token as a cookie
   useEffect(() => {
-    // return firebase.getAuth().onIdTokenChanged(async user => {
-    //   if (!user) {
-    //     setUser(null);
-    //     Cookies.remove('accessToken');
-    //     Cookies.remove('refreshToken');
-    //   } else {
-    //     const token = await user.getIdToken();
-    //     const refreshToken = user.refreshToken;
-    //     setUser(user);
-    //     Cookies.set('accessToken', token, { expires: 14 });
-    //     Cookies.set('refreshToken', refreshToken, { expires: 14 });
-    //   }
-    // });
-    if (accessToken) {
-      Cookies.set('accessToken', accessToken, { expires: 14 });
+    if (accessTokenParam) {
+      Cookies.set('accessToken', accessTokenParam, { expires: 14 });
       handleFilterRemove('accessToken');
     }
-    if (refreshToken) {
-      Cookies.set('refreshToken', refreshToken, { expires: 14 });
+    if (refreshTokenParam) {
+      Cookies.set('refreshToken', refreshTokenParam, { expires: 14 });
       handleFilterRemove('refreshToken');
     }
-  }, [accessToken, handleFilterRemove, refreshToken]);
-
-  // force refresh the token every 10 minutes
-  // useEffect(() => {
-  //   const handle = setInterval(async () => {
-  //     const user = firebase.getAuth().currentUser;
-  //     if (user) await user.getIdToken(true);
-  //   }, 10 * 60 * 1000);
-
-  //   // clean up setInterval
-  //   return () => clearInterval(handle);
-  // }, []);
+  }, []);
 
   return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
 }

@@ -58,9 +58,7 @@ export const DatePickerHeader = (props: Props) => {
       >
         {shouldShowSelectMonth ? (
           <div
-            className={`flex items-center ${
-              mobileView ? 'w-[165px]' : 'w-36'
-            } h-10 rounded-md`}
+            className={`flex h-10 w-36 items-center rounded-md max-md:w-[165px]`}
           >
             <button
               onClick={() => {

@@ -5,12 +5,11 @@ import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { PropsWithChildren } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
 
 const isServer = typeof window === 'undefined';
 
 const persister = createSyncStoragePersister({
-  storage: isServer ? null : window?.localStorage,
+  storage: isServer ? null : localStorage,
 });
 
 export const queryClient = new QueryClient({

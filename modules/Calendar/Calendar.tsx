@@ -2,7 +2,7 @@
 
 import {
   useApartmentsControllerFindAllSuspense,
-  useEventsControllerFindAllForUserSuspense,
+  useEventsControllerFindAllForUser,
 } from '@/api';
 import { Event } from '@modules/Calendar/CalendarTypes';
 import { CreateNewEvent } from '@modules/Calendar/CreateNewEvent/CreateNewEvent';
@@ -12,6 +12,7 @@ import { Dropdown } from '@modules/Shared/Dropdown/Dropdown';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
+import { cltm } from '@modules/Shared/utils';
 import { useRouter } from '@modules/translations';
 import { Routes } from 'consts';
 import { DateTime, Info } from 'luxon';
@@ -26,11 +27,27 @@ export const Calendar: FC = () => {
   const apartmentId = params.get('id') || '';
   const router = useRouter();
 
-  const { data: eventsData } = useEventsControllerFindAllForUserSuspense(
+  const { dates, setmonth, setyear, year, month } = useCalculateEachDayOfMonth({
+    startYear: DateTime.local().year,
+    startMonth: DateTime.local().month,
+  });
+
+  const { data: eventsData } = useEventsControllerFindAllForUser(
     apartmentId,
     {
+      month: month.toString(),
+      year: year.toString(),
+    },
+    {
       query: {
-        queryKey: ['events', apartmentId],
+        queryKey: [
+          'events',
+          apartmentId,
+          {
+            month: month.toString(),
+            year: year.toString(),
+          },
+        ],
       },
     }
   );
@@ -54,11 +71,6 @@ export const Calendar: FC = () => {
   const [selectedDay, setSelectedDay] = useState<null | string>(null);
 
   const mobileView = useMobileView();
-
-  const { dates, setmonth, setyear, year, month } = useCalculateEachDayOfMonth({
-    startYear: DateTime.local().year,
-    startMonth: DateTime.local().month,
-  });
 
   const calendarGrid = useRef<null | HTMLDivElement>(null);
 
@@ -86,9 +98,9 @@ export const Calendar: FC = () => {
       }
 
       if (
-        Number(eventStartSplit[0]) > year ||
+        Number(eventStartSplit[0]) < year ||
         (Number(eventStartSplit[0]) === year &&
-          Number(eventStartSplit[1]) > month)
+          Number(eventStartSplit[1]) < month)
       ) {
         startDate = DateTime.fromObject({
           month,
@@ -109,7 +121,7 @@ export const Calendar: FC = () => {
           .toFormat('yyyy-MM-dd');
 
         const eventsForYear =
-          eventsData.data?.[DateTime.fromISO(startDate).year.toString()];
+          eventsData?.data?.[DateTime.fromISO(startDate).year.toString()];
         const eventsForYearAndDate = eventsForYear?.[tempDate];
         if (eventsForYearAndDate) {
           const newIndex = eventsForYearAndDate.findIndex(
@@ -125,13 +137,13 @@ export const Calendar: FC = () => {
       }
       return { biggestIndex, smallestIndex };
     },
-    [eventsData.data, month, year]
+    [eventsData?.data, month, year]
   );
 
   const calculateBiggestIndexByWeekNumber = useCallback(() => {
     let biggestIndex = 0;
     for (const day of dates) {
-      const eventsForYearAndDate = eventsData.data?.[day.year]?.[day.date];
+      const eventsForYearAndDate = eventsData?.data?.[day.year]?.[day.date];
       if (eventsForYearAndDate) {
         if (eventsForYearAndDate.length > biggestIndex) {
           biggestIndex = eventsForYearAndDate.length;
@@ -146,18 +158,14 @@ export const Calendar: FC = () => {
 
   const selectedDayYear = selectedDay?.split('-')[0];
   const eventsForSelectedDay = selectedDayYear
-    ? eventsData.data?.[selectedDayYear]?.[selectedDay]
+    ? eventsData?.data?.[selectedDayYear]?.[selectedDay]
     : [];
 
   return (
     <>
       <title>{currentApartment?.name}</title>
-      <div
-        className={`flex h-fit justify-between ${
-          mobileView ? 'flex-col' : 'flex-row'
-        }`}
-      >
-        <div className={`flex gap-3 font-bold ${mobileView && 'mb-6'}`}>
+      <div className={`flex h-fit justify-between max-md:flex-col`}>
+        <div className={`flex gap-3 font-bold max-md:mb-6`}>
           <Dropdown
             placeholder='Select apartment'
             data={apartments?.map(apartment => {
@@ -189,16 +197,12 @@ export const Calendar: FC = () => {
           selectedYear={year}
           setSelectedMonth={setmonth}
           setSelectedYear={setyear}
-          className={style.dateNavigation}
+          className='flex-row max-[400px]:justify-evenly'
         />
       </div>
       <div
         ref={calendarGrid}
-        className={`${
-          style.calendar
-        } relative drop-shadow-md transition-all duration-75 ${
-          mobileView && 'full-bleed'
-        }`}
+        className={`relative mt-10 drop-shadow-md transition-all duration-75 max-md:col-span-full`}
         onTouchStart={e => {
           touchMoveHorizontal = e.targetTouches.item(0).clientX;
           currentScrollPosition = e.touches.item(0).pageX;
@@ -248,21 +252,22 @@ export const Calendar: FC = () => {
           }
         }}
       >
-        <div className={style.calendarGridHeader}>
+        <div className='grid justify-center [grid-template-columns:repeat(7,1fr)]'>
           {Info.weekdaysFormat('short', { locale }).map((day, index) => (
-            <div
-              key={index}
-              className={`${style.dayName} select-none font-bold`}
-            >
+            <div key={index} className={`select-none text-center font-bold`}>
               {day}
             </div>
           ))}
         </div>
-        <div className={style.calendarGrid}>
+        <div
+          className={cltm(
+            'grid justify-center [grid-template-columns:repeat(7,minmax(40px,1fr))] [grid-template-rows:repeat(6,fit-content)]'
+          )}
+        >
           {dates.map((day, index) => {
             const objectOfDivs: ReactElement[] = [];
             const eventsForYearAndDate =
-              eventsData.data?.[day.year]?.[day.date];
+              eventsData?.data?.[day.year]?.[day.date];
             if (eventsForYearAndDate) {
               for (
                 let index = 0;
@@ -278,10 +283,10 @@ export const Calendar: FC = () => {
             return (
               <div
                 key={index}
-                className={`relative shadow-[0_-1px_1px_#cbd5e1]
-                  hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] ${
-                    mobileView ? style.mobileGridItem : style.gridItem
-                  }`}
+                className={cltm(
+                  'relative shadow-[0_-1px_1px_#cbd5e1] hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD]',
+                  'h-auto min-h-[160px] max-md:h-auto max-md:min-h-[100px] max-md:w-auto'
+                )}
                 onClick={() => {
                   if (eventsForYearAndDate) {
                     setSelectedDay(day.date);
@@ -293,13 +298,11 @@ export const Calendar: FC = () => {
                 }}
               >
                 <div
-                  className={`flex h-full select-none flex-col ${
-                    ['Saturday', 'Sunday'].includes(day.name)
-                      ? 'opacity-50'
-                      : day.lastMonth || day.nextMonth
-                      ? 'font-normal opacity-30'
-                      : 'opacity-100'
-                  } ${mobileView ? style.mobileDayText : style.dayText}`}
+                  className={cltm(
+                    'flex h-full select-none flex-col font-medium opacity-100',
+                    ['Saturday', 'Sunday'].includes(day.name) && 'opacity-50',
+                    (day.lastMonth || day.nextMonth) && 'font-normal opacity-30'
+                  )}
                 >
                   <div>{day.day}</div>
                   {eventsForYearAndDate &&
@@ -312,25 +315,14 @@ export const Calendar: FC = () => {
                         <div
                           id={`${day.day}-${event.id}`}
                           key={`${day.day}-${event.id}`}
-                          className={`flex min-h-[40px] px-2 py-1 font-bold
-                          text-white
-                         ${
-                           tempStartDate
-                             ? 'self-end rounded-l-full'
-                             : tempEndDate
-                             ? 'self-start rounded-r-full'
-                             : 'self-center'
-                         }
-                        `}
+                          className={cltm(
+                            'flex min-h-[40px] w-full items-center p-2 px-2 py-1 font-bold text-[#fff0]',
+                            tempStartDate &&
+                              'w-[70%] self-end rounded-l-full text-white',
+                            tempEndDate && 'w-[30%] self-start rounded-r-full'
+                          )}
                           style={{
                             backgroundColor: event.color,
-                            padding: '0.5rem',
-                            width: tempStartDate
-                              ? '70%'
-                              : tempEndDate
-                              ? '30%'
-                              : '100%',
-                            color: tempStartDate ? 'white' : '#fff0',
                           }}
                         >
                           {event.booking && tempStartDate && (

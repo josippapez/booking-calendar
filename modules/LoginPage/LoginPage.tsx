@@ -1,12 +1,13 @@
 'use client';
 
 import { useAuthenticationControllerLogIn } from '@/api';
+import { signInWithGoogle } from '@/firebase/authActions';
+import { Link } from '@modules/translations';
 import Google from '@public/Styles/Assets/Images/google.svg';
 import { Routes } from 'consts';
 import Cookies from 'js-cookie';
 import { NextPage } from 'next';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -102,7 +103,7 @@ export const LoginPage: NextPage = (props: Props) => {
           <div className='flex items-center justify-evenly'>
             <Link
               href={Routes.GOOGLE_LOGIN}
-              target='_blank'
+              target='_self'
               className={`focus:shadow-outline mt-4 rounded bg-gray-200 p-3 transition-all hover:bg-gray-100 focus:outline-none`}
             >
               <Google />

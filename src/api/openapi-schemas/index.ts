@@ -14,6 +14,7 @@ export * from './createGuestDto';
 export * from './createUserDto';
 export * from './eventObject';
 export * from './events';
+export * from './eventsControllerFindAllForUserParams';
 export * from './eventsData';
 export * from './loginResponse';
 export * from './newGuestInfo';

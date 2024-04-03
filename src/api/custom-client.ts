@@ -48,7 +48,11 @@ AXIOS_INSTANCE.interceptors.response.use(
       Cookies.remove('refreshToken');
       if (!isServer) localStorage.clear();
     }
-    return Promise.reject(error);
+    return Promise.reject(error).then(() => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    });
   }
 );
 

@@ -2,6 +2,7 @@ import { generateSeo } from '@modules/Shared/generateSeo';
 import { DEFAULT_LANGUAGE, LOCALES } from '@modules/translations';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export function generateStaticParams() {
   return LOCALES.map(locale => ({ locale }));
@@ -32,5 +33,5 @@ export default async function LocaleLayout({
   if (!LOCALES.includes(locale as any)) notFound();
 
   unstable_setRequestLocale(locale);
-  return <>{children}</>;
+  return <Suspense>{children}</Suspense>;
 }

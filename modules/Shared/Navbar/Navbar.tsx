@@ -46,9 +46,7 @@ export function Navbar() {
     { title: 'Croatian', value: 'hr' },
   ];
 
-  if (!userAuthenticated) {
-    return <nav></nav>;
-  }
+  if (!userAuthenticated) return null;
 
   return (
     <>

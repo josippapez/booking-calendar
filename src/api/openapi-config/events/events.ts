@@ -20,6 +20,7 @@ import type {
   ApiErrorResponse,
   CreateEventDto,
   Events,
+  EventsControllerFindAllForUserParams,
   RemoveEventDto,
   UpdateEventDto,
 } from '../../openapi-schemas';
@@ -170,19 +171,21 @@ export const useEventsControllerUpdateExisting = <
 };
 export const eventsControllerFindAllForUser = (
   apartmentId: string | undefined | null,
+  params?: EventsControllerFindAllForUserParams,
   options?: SecondParameter<typeof customClient>,
   signal?: AbortSignal
 ) => {
   return customClient<Events>(
-    { url: `/events/${apartmentId}`, method: 'GET', signal },
+    { url: `/events/${apartmentId}`, method: 'GET', params, signal },
     options
   );
 };
 
 export const getEventsControllerFindAllForUserQueryKey = (
-  apartmentId: string | undefined | null
+  apartmentId: string | undefined | null,
+  params?: EventsControllerFindAllForUserParams
 ) => {
-  return [`/events/${apartmentId}`] as const;
+  return [`/events/${apartmentId}`, ...(params ? [params] : [])] as const;
 };
 
 export const getEventsControllerFindAllForUserQueryOptions = <
@@ -190,6 +193,7 @@ export const getEventsControllerFindAllForUserQueryOptions = <
   TError = ErrorType<unknown>
 >(
   apartmentId: string | undefined | null,
+  params?: EventsControllerFindAllForUserParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -205,12 +209,12 @@ export const getEventsControllerFindAllForUserQueryOptions = <
 
   const queryKey =
     queryOptions?.queryKey ??
-    getEventsControllerFindAllForUserQueryKey(apartmentId);
+    getEventsControllerFindAllForUserQueryKey(apartmentId, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof eventsControllerFindAllForUser>>
   > = ({ signal }) =>
-    eventsControllerFindAllForUser(apartmentId, requestOptions, signal);
+    eventsControllerFindAllForUser(apartmentId, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -234,6 +238,7 @@ export const useEventsControllerFindAllForUser = <
   TError = ErrorType<unknown>
 >(
   apartmentId: string | undefined | null,
+  params?: EventsControllerFindAllForUserParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -247,6 +252,7 @@ export const useEventsControllerFindAllForUser = <
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getEventsControllerFindAllForUserQueryOptions(
     apartmentId,
+    params,
     options
   );
 
@@ -264,6 +270,7 @@ export const getEventsControllerFindAllForUserSuspenseQueryOptions = <
   TError = ErrorType<unknown>
 >(
   apartmentId: string | undefined | null,
+  params?: EventsControllerFindAllForUserParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -279,12 +286,12 @@ export const getEventsControllerFindAllForUserSuspenseQueryOptions = <
 
   const queryKey =
     queryOptions?.queryKey ??
-    getEventsControllerFindAllForUserQueryKey(apartmentId);
+    getEventsControllerFindAllForUserQueryKey(apartmentId, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof eventsControllerFindAllForUser>>
   > = ({ signal }) =>
-    eventsControllerFindAllForUser(apartmentId, requestOptions, signal);
+    eventsControllerFindAllForUser(apartmentId, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -309,6 +316,7 @@ export const useEventsControllerFindAllForUserSuspense = <
   TError = ErrorType<unknown>
 >(
   apartmentId: string | undefined | null,
+  params?: EventsControllerFindAllForUserParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -322,6 +330,7 @@ export const useEventsControllerFindAllForUserSuspense = <
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getEventsControllerFindAllForUserSuspenseQueryOptions(
     apartmentId,
+    params,
     options
   );
 
