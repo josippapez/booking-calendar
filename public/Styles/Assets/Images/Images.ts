@@ -1,13 +1,17 @@
+import Apartment from './apartment.jpg';
 import Check from './check.svg?url';
 import CheckGreen from './checkGreen.svg?url';
-import XCircle from './xCircle.svg?url';
+import Bin from './deleteIconBlack.svg?url';
+import DownArrow from './down-arrow.svg?url';
+import Edit from './edit.svg?url';
+import Error from './error.svg?url';
+import Google from './google.svg?url';
+import Info from './info.svg?url';
 import LeftArrow from './left-arrow.svg?url';
 import RightArrow from './right-arrow.svg?url';
-import DownArrow from './down-arrow.svg?url';
-import Google from './google.svg?url';
-import Bin from './deleteIconBlack.svg?url';
-import Edit from './edit.svg?url';
-import Apartment from './apartment.jpg';
+import Success from './success.svg?url';
+import Warning from './warning.svg?url';
+import XCircle from './xCircle.svg?url';
 
 const Images = {
   LeftArrow,
@@ -20,6 +24,10 @@ const Images = {
   Edit,
   DownArrow,
   Apartment,
+  Success,
+  Error,
+  Info,
+  Warning,
 };
 
 export default Images;

@@ -1,4 +1,4 @@
-import { EventsByYear } from '@modules/Calendar/CalendarTypes';
+import { PublicEventsData } from '@/api';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { DateTime } from 'luxon';
@@ -8,7 +8,7 @@ import { FC, useEffect, useState } from 'react';
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
-  currentReservations: EventsByYear;
+  currentReservations: PublicEventsData;
   apartmentEmail: string;
 };
 

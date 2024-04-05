@@ -14,33 +14,40 @@ import type {
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
 } from '@tanstack/react-query';
+import type {
+  PublicEventsControllerFindAllForApartmentParams,
+  PublicEventsResponse,
+} from '../../openapi-schemas';
 import { customClient } from '../../custom-client';
 import type { ErrorType } from '../../custom-client';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 export const publicEventsControllerFindAllForApartment = (
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
+  params?: PublicEventsControllerFindAllForApartmentParams,
   options?: SecondParameter<typeof customClient>,
   signal?: AbortSignal
 ) => {
-  return customClient<void>(
-    { url: `/publicEvents/${id}`, method: 'GET', signal },
+  return customClient<PublicEventsResponse>(
+    { url: `/publicEvents/${apartmentId}`, method: 'GET', params, signal },
     options
   );
 };
 
 export const getPublicEventsControllerFindAllForApartmentQueryKey = (
-  id: string | undefined | null
+  apartmentId: string | undefined | null,
+  params?: PublicEventsControllerFindAllForApartmentParams
 ) => {
-  return [`/publicEvents/${id}`] as const;
+  return [`/publicEvents/${apartmentId}`, ...(params ? [params] : [])] as const;
 };
 
 export const getPublicEventsControllerFindAllForApartmentQueryOptions = <
   TData = Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<void>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
+  params?: PublicEventsControllerFindAllForApartmentParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -56,17 +63,22 @@ export const getPublicEventsControllerFindAllForApartmentQueryOptions = <
 
   const queryKey =
     queryOptions?.queryKey ??
-    getPublicEventsControllerFindAllForApartmentQueryKey(id);
+    getPublicEventsControllerFindAllForApartmentQueryKey(apartmentId, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>
   > = ({ signal }) =>
-    publicEventsControllerFindAllForApartment(id, requestOptions, signal);
+    publicEventsControllerFindAllForApartment(
+      apartmentId,
+      params,
+      requestOptions,
+      signal
+    );
 
   return {
     queryKey,
     queryFn,
-    enabled: !!id,
+    enabled: !!apartmentId,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>,
@@ -79,13 +91,14 @@ export type PublicEventsControllerFindAllForApartmentQueryResult = NonNullable<
   Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>
 >;
 export type PublicEventsControllerFindAllForApartmentQueryError =
-  ErrorType<unknown>;
+  ErrorType<void>;
 
 export const usePublicEventsControllerFindAllForApartment = <
   TData = Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<void>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
+  params?: PublicEventsControllerFindAllForApartmentParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -98,7 +111,8 @@ export const usePublicEventsControllerFindAllForApartment = <
   }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getPublicEventsControllerFindAllForApartmentQueryOptions(
-    id,
+    apartmentId,
+    params,
     options
   );
 
@@ -116,9 +130,10 @@ export const getPublicEventsControllerFindAllForApartmentSuspenseQueryOptions =
     TData = Awaited<
       ReturnType<typeof publicEventsControllerFindAllForApartment>
     >,
-    TError = ErrorType<unknown>
+    TError = ErrorType<void>
   >(
-    id: string | undefined | null,
+    apartmentId: string | undefined | null,
+    params?: PublicEventsControllerFindAllForApartmentParams,
     options?: {
       query?: Partial<
         UseSuspenseQueryOptions<
@@ -134,17 +149,22 @@ export const getPublicEventsControllerFindAllForApartmentSuspenseQueryOptions =
 
     const queryKey =
       queryOptions?.queryKey ??
-      getPublicEventsControllerFindAllForApartmentQueryKey(id);
+      getPublicEventsControllerFindAllForApartmentQueryKey(apartmentId, params);
 
     const queryFn: QueryFunction<
       Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>
     > = ({ signal }) =>
-      publicEventsControllerFindAllForApartment(id, requestOptions, signal);
+      publicEventsControllerFindAllForApartment(
+        apartmentId,
+        params,
+        requestOptions,
+        signal
+      );
 
     return {
       queryKey,
       queryFn,
-      enabled: !!id,
+      enabled: !!apartmentId,
       ...queryOptions,
     } as UseSuspenseQueryOptions<
       Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>,
@@ -158,13 +178,14 @@ export type PublicEventsControllerFindAllForApartmentSuspenseQueryResult =
     Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>
   >;
 export type PublicEventsControllerFindAllForApartmentSuspenseQueryError =
-  ErrorType<unknown>;
+  ErrorType<void>;
 
 export const usePublicEventsControllerFindAllForApartmentSuspense = <
   TData = Awaited<ReturnType<typeof publicEventsControllerFindAllForApartment>>,
-  TError = ErrorType<unknown>
+  TError = ErrorType<void>
 >(
-  id: string | undefined | null,
+  apartmentId: string | undefined | null,
+  params?: PublicEventsControllerFindAllForApartmentParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -178,7 +199,8 @@ export const usePublicEventsControllerFindAllForApartmentSuspense = <
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions =
     getPublicEventsControllerFindAllForApartmentSuspenseQueryOptions(
-      id,
+      apartmentId,
+      params,
       options
     );
 

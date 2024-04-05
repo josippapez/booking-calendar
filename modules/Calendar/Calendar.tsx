@@ -185,7 +185,7 @@ export const Calendar: FC = () => {
           <button
             className='h-10 rounded-md bg-blue-500 px-3 text-white drop-shadow-md hover:bg-blue-400'
             onClick={() =>
-              router.push(`${Routes.PUBLIC_APARTMENT}?id=${apartmentId}`)
+              router.push(`${Routes.PUBLIC_APARTMENT}/${apartmentId}`)
             }
           >
             {t('public_view')}

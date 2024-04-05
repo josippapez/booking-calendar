@@ -1,7 +1,6 @@
 'use client';
 
 import { useAuthenticationControllerLogIn } from '@/api';
-import { signInWithGoogle } from '@/firebase/authActions';
 import { Link } from '@modules/translations';
 import Google from '@public/Styles/Assets/Images/google.svg';
 import { Routes } from 'consts';

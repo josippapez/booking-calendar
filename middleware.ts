@@ -41,7 +41,12 @@ function getLocaleAndRoute(request: NextRequest) {
 function isRouteInRoutes(route: string, customRoutes?: string[]) {
   const routes = customRoutes ?? Object.values(Routes);
   const routeMatches = !!routes.find(item => {
+    if (item === '/') return;
+
     if (item.includes(route)) {
+      return true;
+    }
+    if (route.includes(item)) {
       return true;
     }
     if (item.includes(':')) {

@@ -99,7 +99,8 @@ export function Navbar() {
               className='focus:shadow-outline hidden w-fit self-end rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500 focus:outline-none md:block'
               type='button'
               onClick={async () => {
-                // await logout();
+                Cookies.remove('accessToken');
+                Cookies.remove('refreshToken');
                 router.push(Routes.LOGIN);
               }}
             >

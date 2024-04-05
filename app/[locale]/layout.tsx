@@ -4,7 +4,6 @@ import {
   DEFAULT_LANGUAGE,
   getCurrentTranslations,
 } from '@modules/translations';
-import '@styles/globals.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { Suspense } from 'react';
 

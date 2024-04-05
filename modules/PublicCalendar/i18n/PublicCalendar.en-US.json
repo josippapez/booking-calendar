@@ -1,4 +1,8 @@
 {
   "create_reservation": "Create Reservation",
-  "can_be_reserved": "Can be reserved"
+  "can_be_reserved": "Can be reserved",
+  "Metadata": {
+    "title": "{name} reservation calendar",
+    "description": "Check out {name} and reserve your spot!"
+  }
 }
