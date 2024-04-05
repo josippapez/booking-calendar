@@ -1,26 +1,33 @@
 import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Components';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
-import { useTranslations } from 'next-intl';
+import {
+  NextIntlClientProvider,
+  useLocale,
+  useMessages,
+  useTranslations,
+} from 'next-intl';
 import { useEffect, useState } from 'react';
 
 type Props = {
-  PdfInstance?: () => JSX.Element;
+  PdfComponent?: React.JSX.Element;
   pdfBlob?: ReactPDF.UsePDFInstance;
   closeModal(): void;
   show: boolean;
 };
 
 export const PDFDownload = ({
-  PdfInstance,
+  PdfComponent,
   show,
   closeModal,
   pdfBlob,
 }: Props) => {
+  const locale = useLocale();
   const t = useTranslations('PDFDownload');
   const { isHTML, setHtml } = usePDFComponentsAreHTML();
   const [documentName, setDocumentName] = useState('');
   const [download, setDownload] = useState(false);
+  const messages = useMessages();
 
   useEffect(() => {
     if (show) setHtml(false);
@@ -33,9 +40,7 @@ export const PDFDownload = ({
       closeModal={() => {
         setHtml(true);
         setDownload(false);
-        setTimeout(() => {
-          closeModal();
-        }, 100);
+        closeModal();
       }}
     >
       <div className='text-almost-black relative h-fit w-fit flex-col bg-white p-5'>
@@ -79,11 +84,19 @@ export const PDFDownload = ({
             </a>
           )}
           {!pdfBlob &&
-            PdfInstance &&
+            PdfComponent &&
             (download ? (
               <PDFDownloadLink
                 className='w-full bg-blue-500 p-2 text-center font-bold text-white shadow-[0_0_20px_-5px] hover:shadow-blue-800 focus:shadow-blue-800'
-                document={!isHTML ? <PdfInstance /> : <></>}
+                document={
+                  !isHTML ? (
+                    <NextIntlClientProvider locale={locale} messages={messages}>
+                      {PdfComponent}
+                    </NextIntlClientProvider>
+                  ) : (
+                    <></>
+                  )
+                }
                 fileName={`${documentName}.pdf`}
               >
                 {({ blob, url, loading, error }) => {

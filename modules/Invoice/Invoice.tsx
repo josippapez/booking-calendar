@@ -1,4 +1,6 @@
-import { SingleApartmentDto } from '@/api';
+'use client';
+
+import { SingleApartmentDto, useApartmentsControllerFindAll } from '@/api';
 import { InvoiceDisplay } from '@modules/Invoice/InvoiceDisplay/InvoiceDisplay';
 import { InvoiceInputs } from '@modules/Invoice/InvoiceInputs/InvoiceInputs';
 import { Dropdown } from '@modules/Shared/Dropdown/Dropdown';
@@ -6,7 +8,7 @@ import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
 
 export type TransactionInvoiceData = {
-  apartmentData: SingleApartmentDto;
+  apartmentData: Omit<SingleApartmentDto, 'id' | 'pricePerNight'>;
   recipientData: {
     recipientName: string;
     recipientAddress: string;
@@ -33,11 +35,17 @@ export type TransactionInvoiceData = {
 
 export const Invoice: FC = () => {
   const t = useTranslations('InvoiceInputs');
-  // const dispatch = useAppDispatch();
-  // const { apartments } = useAppSelector(state => state.apartments);
-  // const selectedApartment = useAppSelector(
-  //   state => state.apartments.selectedApartment
-  // );
+
+  const { data: apartments, refetch: refetchApartments } =
+    useApartmentsControllerFindAll({
+      query: {
+        queryKey: ['apartments'],
+      },
+    });
+
+  const [selectedApartment, setSelectedApartment] = useState<
+    undefined | SingleApartmentDto
+  >();
 
   const [transactionInvoiceData, setTransactionInvoiceData] =
     useState<TransactionInvoiceData>({
@@ -48,9 +56,7 @@ export const Invoice: FC = () => {
         image: '',
         pid: '',
         iban: '',
-        id: '',
         email: '',
-        pricePerNight: undefined,
       },
       recipientData: {
         recipientName: '',
@@ -80,53 +86,70 @@ export const Invoice: FC = () => {
       },
     });
 
-  // useEffect(() => {
-  //   if (!apartments) {
-  //     dispatch(getApartmentsForUser());
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!selectedApartment && apartments && apartments.length > 0) {
+      setSelectedApartment(apartments[0]);
+    }
+  }, [apartments, selectedApartment]);
 
-  return null;
+  console.log(selectedApartment);
 
-  // const renderInvoice = () => {
-  //   return (
-  //     <div>
-  //       <div className='w-56'>
-  //         <Dropdown
-  //           placeholder='Select apartment'
-  //           data={
-  //             apartments &&
-  //             Object.keys(apartments).map(key => {
-  //               return {
-  //                 id: apartments[key].id,
-  //                 name: apartments[key].name,
-  //                 value: apartments[key],
-  //               };
-  //             })
-  //           }
-  //           selected={selectedApartment?.id as string}
-  //           setData={item => {
-  //             if (item.id !== (selectedApartment?.id as string)) {
-  //               dispatch(selectApartment(apartments[item.id]));
-  //             }
-  //           }}
-  //         />
-  //       </div>
-  //       {selectedApartment && (
-  //         <div className='mt-5 flex h-full flex-col justify-around gap-5 2xl:flex-row'>
-  //           <InvoiceInputs
-  //             invoiceData={transactionInvoiceData}
-  //             setInvoiceData={setTransactionInvoiceData}
-  //           />
-  //           <InvoiceDisplay
-  //             invoiceData={transactionInvoiceData}
-  //             setInvoiceData={setTransactionInvoiceData}
-  //           />
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // };
+  useEffect(() => {
+    if (selectedApartment) {
+      setTransactionInvoiceData({
+        ...transactionInvoiceData,
+        apartmentData: {
+          address: selectedApartment.address,
+          email: selectedApartment.email,
+          iban: selectedApartment.iban,
+          name: selectedApartment.name,
+          owner: selectedApartment.owner,
+          pid: selectedApartment.pid,
+          image: selectedApartment.image,
+        },
+      });
+    }
+  }, [selectedApartment]);
 
-  // return renderInvoice();
+  const renderInvoice = () => {
+    return (
+      <div>
+        <div className='w-56'>
+          <Dropdown
+            placeholder='Select apartment'
+            data={apartments?.map(apartment => {
+              return {
+                id: apartment.id,
+                value: apartment.name,
+                data: apartment,
+              };
+            })}
+            selectedValue={selectedApartment?.id as string}
+            onSelectionChange={item => {
+              if (!item) return setSelectedApartment(undefined);
+
+              if (item.id !== (selectedApartment?.id as string)) {
+                setSelectedApartment(item.data);
+              }
+            }}
+          />
+        </div>
+        {selectedApartment && (
+          <div className='mt-5 flex h-full flex-col justify-around gap-5 2xl:flex-row'>
+            <InvoiceInputs
+              invoiceData={transactionInvoiceData}
+              setInvoiceData={setTransactionInvoiceData}
+            />
+            <InvoiceDisplay
+              selectedApartment={selectedApartment}
+              invoiceData={transactionInvoiceData}
+              setInvoiceData={setTransactionInvoiceData}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return renderInvoice();
 };

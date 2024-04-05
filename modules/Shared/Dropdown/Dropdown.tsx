@@ -3,23 +3,21 @@ import { useEffect, useRef, useState } from 'react';
 import Images from '@public/Styles/Assets/Images/Images';
 import style from './Dropdown.module.scss';
 
-type Props = {
+interface Props<T> {
   placeholder: string;
-  selected: string | null;
-  data?: {
-    id: string;
-    name: string;
-    value: string | number | Object;
-  }[];
-  setData: (data: {
-    id: string;
-    name: string;
-    value: string | number | Object;
-  }) => void;
-};
+  data?: T[];
+  selectedValue?: number | string;
+  onSelectionChange: (value: T | null) => void;
+}
 
-export function Dropdown(props: Props) {
-  const { placeholder, data, setData, selected } = props;
+export const Dropdown = <
+  T extends { id: string | number; value: string; }
+>({
+  data = [],
+  selectedValue,
+  onSelectionChange,
+  placeholder,
+}: Readonly<Props<T>>) => {
   const [openedDropdown, setOpenedDropdown] = useState(false);
   const component = useRef<HTMLDivElement | null>(null);
 
@@ -56,8 +54,8 @@ export function Dropdown(props: Props) {
           placeholder={placeholder}
           className='w-[calc(100%_-_30px)] cursor-pointer overflow-hidden text-ellipsis placeholder:text-sm'
           value={
-            selected && data
-              ? data.find(item => item.id === selected)?.name
+            selectedValue
+              ? data.find(v => v.id === selectedValue)?.value ?? ''
               : ''
           }
         />
@@ -79,13 +77,13 @@ export function Dropdown(props: Props) {
                 key={item.id}
                 className={`${style.dropdownItem}
                 rounded-md p-2 text-gray-700 hover:bg-slate-200
-                ${selected === item.id && 'text-blue-600'}`}
+                ${selectedValue === item.id && 'text-blue-600'}`}
                 onClick={() => {
-                  setData(item);
+                  onSelectionChange(item);
                   setOpenedDropdown(false);
                 }}
               >
-                {item.name}
+                {item.value}
               </div>
             ))
           ) : (
@@ -95,4 +93,4 @@ export function Dropdown(props: Props) {
       )}
     </div>
   );
-}
+};

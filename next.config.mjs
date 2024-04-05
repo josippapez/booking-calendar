@@ -100,6 +100,7 @@ const nextConfig = {
         use: ['@svgr/webpack'],
       }
     );
+    config.resolve.alias.canvas = false;
     config.plugins.push(
       new CopyPlugin({
         patterns: [

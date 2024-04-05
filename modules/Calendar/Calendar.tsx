@@ -171,12 +171,14 @@ export const Calendar: FC = () => {
             data={apartments?.map(apartment => {
               return {
                 id: apartment.id,
-                name: apartment.name,
-                value: apartment,
+                value: apartment.name,
+                data: apartment,
               };
             })}
-            selected={apartmentId}
-            setData={item => {
+            selectedValue={apartmentId}
+            onSelectionChange={item => {
+              if (!item) return;
+
               if (item.id !== apartmentId) {
                 router.push(`${Routes.APARTMENT}?id=${item.id}`);
               }

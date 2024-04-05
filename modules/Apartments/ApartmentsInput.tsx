@@ -104,7 +104,7 @@ export const ApartmentsInput: FC<Props> = ({
     ) {
       if (newApartment.id) {
         return updateApartment({
-          id: newApartment.id,
+          apartmentId: newApartment.id,
           data: newApartment,
         });
       }

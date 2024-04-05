@@ -126,7 +126,7 @@ export const Apartments: FC = () => {
                       e.stopPropagation();
                       showAlert(t('remove_apartment'), false, () =>
                         removeApartment({
-                          id: apartment.id,
+                          apartmentId: apartment.id,
                         })
                       );
                     }}

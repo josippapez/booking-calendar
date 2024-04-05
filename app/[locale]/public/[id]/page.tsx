@@ -62,8 +62,6 @@ export default async function PublicCalendarPage({
     }
   ).then(res => res.json());
 
-  console.log("DATA", data);
-
   if (data.statusCode === 404 || data.statusCode === 500) {
     notFound();
   }

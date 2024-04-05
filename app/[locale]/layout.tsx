@@ -16,6 +16,8 @@ export default async function LocaleLayout({
 }) {
   const currentTranslations = await getCurrentTranslations(locale);
 
+  console.log(currentTranslations);
+
   return (
     <html lang={locale}>
       <body id='__next' className='relative'>

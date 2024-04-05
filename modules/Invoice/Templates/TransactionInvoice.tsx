@@ -11,6 +11,7 @@ import InterLight from '@public/Styles/Assets/Fonts/Inter-Light.ttf';
 import InterRegular from '@public/Styles/Assets/Fonts/Inter-Regular.ttf';
 import { Font, StyleSheet } from '@react-pdf/renderer';
 import { DateTime } from 'luxon';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   translate: any; // TODO: fix type
@@ -92,8 +93,14 @@ const styles = StyleSheet.create({
 });
 
 export const TransactionInvoice = (props: Props): JSX.Element => {
-  const { translate, locale, apartmentData, invoiceData, recipientData: recipientData } =
-    props;
+  const translate = useTranslations('TransactionInvoice');
+  const {
+    // translate,
+    locale,
+    apartmentData,
+    invoiceData,
+    recipientData: recipientData,
+  } = props;
 
   return (
     <Document>

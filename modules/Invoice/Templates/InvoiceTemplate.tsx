@@ -1,3 +1,5 @@
+'use client';
+
 import { TransactionInvoice } from '@modules/Invoice/Templates/TransactionInvoice';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -16,7 +18,7 @@ export const InvoiceTemplate = (props: Props): JSX.Element => {
   const options = useMemo(() => {
     return {
       translate: t,
-      locale: locale,
+      locale,
       apartmentData,
       invoiceData,
       recipientData,
@@ -24,6 +26,6 @@ export const InvoiceTemplate = (props: Props): JSX.Element => {
   }, [locale, apartmentData, invoiceData, recipientData, t]);
 
   return useMemo(() => {
-    return TransactionInvoice(options);
+    return <TransactionInvoice {...options} />;
   }, [options]);
 };

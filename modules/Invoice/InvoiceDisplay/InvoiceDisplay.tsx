@@ -1,9 +1,12 @@
+'use client';
+
+import { SingleApartmentDto } from '@/api';
 import { TransactionInvoiceData } from '@modules/Invoice/Invoice';
 import { PDFDownload } from '@modules/Invoice/PDFDownload/PDFDownload';
 import { InvoiceTemplate } from '@modules/Invoice/Templates/InvoiceTemplate';
 import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Components';
 import { useWindowSize } from '@modules/Shared/Hooks/useWindowSize';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -11,38 +14,29 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 type Props = {
+  selectedApartment?: SingleApartmentDto;
   invoiceData: TransactionInvoiceData;
   setInvoiceData: (data: TransactionInvoiceData) => void;
 };
 
-export const InvoiceDisplay = (props: Props) => {
-  const { invoiceData, setInvoiceData } = props;
+const Template = (invoiceData: TransactionInvoiceData) =>
+  useMemo(() => <InvoiceTemplate {...invoiceData} />, [invoiceData]);
+
+const TemplateNotHtml: React.FC<{
+  invoiceData: TransactionInvoiceData;
+  isHtml: boolean;
+}> = ({ invoiceData, isHtml }) =>
+  useMemo(() => <InvoiceTemplate {...invoiceData} />, [invoiceData, isHtml]);
+
+export const InvoiceDisplay = ({
+  invoiceData,
+  setInvoiceData,
+  selectedApartment,
+}: Props) => {
   const windowSize = useWindowSize();
   const { isHTML } = usePDFComponentsAreHTML();
 
-  // const selectedApartment = useAppSelector(
-  //   state => state.apartments.selectedApartment
-  // );
-
   const [displayDownloadModal, setDisplayDownloadModal] = useState(false);
-
-  const TemplateNotHtml = useCallback(
-    () => InvoiceTemplate(invoiceData),
-    [isHTML, invoiceData]
-  );
-  const Template = () => InvoiceTemplate(invoiceData);
-
-  // useEffect(() => {
-  //   if (selectedApartment) {
-  //     setInvoiceData({
-  //       ...invoiceData,
-  //       apartmentData: {
-  //         ...selectedApartment,
-  //         pricePerNight: selectedApartment?.pricePerNight ?? 0,
-  //       },
-  //     });
-  //   }
-  // }, [selectedApartment]);
 
   const scale =
     windowSize.width * 1.414213562 < windowSize.height
@@ -70,7 +64,7 @@ export const InvoiceDisplay = (props: Props) => {
               )`,
           }}
         >
-          <Template />
+          <Template {...invoiceData} />
         </div>
 
         <div className='document-controls'>
@@ -81,7 +75,9 @@ export const InvoiceDisplay = (props: Props) => {
         </div>
       </div>
       <PDFDownload
-        PdfInstance={TemplateNotHtml}
+        PdfComponent={
+          <TemplateNotHtml invoiceData={invoiceData} isHtml={isHTML} />
+        }
         show={displayDownloadModal}
         closeModal={() => setDisplayDownloadModal(false)}
       />
