@@ -46,7 +46,7 @@ export const PublicCalendar: React.FC<{
               <Image
                 src={apartmentLogo}
                 alt={apartmentName}
-                className='rounded'
+                className='rounded max-h-[200px] max-w-[30%]'
                 width={150}
                 height={150}
               />
