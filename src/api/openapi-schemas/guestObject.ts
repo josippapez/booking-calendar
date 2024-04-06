@@ -6,17 +6,17 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface OldGuestInfo {
+export interface GuestObject {
   address: string;
   city: string;
   country: string;
   dateOfArrival: string;
   dateOfBirth: string;
   dateOfDeparture: string;
-  id?: string;
+  id: string;
   name: string;
   note?: string;
   numberOfInvoice?: number;
   PID?: string;
-  travelidNumber: string;
+  travelIdNumber: string;
 }

@@ -1,4 +1,9 @@
 {
   "create_reservation": "Napravi rezervaciju",
-  "can_be_reserved": "Rezervacija moguća"
+  "can_be_reserved": "Rezervacija moguća",
+  "email_sent": "Email poslan",
+  "Metadata": {
+    "title": "{name} kalendar",
+    "description": "Rezervirajte {name} online"
+  }
 }

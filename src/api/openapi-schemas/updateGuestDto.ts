@@ -5,9 +5,9 @@
  * Booking calendar API description
  * OpenAPI spec version: 1.0
  */
+import type { GuestObject } from './guestObject';
 
-export interface RemoveGuestDto {
-  endDate: string;
-  guestId: string;
-  startDate: string;
+export interface UpdateGuestDto {
+  newGuestInfo: GuestObject;
+  oldGuestInfo: GuestObject;
 }

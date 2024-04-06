@@ -1,6 +1,7 @@
 {
   "create_reservation": "Create Reservation",
   "can_be_reserved": "Can be reserved",
+  "email_sent": "Email sent",
   "Metadata": {
     "title": "{name} reservation calendar",
     "description": "Check out {name} and reserve your spot!"

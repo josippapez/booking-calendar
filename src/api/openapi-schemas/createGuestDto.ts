@@ -5,10 +5,17 @@
  * Booking calendar API description
  * OpenAPI spec version: 1.0
  */
-import type { NewGuestInfo } from './newGuestInfo';
-import type { OldGuestInfo } from './oldGuestInfo';
 
 export interface CreateGuestDto {
-  newGuestInfo: NewGuestInfo;
-  oldGuestInfo: OldGuestInfo;
+  address: string;
+  city: string;
+  country: string;
+  dateOfArrival: string;
+  dateOfBirth: string;
+  dateOfDeparture: string;
+  name: string;
+  note?: string;
+  numberOfInvoice?: number;
+  PID?: string;
+  travelIdNumber: string;
 }

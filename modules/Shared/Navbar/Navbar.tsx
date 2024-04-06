@@ -1,7 +1,6 @@
 'use client';
 
 import { useCloseOnClickOutside } from '@modules/Shared/Hooks/useCloseOnClickOutside';
-import { useDarkMode } from '@modules/Shared/Hooks/useDarkMode';
 import { CalendarNavbarDropdown } from '@modules/Shared/Navbar/CalendarNavbarDropdown';
 import {
   CountryCodes,
@@ -15,10 +14,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 export function Navbar() {
-  const userAuthenticated = Cookies.get('accessToken');
   const t = useTranslations('Navbar');
   const languageTranslations = useTranslations('Languages');
-  const darkmode = useDarkMode();
   const router = useRouter();
   const locale = useLocale();
   const pathname = usePathname();
@@ -45,8 +42,6 @@ export function Navbar() {
     { title: 'English', value: 'en-US' },
     { title: 'Croatian', value: 'hr' },
   ];
-
-  if (!userAuthenticated) return null;
 
   return (
     <>

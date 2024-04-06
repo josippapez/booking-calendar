@@ -6,8 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface RemoveGuestDto {
-  endDate: string;
-  guestId: string;
-  startDate: string;
-}
+export type GuestsControllerFindOneParams = {
+  selectedYear: string;
+};

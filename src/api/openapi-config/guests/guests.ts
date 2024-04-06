@@ -17,18 +17,26 @@ import type {
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
 } from '@tanstack/react-query';
-import type { CreateGuestDto, RemoveGuestDto } from '../../openapi-schemas';
+import type {
+  ApiErrorResponse,
+  CreateGuestDto,
+  GuestObject,
+  Guests,
+  GuestsControllerFindOneParams,
+  RemoveGuestDto,
+  UpdateGuestDto,
+} from '../../openapi-schemas';
 import { customClient } from '../../custom-client';
 import type { ErrorType, BodyType } from '../../custom-client';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
-export const guestsControllerCreateOrUpdate = (
+export const guestsControllerCreate = (
   apartmentId: string | undefined | null,
   createGuestDto: BodyType<CreateGuestDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
-  return customClient<void>(
+  return customClient<GuestObject>(
     {
       url: `/guests/${apartmentId}`,
       method: 'POST',
@@ -39,19 +47,19 @@ export const guestsControllerCreateOrUpdate = (
   );
 };
 
-export const getGuestsControllerCreateOrUpdateMutationOptions = <
-  TError = ErrorType<unknown>,
+export const getGuestsControllerCreateMutationOptions = <
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof guestsControllerCreateOrUpdate>>,
+    Awaited<ReturnType<typeof guestsControllerCreate>>,
     TError,
     { apartmentId: string; data: BodyType<CreateGuestDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof guestsControllerCreateOrUpdate>>,
+  Awaited<ReturnType<typeof guestsControllerCreate>>,
   TError,
   { apartmentId: string; data: BodyType<CreateGuestDto> },
   TContext
@@ -59,55 +67,301 @@ export const getGuestsControllerCreateOrUpdateMutationOptions = <
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof guestsControllerCreateOrUpdate>>,
+    Awaited<ReturnType<typeof guestsControllerCreate>>,
     { apartmentId: string; data: BodyType<CreateGuestDto> }
   > = props => {
     const { apartmentId, data } = props ?? {};
 
-    return guestsControllerCreateOrUpdate(apartmentId, data, requestOptions);
+    return guestsControllerCreate(apartmentId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type GuestsControllerCreateOrUpdateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof guestsControllerCreateOrUpdate>>
+export type GuestsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof guestsControllerCreate>>
 >;
-export type GuestsControllerCreateOrUpdateMutationBody =
-  BodyType<CreateGuestDto>;
-export type GuestsControllerCreateOrUpdateMutationError = ErrorType<unknown>;
+export type GuestsControllerCreateMutationBody = BodyType<CreateGuestDto>;
+export type GuestsControllerCreateMutationError = ErrorType<ApiErrorResponse>;
 
-export const useGuestsControllerCreateOrUpdate = <
-  TError = ErrorType<unknown>,
+export const useGuestsControllerCreate = <
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof guestsControllerCreateOrUpdate>>,
+    Awaited<ReturnType<typeof guestsControllerCreate>>,
     TError,
     { apartmentId: string; data: BodyType<CreateGuestDto> },
     TContext
   >;
   request?: SecondParameter<typeof customClient>;
 }): UseMutationResult<
-  Awaited<ReturnType<typeof guestsControllerCreateOrUpdate>>,
+  Awaited<ReturnType<typeof guestsControllerCreate>>,
   TError,
   { apartmentId: string; data: BodyType<CreateGuestDto> },
   TContext
 > => {
-  const mutationOptions =
-    getGuestsControllerCreateOrUpdateMutationOptions(options);
+  const mutationOptions = getGuestsControllerCreateMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
+export const guestsControllerUpdate = (
+  apartmentId: string | undefined | null,
+  updateGuestDto: BodyType<UpdateGuestDto>,
+  options?: SecondParameter<typeof customClient>
+) => {
+  return customClient<Guests>(
+    {
+      url: `/guests/${apartmentId}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateGuestDto,
+    },
+    options
+  );
+};
+
+export const getGuestsControllerUpdateMutationOptions = <
+  TError = ErrorType<ApiErrorResponse>,
+  TContext = unknown
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof guestsControllerUpdate>>,
+    TError,
+    { apartmentId: string; data: BodyType<UpdateGuestDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customClient>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof guestsControllerUpdate>>,
+  TError,
+  { apartmentId: string; data: BodyType<UpdateGuestDto> },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof guestsControllerUpdate>>,
+    { apartmentId: string; data: BodyType<UpdateGuestDto> }
+  > = props => {
+    const { apartmentId, data } = props ?? {};
+
+    return guestsControllerUpdate(apartmentId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GuestsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof guestsControllerUpdate>>
+>;
+export type GuestsControllerUpdateMutationBody = BodyType<UpdateGuestDto>;
+export type GuestsControllerUpdateMutationError = ErrorType<ApiErrorResponse>;
+
+export const useGuestsControllerUpdate = <
+  TError = ErrorType<ApiErrorResponse>,
+  TContext = unknown
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof guestsControllerUpdate>>,
+    TError,
+    { apartmentId: string; data: BodyType<UpdateGuestDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customClient>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof guestsControllerUpdate>>,
+  TError,
+  { apartmentId: string; data: BodyType<UpdateGuestDto> },
+  TContext
+> => {
+  const mutationOptions = getGuestsControllerUpdateMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const guestsControllerFindOne = (
+  apartmentId: string | undefined | null,
+  params: GuestsControllerFindOneParams,
+  options?: SecondParameter<typeof customClient>,
+  signal?: AbortSignal
+) => {
+  return customClient<Guests>(
+    { url: `/guests/${apartmentId}`, method: 'GET', params, signal },
+    options
+  );
+};
+
+export const getGuestsControllerFindOneQueryKey = (
+  apartmentId: string | undefined | null,
+  params: GuestsControllerFindOneParams
+) => {
+  return [`/guests/${apartmentId}`, ...(params ? [params] : [])] as const;
+};
+
+export const getGuestsControllerFindOneQueryOptions = <
+  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
+  TError = ErrorType<unknown>
+>(
+  apartmentId: string | undefined | null,
+  params: GuestsControllerFindOneParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof guestsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customClient>;
+  }
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGuestsControllerFindOneQueryKey(apartmentId, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof guestsControllerFindOne>>
+  > = ({ signal }) =>
+    guestsControllerFindOne(apartmentId, params, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!apartmentId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof guestsControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GuestsControllerFindOneQueryResult = NonNullable<
+  Awaited<ReturnType<typeof guestsControllerFindOne>>
+>;
+export type GuestsControllerFindOneQueryError = ErrorType<unknown>;
+
+export const useGuestsControllerFindOne = <
+  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
+  TError = ErrorType<unknown>
+>(
+  apartmentId: string | undefined | null,
+  params: GuestsControllerFindOneParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof guestsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customClient>;
+  }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGuestsControllerFindOneQueryOptions(
+    apartmentId,
+    params,
+    options
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGuestsControllerFindOneSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
+  TError = ErrorType<unknown>
+>(
+  apartmentId: string | undefined | null,
+  params: GuestsControllerFindOneParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof guestsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customClient>;
+  }
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGuestsControllerFindOneQueryKey(apartmentId, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof guestsControllerFindOne>>
+  > = ({ signal }) =>
+    guestsControllerFindOne(apartmentId, params, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!apartmentId,
+    ...queryOptions,
+  } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof guestsControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GuestsControllerFindOneSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof guestsControllerFindOne>>
+>;
+export type GuestsControllerFindOneSuspenseQueryError = ErrorType<unknown>;
+
+export const useGuestsControllerFindOneSuspense = <
+  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
+  TError = ErrorType<unknown>
+>(
+  apartmentId: string | undefined | null,
+  params: GuestsControllerFindOneParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof guestsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customClient>;
+  }
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGuestsControllerFindOneSuspenseQueryOptions(
+    apartmentId,
+    params,
+    options
+  );
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
 export const guestsControllerRemove = (
   apartmentId: string | undefined | null,
   removeGuestDto: BodyType<RemoveGuestDto>,
   options?: SecondParameter<typeof customClient>
 ) => {
-  return customClient<void>(
+  return customClient<Guests>(
     {
       url: `/guests/${apartmentId}`,
-      method: 'PATCH',
+      method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       data: removeGuestDto,
     },
@@ -116,7 +370,7 @@ export const guestsControllerRemove = (
 };
 
 export const getGuestsControllerRemoveMutationOptions = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -150,10 +404,10 @@ export type GuestsControllerRemoveMutationResult = NonNullable<
   Awaited<ReturnType<typeof guestsControllerRemove>>
 >;
 export type GuestsControllerRemoveMutationBody = BodyType<RemoveGuestDto>;
-export type GuestsControllerRemoveMutationError = ErrorType<unknown>;
+export type GuestsControllerRemoveMutationError = ErrorType<ApiErrorResponse>;
 
 export const useGuestsControllerRemove = <
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ApiErrorResponse>,
   TContext = unknown
 >(options?: {
   mutation?: UseMutationOptions<
@@ -290,180 +544,6 @@ export const useGuestsControllerFindAllSuspense = <
   request?: SecondParameter<typeof customClient>;
 }): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGuestsControllerFindAllSuspenseQueryOptions(options);
-
-  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-};
-
-export const guestsControllerFindOne = (
-  id: string | undefined | null,
-  selectedyear: string | undefined | null,
-  options?: SecondParameter<typeof customClient>,
-  signal?: AbortSignal
-) => {
-  return customClient<void>(
-    { url: `/guests/${id}/${selectedyear}`, method: 'GET', signal },
-    options
-  );
-};
-
-export const getGuestsControllerFindOneQueryKey = (
-  id: string | undefined | null,
-  selectedyear: string | undefined | null
-) => {
-  return [`/guests/${id}/${selectedyear}`] as const;
-};
-
-export const getGuestsControllerFindOneQueryOptions = <
-  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
-  TError = ErrorType<unknown>
->(
-  id: string | undefined | null,
-  selectedyear: string | undefined | null,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof guestsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customClient>;
-  }
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGuestsControllerFindOneQueryKey(id, selectedyear);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof guestsControllerFindOne>>
-  > = ({ signal }) =>
-    guestsControllerFindOne(id, selectedyear, requestOptions, signal);
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!(id && selectedyear),
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof guestsControllerFindOne>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GuestsControllerFindOneQueryResult = NonNullable<
-  Awaited<ReturnType<typeof guestsControllerFindOne>>
->;
-export type GuestsControllerFindOneQueryError = ErrorType<unknown>;
-
-export const useGuestsControllerFindOne = <
-  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
-  TError = ErrorType<unknown>
->(
-  id: string | undefined | null,
-  selectedyear: string | undefined | null,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof guestsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customClient>;
-  }
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGuestsControllerFindOneQueryOptions(
-    id,
-    selectedyear,
-    options
-  );
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-};
-
-export const getGuestsControllerFindOneSuspenseQueryOptions = <
-  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
-  TError = ErrorType<unknown>
->(
-  id: string | undefined | null,
-  selectedyear: string | undefined | null,
-  options?: {
-    query?: Partial<
-      UseSuspenseQueryOptions<
-        Awaited<ReturnType<typeof guestsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customClient>;
-  }
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGuestsControllerFindOneQueryKey(id, selectedyear);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof guestsControllerFindOne>>
-  > = ({ signal }) =>
-    guestsControllerFindOne(id, selectedyear, requestOptions, signal);
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!(id && selectedyear),
-    ...queryOptions,
-  } as UseSuspenseQueryOptions<
-    Awaited<ReturnType<typeof guestsControllerFindOne>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GuestsControllerFindOneSuspenseQueryResult = NonNullable<
-  Awaited<ReturnType<typeof guestsControllerFindOne>>
->;
-export type GuestsControllerFindOneSuspenseQueryError = ErrorType<unknown>;
-
-export const useGuestsControllerFindOneSuspense = <
-  TData = Awaited<ReturnType<typeof guestsControllerFindOne>>,
-  TError = ErrorType<unknown>
->(
-  id: string | undefined | null,
-  selectedyear: string | undefined | null,
-  options?: {
-    query?: Partial<
-      UseSuspenseQueryOptions<
-        Awaited<ReturnType<typeof guestsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customClient>;
-  }
-): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGuestsControllerFindOneSuspenseQueryOptions(
-    id,
-    selectedyear,
-    options
-  );
 
   const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
     TData,

@@ -13,5 +13,10 @@
   "note": "Napomena",
   "cancel": "Odustani",
   "save": "Spremi",
-  "sorting": "Sortiranje"
+  "sorting": "Sortiranje",
+  "Metadata": {
+    "title": "Knjiga gostiju",
+    "description": "Knjiga gostiju",
+    "keywords": "Knjiga gostiju"
+  }
 }

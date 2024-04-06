@@ -2,11 +2,14 @@ import {
   GuestObject,
   SingleApartmentDto,
   useGuestsControllerCreate,
+  useGuestsControllerRemove,
+  useGuestsControllerUpdate,
 } from '@/api';
 import { Button } from '@/components/Button';
 import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
 import { DatePicker } from '@modules/Shared/DatePicker/DatePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
+import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
@@ -15,30 +18,21 @@ import { toast } from 'react-toastify';
 
 type Props = {
   show: boolean;
+  selectedGuest: GuestObject;
   closeModal: () => void;
   apartment: SingleApartmentDto;
 };
 
-export const AddNewGuest: FC<Props> = ({ show, closeModal, apartment }) => {
+export const EditGuest: FC<Props> = ({
+  show,
+  closeModal,
+  selectedGuest,
+  apartment,
+}) => {
+  const { showAlert } = useAlert();
   const t = useTranslations('AddNewGuest');
 
-  console.log('AddNewGuest', show);
-
-
-  const [guestInfo, setGuestInfo] = useState<GuestObject>({
-    id: '',
-    name: '',
-    PID: '',
-    dateOfBirth: '',
-    dateOfArrival: '',
-    dateOfDeparture: '',
-    country: '',
-    city: '',
-    address: '',
-    numberOfInvoice: undefined,
-    travelIdNumber: '',
-    note: '',
-  });
+  const [guestInfo, setGuestInfo] = useState<GuestObject>(selectedGuest);
   const [errors, setErrors] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState<string>('');
 
@@ -75,12 +69,29 @@ export const AddNewGuest: FC<Props> = ({ show, closeModal, apartment }) => {
     'note',
   ];
 
-  const { mutate: createGuest, isPending: createGuestIsPending } =
-    useGuestsControllerCreate({
+  const { mutate: updateGuest, isPending: updateGuestIsPending } =
+    useGuestsControllerUpdate({
       mutation: {
-        mutationKey: ['guests-create'],
+        mutationKey: ['guests-update'],
         onSuccess: data => {
-          toast.success(t('guest_created'));
+          toast.success(t('guest_updated'));
+          queryClient.refetchQueries({
+            queryKey: ['guests', apartment.id],
+          });
+          closeModal();
+        },
+        onError: error => {
+          toast.error(error.response?.data.message);
+        },
+      },
+    });
+
+  const { mutate: removeGuest, isPending: removeGuestIsPending } =
+    useGuestsControllerRemove({
+      mutation: {
+        mutationKey: ['guests-remove'],
+        onSuccess: data => {
+          toast.success(t('guest_removed'));
           queryClient.refetchQueries({
             queryKey: ['guests', apartment.id],
           });
@@ -199,15 +210,36 @@ export const AddNewGuest: FC<Props> = ({ show, closeModal, apartment }) => {
           >
             {t('cancel')}
           </button>
-
+          {selectedGuest && (
+            <Button
+              disabled={removeGuestIsPending}
+              text={t('delete')}
+              className='rounded-md bg-red-700 p-2 font-bold text-white hover:bg-red-500'
+              onClick={async () => {
+                showAlert(t('remove_guest'), false, async () => {
+                  removeGuest({
+                    apartmentId: apartment.id,
+                    data: {
+                      guestId: selectedGuest.id,
+                      endDate: selectedGuest.dateOfDeparture,
+                      startDate: selectedGuest.dateOfArrival,
+                    },
+                  });
+                });
+              }}
+            />
+          )}
           <Button
             text={t('save')}
-            disabled={createGuestIsPending}
+            disabled={updateGuestIsPending}
             className='rounded-md bg-blue-700 p-2 font-bold text-white hover:bg-blue-500'
             onClick={async () => {
               if (checkForRequiredFields()) {
-                createGuest({
-                  data: guestInfo,
+                updateGuest({
+                  data: {
+                    newGuestInfo: guestInfo,
+                    oldGuestInfo: selectedGuest,
+                  },
                   apartmentId: apartment.id,
                 });
               }

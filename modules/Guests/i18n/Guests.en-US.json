@@ -13,5 +13,10 @@
   "note": "Note",
   "cancel": "Cancel",
   "save": "Save",
-  "sorting": "Sorting"
+  "sorting": "Sorting",
+  "Metadata": {
+    "title": "Guest book",
+    "description": "Guest book",
+    "keywords": "Guest book"
+  }
 }
