@@ -1,9 +1,13 @@
-import { PublicEventsData } from '@/api';
+import { EventObject, PublicEventsData, customClient } from '@/api';
+import { Button } from '@/components/Button';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
+import { cltm } from '@modules/Shared/utils';
+import { useMutation } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 type Props = {
   show: boolean;
@@ -19,9 +23,8 @@ export const CreateNewReservation: FC<Props> = ({
   apartmentEmail,
 }) => {
   const t = useTranslations('CreateNewReservation');
-  // const dispatch = useAppDispatch();
 
-  const [newReservation, setNewReservation] = useState({
+  const [newReservation, setNewReservation] = useState<EventObject>({
     id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
     title: '',
     phone: '',
@@ -30,6 +33,51 @@ export const CreateNewReservation: FC<Props> = ({
   });
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [formError, setFormError] = useState(false);
+
+  const { mutate: sendEmail, isPending: sendEmailIsPending } = useMutation({
+    mutationKey: ['sendEmail', apartmentEmail],
+    mutationFn: async () => {
+      await customClient({
+        baseURL: '/',
+        url: 'api/sendEmail',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          msg: {
+            to: apartmentEmail,
+            from: 'booking.calendar.os.app@gmail.com',
+            subject: 'New reservation !!!!',
+            dynamic_template_data: {
+              start_date: DateTime.fromISO(newReservation.start).toLocaleString(
+                DateTime.DATE_HUGE
+              ),
+              end_date: DateTime.fromISO(newReservation.end).toLocaleString(
+                DateTime.DATE_HUGE
+              ),
+              reservation_name: newReservation.title,
+              reservation_phone: newReservation.phone,
+            },
+          },
+        },
+      });
+    },
+    onSuccess: () => {
+      toast.success(t('email_sent'));
+      setShow(false);
+      setNewReservation({
+        id: window.crypto.getRandomValues(new Uint32Array(1)).toString(),
+        title: '',
+        start: '',
+        end: '',
+        phone: '',
+      });
+    },
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
 
   useEffect(() => {
     return () => {
@@ -124,12 +172,15 @@ export const CreateNewReservation: FC<Props> = ({
           </div>
           <div className='modal-footer rounded-b-xl bg-gray-200 p-4'>
             <div className='flex justify-center'>
-              <button
-                className={`${
+              <Button
+                disabled={sendEmailIsPending}
+                text={t('send')}
+                className={cltm(
+                  'w-full rounded-md px-4 py-2 text-sm font-bold text-white',
                   formError
                     ? 'bg-red-500 hover:bg-red-400'
                     : 'bg-blue-500 hover:bg-blue-400'
-                } w-full rounded-md px-4 py-2 text-sm font-bold text-white`}
+                )}
                 onClick={() => {
                   if (
                     !newReservation.title ||
@@ -140,12 +191,9 @@ export const CreateNewReservation: FC<Props> = ({
                     setFormError(true);
                     return;
                   }
-                  setShow(false);
-                  // dispatch(sendEmail(newReservation, apartmentEmail));
+                  sendEmail();
                 }}
-              >
-                {t('send')}
-              </button>
+              />
             </div>
           </div>
         </div>

@@ -114,6 +114,27 @@ const nextConfig = {
 
     return config;
   },
+  async headers() {
+    return [
+      {
+        source: '/api/sendEmail',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'POST',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default withBundleAnalyzer(

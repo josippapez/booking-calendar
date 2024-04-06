@@ -92,8 +92,6 @@ export const Invoice: FC = () => {
     }
   }, [apartments, selectedApartment]);
 
-  console.log(selectedApartment);
-
   useEffect(() => {
     if (selectedApartment) {
       setTransactionInvoiceData({
