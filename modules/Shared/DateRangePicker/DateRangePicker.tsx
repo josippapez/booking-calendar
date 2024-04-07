@@ -4,7 +4,7 @@ import { DatePickerDates } from '@modules/Shared/DatePicker/Dates/DatePickerDate
 import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
 import { Modal } from '@modules/Shared/Modal/Modal';
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import { DateTime, Interval } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { FC, useCallback, useState } from 'react';
@@ -119,7 +119,7 @@ export const DateRangePicker: FC<Props> = ({
               setCurrentDate(day.date);
             }
           }}
-          className={cltm(
+          className={cn(
             'cursor-pointer',
             style['dateRange-Day'],
             'select-none font-bold',

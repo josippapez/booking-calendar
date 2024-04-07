@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { ChangeEvent, useCallback } from "react";
+import Image from 'next/image';
+import { ChangeEvent, useCallback } from 'react';
 
 type Props = {
   inputName?: string;
@@ -22,7 +22,7 @@ export const ImageInput = (props: Props) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          if (typeof reader.result === "string") {
+          if (typeof reader.result === 'string') {
             setImage(reader.result);
           }
         };
@@ -32,24 +32,25 @@ export const ImageInput = (props: Props) => {
   );
 
   return (
-    <div className="flex flex-col">
-      {inputName && <span className="font-bold mb">{inputName}</span>}
+    <div className='flex flex-col'>
+      {inputName && <span className='mb font-bold'>{inputName}</span>}
       {image ? (
-        <div className="flex w-full">
+        <div className='flex w-full'>
           <Image
-            src={image ?? ""}
+            src={image ?? ''}
             width={120}
             height={120}
-            alt="apartment Logo"
-            placeholder="empty"
+            alt='apartment Logo'
+            placeholder='empty'
+            className='h-24 w-28 max-w-full rounded-lg border-2 border-blue-400 object-cover'
           />
           <button
-            className="p-2 ml-2 rounded-full bg-red-500 text-white"
+            className='ml-2 rounded-full bg-red-500 p-2 text-white'
             style={{
-              background: "url(/Styles/Assets/Images/xCircle.svg)",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              width: "40px",
+              background: 'url(/Styles/Assets/Images/xCircle.svg)',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              width: '40px',
             }}
             onClick={handleClearImage}
           />
@@ -57,23 +58,23 @@ export const ImageInput = (props: Props) => {
       ) : (
         <div>
           <label
-            htmlFor="apartment-logo"
-            className="block h-24 w-28 rounded-lg border-2 hover:border-blue-700 hover:cursor-pointer border-dashed border-blue-400"
+            htmlFor='apartment-logo'
+            className='block h-24 w-28 rounded-lg border-2 border-dashed border-blue-400 hover:cursor-pointer hover:border-blue-700'
             style={{
-              background: "url(/Styles/Assets/Images/upload.svg)",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundSize: "50%",
+              background: 'url(/Styles/Assets/Images/upload.svg)',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: '50%',
             }}
           >
-            <div className="add-icon" />
+            <div className='add-icon' />
           </label>
           <input
-            id="apartment-logo"
-            name="apartment-logo"
-            className="hidden"
-            type="file"
-            accept="image/png, image/gif, image/jpeg"
+            id='apartment-logo'
+            name='apartment-logo'
+            className='hidden'
+            type='file'
+            accept='image/png, image/gif, image/jpeg'
             onChange={handleImageChange}
           />
         </div>

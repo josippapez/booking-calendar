@@ -1,4 +1,3 @@
-import Apartment from './apartment.jpg';
 import Check from './check.svg?url';
 import CheckGreen from './checkGreen.svg?url';
 import Bin from './deleteIconBlack.svg?url';
@@ -23,7 +22,6 @@ const Images = {
   Bin,
   Edit,
   DownArrow,
-  Apartment,
   Success,
   Error,
   Info,

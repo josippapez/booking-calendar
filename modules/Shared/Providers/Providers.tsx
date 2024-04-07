@@ -2,7 +2,7 @@
 
 import { AuthProvider } from '@modules/Shared/Providers/AuthProvider';
 import { TanstackQueryProvider } from '@modules/Shared/Providers/TanstackQueryProvider';
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import Error from '@public/Styles/Assets/Images/error.svg';
 import Info from '@public/Styles/Assets/Images/info.svg';
 import Success from '@public/Styles/Assets/Images/success.svg';
@@ -41,10 +41,10 @@ export const Providers: React.FC<PropsWithChildren> = ({ children }) => {
             }
           }}
           hideProgressBar
-          className={context => cltm(context?.defaultClassName, 'grid gap-5')}
+          className={context => cn(context?.defaultClassName, 'grid gap-5')}
           autoClose={5000}
           toastClassName={context =>
-            cltm(
+            cn(
               "grid text-black grid-cols-[auto_max-content] items-center gap-x-[15px] rounded-2xl bg-white py-3 px-4 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)] [grid-template-areas:_'title_action'_'description_action']",
               context?.type === 'success' && 'bg-success-light',
               context?.type === 'warning' && 'bg-warning-light',

@@ -2,7 +2,7 @@ import { EventObject, PublicEventsData, customClient } from '@/api';
 import { Button } from '@/components/Button';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
@@ -175,7 +175,7 @@ export const CreateNewReservation: FC<Props> = ({
               <Button
                 disabled={sendEmailIsPending}
                 text={t('send')}
-                className={cltm(
+                className={cn(
                   'w-full rounded-md px-4 py-2 text-sm font-bold text-white',
                   formError
                     ? 'bg-red-500 hover:bg-red-400'

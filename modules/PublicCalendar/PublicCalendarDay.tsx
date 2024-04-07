@@ -1,6 +1,6 @@
 import { PublicEventsData } from '@/api';
 import { Day } from '@modules/Calendar/CalendarTypes';
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import { DateTime } from 'luxon';
 import { FC } from 'react';
 
@@ -27,7 +27,7 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
     return (
       <div className='relative h-auto min-h-[160px] shadow-[0_-1px_1px_#cbd5e1] hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD] max-md:min-h-[100px] max-md:w-auto'>
         <div
-          className={cltm(
+          className={cn(
             'flex h-full select-none flex-col overflow-hidden font-semibold',
             day.lastMonth || day.nextMonth
               ? 'font-normal opacity-30'
@@ -43,13 +43,13 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
 
   return (
     <div
-      className={cltm(
+      className={cn(
         'relative shadow-[0_-1px_1px_#cbd5e1] hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD]',
         'h-auto min-h-[160px] max-md:min-h-[100px] max-md:w-auto'
       )}
     >
       <div
-        className={cltm(
+        className={cn(
           'flex h-full select-none flex-col overflow-hidden font-semibold',
           day.lastMonth || day.nextMonth
             ? 'font-normal opacity-30'
@@ -61,7 +61,7 @@ export const PublicCalendarDay: FC<Props> = ({ day, events }) => {
       >
         <div className='absolute left-0 top-0'>{day.day}</div>
         <div
-          className={cltm(
+          className={cn(
             'h-full',
             dayEventsExist && 'bg-gradient-to-r from-[#DC2726] to-[#DC2726]',
             startingDay &&

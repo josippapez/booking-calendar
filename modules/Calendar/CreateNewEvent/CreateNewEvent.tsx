@@ -3,17 +3,16 @@ import {
   useEventsControllerAddNew,
   useEventsControllerUpdateExisting,
 } from '@/api';
-import { Day } from '@modules/Calendar/CalendarTypes';
+import { Modify } from '@/lib/utils';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import style from './CreateNewEvent.module.scss';
-import { Modify } from '@modules/Shared/utils';
 
 type ModifiedEvent = Modify<
   CreateEventDto,

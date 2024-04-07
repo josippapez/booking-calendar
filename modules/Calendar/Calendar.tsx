@@ -1,31 +1,31 @@
 'use client';
 
 import {
+  EventObject,
   useApartmentsControllerFindAllSuspense,
   useEventsControllerFindAllForUser,
 } from '@/api';
-import { Event } from '@modules/Calendar/CalendarTypes';
+import { cn } from '@/lib/utils';
 import { CreateNewEvent } from '@modules/Calendar/CreateNewEvent/CreateNewEvent';
 import { DayDetails } from '@modules/Calendar/DayDetails/DayDetails';
 import { DatePickerHeader } from '@modules/Shared/DatePicker/Header/DatePickerHeader';
 import { Dropdown } from '@modules/Shared/Dropdown/Dropdown';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
-import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { useMobileView } from '@modules/Shared/Hooks/useMobileView';
-import { cltm } from '@modules/Shared/utils';
 import { useRouter } from '@modules/translations';
 import { Routes } from 'consts';
 import { DateTime, Info } from 'luxon';
 import { useLocale, useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { FC, ReactElement, useCallback, useRef, useState } from 'react';
-import style from './Calendar.module.scss';
 
 export const Calendar: FC = () => {
   const locale = useLocale();
   const t = useTranslations('Calendar');
-  const { params } = useSearchParams();
-  const apartmentId = params.get('id') || '';
+  const { id } = useParams();
   const router = useRouter();
+
+  const apartmentId = typeof id === 'string' ? id : id[0];
 
   const { dates, setmonth, setyear, year, month } = useCalculateEachDayOfMonth({
     startYear: DateTime.local().year,
@@ -65,9 +65,8 @@ export const Calendar: FC = () => {
   const [showEditEvent, setShowEditEvent] = useState(false);
   const [showDayDetails, setShowDayDetails] = useState(false);
   const [addNewEvent, setAddNewEvent] = useState(false);
-  const [selectedEventToEdit, setSelectedEventToEdit] = useState<null | Event>(
-    null
-  );
+  const [selectedEventToEdit, setSelectedEventToEdit] =
+    useState<null | EventObject>(null);
   const [selectedDay, setSelectedDay] = useState<null | string>(null);
 
   const mobileView = useMobileView();
@@ -78,7 +77,7 @@ export const Calendar: FC = () => {
   let currentScrollPosition: null | number = null;
 
   const findOffsetOfEvent = useCallback(
-    (event: Event) => {
+    (event: EventObject) => {
       let biggestIndex = 0;
       let smallestIndex = 999;
       const eventStartSplit = event.start.split('-');
@@ -262,7 +261,7 @@ export const Calendar: FC = () => {
           ))}
         </div>
         <div
-          className={cltm(
+          className={cn(
             'grid justify-center [grid-template-columns:repeat(7,minmax(40px,1fr))] [grid-template-rows:repeat(6,fit-content)]'
           )}
         >
@@ -285,7 +284,7 @@ export const Calendar: FC = () => {
             return (
               <div
                 key={index}
-                className={cltm(
+                className={cn(
                   'relative shadow-[0_-1px_1px_#cbd5e1] hover:border-2 hover:border-t-0 hover:border-blue-300 hover:shadow-[0_-2px_1px_#93C5FD]',
                   'h-auto min-h-[160px] max-md:h-auto max-md:min-h-[100px] max-md:w-auto'
                 )}
@@ -300,7 +299,7 @@ export const Calendar: FC = () => {
                 }}
               >
                 <div
-                  className={cltm(
+                  className={cn(
                     'flex h-full select-none flex-col font-medium opacity-100',
                     ['Saturday', 'Sunday'].includes(day.name) && 'opacity-50',
                     (day.lastMonth || day.nextMonth) && 'font-normal opacity-30'
@@ -317,7 +316,7 @@ export const Calendar: FC = () => {
                         <div
                           id={`${day.day}-${event.id}`}
                           key={`${day.day}-${event.id}`}
-                          className={cltm(
+                          className={cn(
                             'flex min-h-[40px] w-full items-center p-2 px-2 py-1 font-bold text-[#fff0]',
                             tempStartDate &&
                               'w-[70%] self-end rounded-l-full text-white',

@@ -4,7 +4,7 @@ import { PublicEvents } from '@/api';
 import { CreateNewReservation } from '@modules/PublicCalendar/CreateNewReservation/CreateNewReservation';
 import { PublicCalendarDay } from '@modules/PublicCalendar/PublicCalendarDay';
 import { useCalculateEachDayOfMonth } from '@modules/Shared/Hooks/calculateEachDayOfMonth';
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import Images from '@public/Styles/Assets/Images/Images';
 import { DateTime, Info } from 'luxon';
 import { useLocale, useTranslations } from 'next-intl';
@@ -132,7 +132,7 @@ export const PublicCalendar: React.FC<{
           </div>
         </div>
         <div
-          className={cltm(
+          className={cn(
             'flex items-center gap-3 drop-shadow-md',
             'max-md: flex-col'
           )}

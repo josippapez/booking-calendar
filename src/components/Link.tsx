@@ -1,6 +1,6 @@
 'use client';
 
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import {
   CountryCodes,
   Link as NextTranslationLink,
@@ -45,7 +45,7 @@ export const Link = ({
 }: Props) => {
   return (
     <NextTranslationLink
-      className={cltm(
+      className={cn(
         'grid w-full grid-flow-col items-center justify-center gap-1 text-center transition-colors duration-300',
         'focus:shadow-btn-focused focus:shadow-focused focus:outline-none',
         'disabled:pointer-events-none disabled:opacity-30',

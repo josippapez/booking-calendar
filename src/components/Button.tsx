@@ -1,4 +1,4 @@
-import { cltm } from '@modules/Shared/utils';
+import { cn } from '@/lib/utils';
 import { ReactNode, forwardRef } from 'react';
 
 type Props = {
@@ -42,7 +42,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
         ref={ref}
         disabled={disabled}
         type={type}
-        className={cltm(
+        className={cn(
           'font-text-medium grid h-fit w-full grid-flow-col items-center justify-center gap-1 text-base font-medium transition-all duration-150',
           'focus:outline focus:outline-1 focus:outline-slate-700',
           'disabled:pointer-events-none disabled:opacity-30',
