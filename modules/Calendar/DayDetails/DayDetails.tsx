@@ -1,23 +1,22 @@
-import { useEventsControllerRemoveEvent } from '@/api';
-import { Event } from '@modules/Calendar/CalendarTypes';
+import { EventObject, useEventsControllerRemoveEvent } from '@/api';
 import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
 import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
+import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { useTranslations } from 'next-intl';
 import { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import style from './DayDetails.module.scss';
-import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
   setShowEdit: (state: boolean) => void;
-  setSelectedEventToEdit: (event: Event) => void;
+  setSelectedEventToEdit: (event: EventObject) => void;
   setSelectedDay: (day: string | null) => void;
   setAddNewEvent: (state: boolean) => void;
-  events: Event[];
+  events: EventObject[];
   isMobileView: boolean;
 };
 
@@ -36,7 +35,7 @@ export const DayDetails: FC<Props> = ({
   const t = useTranslations('DayDetails');
   const { showAlert } = useAlert();
 
-  const [selectedEvent, setSelectedEvent] = useState<null | Event>(null);
+  const [selectedEvent, setSelectedEvent] = useState<null | EventObject>(null);
 
   const { mutate: removeEvent, isPending: removeEventPending } =
     useEventsControllerRemoveEvent({
