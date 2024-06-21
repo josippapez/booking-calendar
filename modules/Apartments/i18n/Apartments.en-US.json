@@ -19,6 +19,7 @@
   "add_apartment": "Add Apartment",
   "edit_apartment": "Edit Apartment",
   "edit": "Edit",
+  "save": "Save",
   "remove": "Remove",
   "clear": "Clear",
   "select": "Select",
@@ -29,6 +30,7 @@
   "remove_apartment": "Are you sure you want to remove this apartment?",
   "apartment_created": "Apartment created",
   "apartment_updated": "Apartment updated",
+  "apartment_removed": "Apartment removed",
   "Metadata": {
     "title": "Apartments",
     "description": "Apartments view"

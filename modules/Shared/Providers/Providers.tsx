@@ -1,8 +1,8 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { AuthProvider } from '@modules/Shared/Providers/AuthProvider';
 import { TanstackQueryProvider } from '@modules/Shared/Providers/TanstackQueryProvider';
-import { cn } from '@/lib/utils';
 import Error from '@public/Styles/Assets/Images/error.svg';
 import Info from '@public/Styles/Assets/Images/info.svg';
 import Success from '@public/Styles/Assets/Images/success.svg';

@@ -1,8 +1,4 @@
-import {
-  SingleApartmentDto,
-  UpdateApartmentDto,
-  useApartmentsControllerUpdate,
-} from '@/api';
+import { CreateApartmentDto, useApartmentsControllerCreate } from '@/api';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -21,35 +17,30 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Modify } from '@/lib/utils';
 import { ImageInput } from '@modules/Shared/Inputs/ImageInput';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { Loader2Icon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 type Props = {
-  apartment: SingleApartmentDto;
   customTrigger?: React.ReactNode;
 };
 
-export const EditApartment: React.FC<Props> = ({
-  apartment,
-  customTrigger,
-}) => {
+export const AddApartment: React.FC<Props> = ({ customTrigger }) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations('Apartments');
 
   const [progress, setProgress] = useState<number>();
 
-  const { mutate: updateApartment, isPending: updateApartmentIsPending } =
-    useApartmentsControllerUpdate({
+  const { mutate: createApartment, isPending: createApartmentIsPending } =
+    useApartmentsControllerCreate({
       mutation: {
-        mutationKey: ['apartments-update'],
+        mutationKey: ['apartments-create'],
         onSuccess: data => {
-          toast.success(t('apartment_updated'));
+          toast.success(t('apartment_created'));
           queryClient.invalidateQueries({
             queryKey: ['apartments'],
           });
@@ -60,38 +51,29 @@ export const EditApartment: React.FC<Props> = ({
           toast.error(error.response?.data.message);
         },
       },
-      request: {
-        onUploadProgress(progressEvent) {
-          setProgress(progressEvent.progress);
-        },
-      },
     });
 
-  const memoizedApartment: UpdateApartmentDto = useMemo(
-    () => ({
-      address: apartment.address,
-      email: apartment.email,
-      name: apartment.name,
-      iban: apartment.iban,
-      image: apartment.image,
-      owner: apartment.owner,
-      pid: apartment.pid,
-    }),
-    [apartment]
-  );
-
-  const form = useForm<UpdateApartmentDto>({
-    values: memoizedApartment,
+  const form = useForm<CreateApartmentDto>({
+    defaultValues: {
+      address: '',
+      email: '',
+      iban: '',
+      image: '',
+      name: '',
+      owner: '',
+      pid: '',
+      pricePerNight: 0,
+    },
     mode: 'all',
     reValidateMode: 'onBlur',
+    shouldFocusError: true,
   });
 
   const { handleSubmit, watch, reset, setValue } = form;
 
   const onSubmit = handleSubmit(
     async data => {
-      return updateApartment({
-        apartmentId: apartment.id,
+      return createApartment({
         data,
       });
     },
@@ -113,13 +95,13 @@ export const EditApartment: React.FC<Props> = ({
       <SheetTrigger asChild onClick={e => e.stopPropagation()}>
         {customTrigger ?? (
           <Button className='w-fit px-4' size={'sm'}>
-            {t('edit')}
+            {t('add_apartment')}
           </Button>
         )}
       </SheetTrigger>
       <SheetContent side={'right'} className='w-full !max-w-none md:w-[600px]'>
         <SheetHeader>
-          <SheetTitle>{t('edit_apartment')}</SheetTitle>
+          <SheetTitle>{t('add_apartment')}</SheetTitle>
           <Form {...form}>
             <form onSubmit={onSubmit} className='space-y-8'>
               <FormField
@@ -255,15 +237,15 @@ export const EditApartment: React.FC<Props> = ({
               <div className='flex justify-end'>
                 <Button
                   type='submit'
-                  disabled={updateApartmentIsPending}
+                  disabled={createApartmentIsPending}
                   leftIcon={
-                    updateApartmentIsPending ? (
+                    createApartmentIsPending ? (
                       <Loader2Icon className='animate-spin' />
                     ) : null
                   }
                   size={'lg'}
                 >
-                  {t('edit')}
+                  {t('save')}
                 </Button>
               </div>
             </form>

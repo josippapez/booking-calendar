@@ -6,7 +6,7 @@ import { PDFDownload } from '@modules/Invoice/PDFDownload/PDFDownload';
 import { InvoiceTemplate } from '@modules/Invoice/Templates/InvoiceTemplate';
 import { usePDFComponentsAreHTML } from '@modules/Invoice/Templates/custom/Components';
 import { useWindowSize } from '@modules/Shared/Hooks/useWindowSize';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';

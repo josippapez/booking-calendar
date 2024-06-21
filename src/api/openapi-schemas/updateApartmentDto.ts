@@ -15,4 +15,5 @@ export interface UpdateApartmentDto {
   name: string;
   owner?: string;
   pid?: string;
+  pricePerNight?: number;
 }

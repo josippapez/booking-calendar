@@ -19,6 +19,7 @@
   "add_apartment": "Dodaj apartman",
   "edit_apartment": "Uredi apartman",
   "edit": "Uredi",
+  "save": "Spremi",
   "remove": "Obriši",
   "clear": "Očisti",
   "select": "Odaberi",
@@ -29,6 +30,7 @@
   "remove_apartment": "Jeste li sigurni da želite obrisati apartman?",
   "apartment_created": "Apartman uspješno dodan",
   "apartment_updated": "Apartman uspješno ažuriran",
+  "apartment_removed": "Apartman obrisan",
   "Metadata": {
     "title": "Apartmani",
     "description": "Pregled apartmana"

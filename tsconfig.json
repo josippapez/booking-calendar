@@ -21,7 +21,7 @@
       "@api/*": ["src/api/*"],
       "@public/*": ["public/*"],
       "@modules/*": ["modules/*"],
-      "@styles/*": ["public/styles/*"]
+      "@styles/*": ["public/Styles/*"]
     },
     "plugins": [
       {

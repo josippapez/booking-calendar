@@ -1,7 +1,7 @@
 'use client';
 
 import { ErrorType } from '@/api';
-import { Button } from '@/components/Button';
+import { Button } from '@/components/ui/button';
 
 export default function ErrorBoundary({
   error,
@@ -16,24 +16,24 @@ export default function ErrorBoundary({
 
   return (
     <div className='grid gap-5'>
-      <h3 className='typo-heading-h3 text-error font-bold'>
-        Something went wrong.{' '}
-        {Notfound ? 'This item does not exist' : ''}. Please try
-        again.
+      <h3 className='typo-heading-h3 font-bold text-error'>
+        Something went wrong. {Notfound ? 'This item does not exist' : ''}.
+        Please try again.
       </h3>
 
       <p>
         {error?.response?.statusText} - {error?.response?.data?.message}
       </p>
       <Button
-        variation='primary'
-        size='small'
-        className='w-fit'
+        variant={'default'}
+        size={'sm'}
         onClick={() => {
           reset();
         }}
-        text='Try again'
-      />
+        className='w-fit'
+      >
+        Try again
+      </Button>
     </div>
   );
 }

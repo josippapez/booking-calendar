@@ -4,10 +4,11 @@ import {
   SingleApartmentDto,
   useApartmentsControllerFindAllSuspense,
 } from '@/api';
+import { Button } from '@/components/Button';
 import { Table } from '@/components/Table/Table';
 import { Modify } from '@/lib/utils';
+import { AddApartment } from '@modules/Apartments/AddApartment';
 import { apartmentsColumns } from '@modules/Apartments/ApartmentsColumns';
-import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
 import { useTranslations } from 'next-intl';
 import { FC } from 'react';
 
@@ -29,11 +30,12 @@ export const Apartments: FC = () => {
 
   return (
     <div className='grid gap-5'>
-      <AlertModal />
-      <div>
+      <div className='flex justify-between'>
         <div className='flex justify-between'>
           <div className='text-3xl font-bold'>{t('apartments')}</div>
         </div>
+
+        <AddApartment />
       </div>
       <Table
         showPagination={false}

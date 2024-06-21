@@ -48,6 +48,12 @@ export const apartmentsControllerCreate = (
     formData.append('iban', createApartmentDto.iban);
   }
   formData.append('email', createApartmentDto.email);
+  if (createApartmentDto.pricePerNight !== undefined) {
+    formData.append(
+      'pricePerNight',
+      createApartmentDto.pricePerNight.toString()
+    );
+  }
 
   return customClient<SingleApartmentDto>(
     {
@@ -434,6 +440,12 @@ export const apartmentsControllerUpdate = (
     formData.append('iban', updateApartmentDto.iban);
   }
   formData.append('email', updateApartmentDto.email);
+  if (updateApartmentDto.pricePerNight !== undefined) {
+    formData.append(
+      'pricePerNight',
+      updateApartmentDto.pricePerNight.toString()
+    );
+  }
 
   return customClient<SingleApartmentDto>(
     {
