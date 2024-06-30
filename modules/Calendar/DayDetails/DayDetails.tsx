@@ -1,10 +1,10 @@
 import { EventObject, useEventsControllerRemoveEvent } from '@/api';
 import { AlertModal } from '@modules/Shared/AlertModal/AlertModal';
-import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import style from './DayDetails.module.scss';
@@ -30,8 +30,8 @@ export const DayDetails: FC<Props> = ({
   setSelectedDay,
   setAddNewEvent,
 }) => {
-  const { params } = useSearchParams();
-  const apartmentId = params.get('id') || '';
+  const { id } = useParams();
+  const apartmentId = Array.isArray(id) ? id[0] : id;
   const t = useTranslations('DayDetails');
   const { showAlert } = useAlert();
 

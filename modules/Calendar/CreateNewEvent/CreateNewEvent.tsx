@@ -5,11 +5,11 @@ import {
 } from '@/api';
 import { Modify } from '@/lib/utils';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
-import { useSearchParams } from '@modules/Shared/Hooks/useFilterQuery';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import style from './CreateNewEvent.module.scss';
@@ -39,8 +39,8 @@ export const CreateNewEvent: FC<Props> = ({
   selectedDay,
 }) => {
   const t = useTranslations('CreateNewEvent');
-  const { params } = useSearchParams();
-  const apartmentId = params.get('id') || '';
+  const { id } = useParams();
+  const apartmentId = Array.isArray(id) ? id[0] : id;
 
   const [newEvent, setNewEvent] = useState<ModifiedEvent>({
     id: '',
