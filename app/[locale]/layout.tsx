@@ -1,8 +1,8 @@
 import { Providers } from '@modules/Shared/Providers/Providers';
 import {
-  CountryCodes,
   DEFAULT_LANGUAGE,
   getCurrentTranslations,
+  Locale,
 } from '@modules/translations';
 import { NextIntlClientProvider } from 'next-intl';
 import { Suspense } from 'react';
@@ -12,7 +12,7 @@ export default async function LocaleLayout({
   params: { locale = DEFAULT_LANGUAGE },
 }: {
   children: React.ReactNode;
-  params: { locale: CountryCodes };
+  params: { locale: Locale };
 }) {
   const currentTranslations = await getCurrentTranslations(locale);
 

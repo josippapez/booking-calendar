@@ -2,20 +2,14 @@
 
 import { useCloseOnClickOutside } from '@modules/Shared/Hooks/useCloseOnClickOutside';
 import { CalendarNavbarDropdown } from '@modules/Shared/Navbar/CalendarNavbarDropdown';
-import {
-  CountryCodes,
-  Link,
-  usePathname,
-  useRouter,
-} from '@modules/translations';
+import { Link, Locale, usePathname, useRouter } from '@modules/translations';
 import { Routes } from 'consts';
 import Cookies from 'js-cookie';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 export function Navbar() {
-  const t = useTranslations('Navbar');
-  const languageTranslations = useTranslations('Languages');
+  const t = useTranslations();
   const router = useRouter();
   const locale = useLocale();
   const pathname = usePathname();
@@ -38,7 +32,7 @@ export function Navbar() {
     }
   }, [dropdownOpened]);
 
-  const languages: { title: string; value: CountryCodes }[] = [
+  const languages: { title: string; value: Locale }[] = [
     { title: 'English', value: 'en-US' },
     { title: 'Croatian', value: 'hr' },
   ];
@@ -52,7 +46,7 @@ export function Navbar() {
         <div className='flex flex-wrap items-center justify-between'>
           <div className='flex gap-[20px]'>
             <span className='self-center whitespace-nowrap text-xl font-semibold dark:text-white'>
-              {t('navbar_title')}
+              {t('Navbar.navbar_title')}
             </span>
             <div
               className='hidden w-full items-center justify-between md:order-1 md:flex md:w-auto'
@@ -64,7 +58,7 @@ export function Navbar() {
                     className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
                     href={Routes.APARTMENTS}
                   >
-                    {t('apartments_link_name')}
+                    {t('Navbar.apartments_link_name')}
                   </Link>
                 </li>
                 <li>
@@ -72,7 +66,7 @@ export function Navbar() {
                     className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
                     href={Routes.INVOICE}
                   >
-                    {t('invoice_link_name')}
+                    {t('Navbar.invoice_link_name')}
                   </Link>
                 </li>
                 <li>
@@ -80,7 +74,7 @@ export function Navbar() {
                     className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
                     href={Routes.GUESTS}
                   >
-                    {t('guests_link_name')}
+                    {t('Navbar.guests_link_name')}
                   </Link>
                 </li>
                 <li>
@@ -99,7 +93,7 @@ export function Navbar() {
                 router.push(Routes.LOGIN);
               }}
             >
-              {t('sign_out')}
+              {t('Navbar.sign_out')}
             </button>
             <button
               data-collapse-toggle='mobile-menu-2'
@@ -141,7 +135,7 @@ export function Navbar() {
                 className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white hover:bg-blue-500 dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
                 href='/apartments'
               >
-                {t('apartments_link_name')}
+                {t('Navbar.apartments_link_name')}
               </Link>
             </li>
             <li>
@@ -149,7 +143,7 @@ export function Navbar() {
                 className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white hover:bg-blue-500 dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
                 href='/invoice'
               >
-                {t('invoice_link_name')}
+                {t('Navbar.invoice_link_name')}
               </Link>
             </li>
             <li>
@@ -157,7 +151,7 @@ export function Navbar() {
                 className='block rounded bg-blue-700 py-2 pl-3 pr-4 text-white hover:bg-blue-500 dark:text-white md:bg-transparent md:p-0 md:text-blue-700'
                 href='/guests'
               >
-                {t('guests_link_name')}
+                {t('Navbar.guests_link_name')}
               </Link>
             </li>
             <li>
@@ -169,7 +163,7 @@ export function Navbar() {
                   router.push(Routes.LOGIN);
                 }}
               >
-                {t('sign_out')}
+                {t('Navbar.sign_out')}
               </button>
             </li>
           </ul>

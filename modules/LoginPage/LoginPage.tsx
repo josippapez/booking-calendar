@@ -28,7 +28,7 @@ export const LoginPage: NextPage = (props: Props) => {
           setLoginError('');
         },
         onError: error => {
-          toast.error(t(error.response?.data.message));
+          toast.error(t(error.response?.data.message as any));
         },
         onSuccess: data => {
           Cookies.set('accessToken', data.accessToken);
@@ -80,7 +80,7 @@ export const LoginPage: NextPage = (props: Props) => {
             />
           </div>
           {loginError && (
-            <div className='mb-6 text-red-500'>{t(loginError)}</div>
+            <div className='mb-6 text-red-500'>{t(loginError as any)}</div>
           )}
           <div className='flex items-center justify-center'>
             <button

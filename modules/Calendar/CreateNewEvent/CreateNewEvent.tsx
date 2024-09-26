@@ -1,9 +1,8 @@
 import {
-  CreateEventDto,
+  EventObject,
   useEventsControllerAddNew,
   useEventsControllerUpdateExisting,
 } from '@/api';
-import { Modify } from '@/lib/utils';
 import { DateRangePicker } from '@modules/Shared/DateRangePicker/DateRangePicker';
 import { Modal } from '@modules/Shared/Modal/Modal';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
@@ -14,19 +13,12 @@ import { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import style from './CreateNewEvent.module.scss';
 
-type ModifiedEvent = Modify<
-  CreateEventDto,
-  {
-    id: string;
-  }
->;
-
 type Props = {
   show: boolean;
   setShow: (state: boolean) => void;
   showEdit: boolean;
   setShowEdit: (state: boolean) => void;
-  selectedEventToEdit: ModifiedEvent | null;
+  selectedEventToEdit: EventObject | null;
   selectedDay: string | null;
 };
 
@@ -42,7 +34,8 @@ export const CreateNewEvent: FC<Props> = ({
   const { id } = useParams();
   const apartmentId = Array.isArray(id) ? id[0] : id;
 
-  const [newEvent, setNewEvent] = useState<ModifiedEvent>({
+  const [newEvent, setNewEvent] = useState<EventObject>({
+    guestId: '',
     id: '',
     title: '',
     start: selectedDay ?? '',
@@ -92,6 +85,7 @@ export const CreateNewEvent: FC<Props> = ({
       if (!show && !showEdit) {
         setNewEvent({
           id: '',
+          guestId: '',
           title: '',
           start: '',
           end: '',

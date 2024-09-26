@@ -4,7 +4,7 @@ import {
   GuestObject,
   SingleApartmentDto,
   useApartmentsControllerFindAllSuspense,
-  useGuestsControllerFindOne,
+  useGuestsControllerFindAll,
 } from '@/api';
 import { AddNewGuest } from '@modules/Guests/GuestsModal/AddNewGuest';
 import { EditGuest } from '@modules/Guests/GuestsModal/EditGuestModal';
@@ -33,8 +33,6 @@ export const Guests: FC = () => {
     startMonth: DateTime.local().month,
   });
 
-  console.log(showAddNewGuestModal);
-
   const { data: apartments, refetch: refetchApartments } =
     useApartmentsControllerFindAllSuspense({
       query: {
@@ -42,9 +40,9 @@ export const Guests: FC = () => {
       },
     });
 
-  const { data: guests, refetch: refetchGuests } = useGuestsControllerFindOne(
-    selectedApartment?.id,
+  const { data: guests, refetch: refetchGuests } = useGuestsControllerFindAll(
     {
+      apartmentId: selectedApartment?.id ?? '',
       selectedYear: year.toString(),
     },
     {
@@ -131,8 +129,8 @@ export const Guests: FC = () => {
                       ? -1
                       : 1
                     : sorting === 'asc'
-                    ? 1
-                    : -1
+                      ? 1
+                      : -1
                 )
                 .map(month => {
                   return (
@@ -204,13 +202,14 @@ export const Guests: FC = () => {
                                       </td>
                                       <td>{guest.PID}</td>
                                       <td>
-                                        {DateTime.fromISO(
-                                          guest.dateOfBirth
-                                        ).toLocaleString({
-                                          month: 'long',
-                                          day: '2-digit',
-                                          year: 'numeric',
-                                        })}
+                                        {guest.dateOfBirth &&
+                                          DateTime.fromISO(
+                                            guest.dateOfBirth
+                                          ).toLocaleString({
+                                            month: 'long',
+                                            day: '2-digit',
+                                            year: 'numeric',
+                                          })}
                                       </td>
                                       <td>{guest.country}</td>
                                       <td>{guest.address}</td>

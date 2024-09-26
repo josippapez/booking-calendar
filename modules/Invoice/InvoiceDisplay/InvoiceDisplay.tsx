@@ -11,7 +11,7 @@ import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+// pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 type Props = {
   selectedApartment?: SingleApartmentDto;

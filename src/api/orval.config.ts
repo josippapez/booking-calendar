@@ -7,7 +7,7 @@ const defaultQueryOverride = {
 };
 
 export default defineConfig({
-  backOffice: {
+  bookingCalendar: {
     input: {
       target: './openapi.json',
       filters: {

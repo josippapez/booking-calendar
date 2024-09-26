@@ -1,8 +1,8 @@
 import { useApartmentsControllerFindAll } from '@/api';
+import { Link } from '@/components/Link';
 import { useCloseOnClickOutside } from '@modules/Shared/Hooks/useCloseOnClickOutside';
 import { Routes } from 'consts';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 import { FC, useRef, useState } from 'react';
 
 export const CalendarNavbarDropdown: FC = () => {
@@ -32,12 +32,9 @@ export const CalendarNavbarDropdown: FC = () => {
         <div className='absolute top-5 flex w-max flex-col gap-2 rounded-md border border-gray-200 bg-white p-2 text-base drop-shadow'>
           {apartments?.map(apartment => (
             <Link
-              href={{
-                pathname: Routes.APARTMENT,
-                query: {
-                  id: apartment.id,
-                },
-              }}
+              variation='nav'
+              size='navLarge'
+              href={`${Routes.APARTMENT}/${apartment.id}`}
               key={apartment.id}
               className='rounded p-2 hover:bg-gray-200'
               onClick={() => setShowCalendarSelection(false)}

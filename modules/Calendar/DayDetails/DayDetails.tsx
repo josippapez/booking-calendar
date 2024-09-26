@@ -47,6 +47,9 @@ export const DayDetails: FC<Props> = ({
           queryClient.invalidateQueries({
             queryKey: ['events', apartmentId],
           });
+          queryClient.invalidateQueries({
+            queryKey: ['guests', apartmentId],
+          })
           toast.success('Event removed');
         },
       },
@@ -132,9 +135,7 @@ export const DayDetails: FC<Props> = ({
                       showAlert(t('removeEvent'), false, () =>
                         removeEvent({
                           apartmentId,
-                          data: {
-                            id: event.id,
-                          },
+                          data: event,
                         })
                       );
                     }}

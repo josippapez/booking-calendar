@@ -5,11 +5,7 @@
  * Booking calendar API description
  * OpenAPI spec version: 1.0
  */
-import type { EventsData } from './eventsData';
 
-export interface Events {
+export type GuestsControllerUpdateParams = {
   apartmentId: string;
-  /** @nullable */
-  data: EventsData;
-  userId: string;
-}
+};

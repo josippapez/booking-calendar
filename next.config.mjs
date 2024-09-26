@@ -101,16 +101,16 @@ const nextConfig = {
       }
     );
     config.resolve.alias.canvas = false;
-    config.plugins.push(
-      new CopyPlugin({
-        patterns: [
-          {
-            from: './node_modules/pdfjs-dist/build/pdf.worker.min.js',
-            to: './public',
-          },
-        ],
-      })
-    );
+    // config.plugins.push(
+    //   new CopyPlugin({
+    //     patterns: [
+    //       {
+    //         from: './node_modules/pdfjs-dist/build/pdf.worker.min.js',
+    //         to: './public',
+    //       },
+    //     ],
+    //   })
+    // );
 
     return config;
   },

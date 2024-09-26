@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button';
 import { EditApartment } from '@modules/Apartments/EditApartment';
 import { useAlert } from '@modules/Shared/Providers/AlertModalProvider';
 import { queryClient } from '@modules/Shared/Providers/TanstackQueryProvider';
+import { useRouter } from '@modules/translations';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Routes } from 'consts';
 import { Loader2Icon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 const columnHelper = createColumnHelper<SingleApartmentDto>();
@@ -16,7 +16,7 @@ const Header: React.FC<{
   translationKey: string;
 }> = ({ translationKey }) => {
   const t = useTranslations('Apartments');
-  return <span>{t(translationKey)}</span>;
+  return <span>{t(translationKey as any)}</span>;
 };
 
 const Actions: React.FC<{ apartment: SingleApartmentDto }> = ({

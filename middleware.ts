@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, LOCALES, countries } from '@modules/translations';
+import { DEFAULT_LANGUAGE, LOCALES, MappedLocales } from '@modules/translations';
 import { Routes } from 'consts';
 import createMiddleware from 'next-intl/middleware';
 import type { NextFetchEvent, NextRequest } from 'next/server';
@@ -17,7 +17,7 @@ function getLocaleAndRoute(request: NextRequest) {
   let previousRoute = request.headers.get('referer') ?? undefined;
   // always will be of one of these formats: /[locale]/[route] or /[route]
   const splitLink = request.nextUrl.clone().pathname.slice(1).split('/');
-  const linkHasLocale = Object.keys(countries).includes(splitLink[0]);
+  const linkHasLocale = MappedLocales.has(splitLink[0]);
 
   const linkLocale = linkHasLocale ? splitLink[0] : undefined;
   const cookieLocale =

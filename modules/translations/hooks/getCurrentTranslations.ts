@@ -1,13 +1,11 @@
-import { CountryCodes, countries } from '@modules/translations/const';
+import { DEFAULT_LANGUAGE, Locale, MappedLocales } from '@modules/translations/const';
 
-export async function getCurrentTranslations(locale: CountryCodes | undefined) {
+export async function getCurrentTranslations(locale: Locale | undefined) {
   let translations;
 
   if (!locale) return;
 
-  const language = (
-    countries[locale] || countries['en-US']
-  ).language.toLowerCase();
+  const language = MappedLocales.get(locale) ?? DEFAULT_LANGUAGE;
 
   try {
     translations = await import(`@public/translations/${language}.json`).then(

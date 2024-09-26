@@ -1,12 +1,10 @@
-import { DEFAULT_LANGUAGE, countries } from '@modules/translations/const';
+import { DEFAULT_LANGUAGE, MappedLocales } from '@modules/translations/const';
 import { getRequestConfig } from 'next-intl/server';
 
 export default getRequestConfig(async ({ locale }) => {
   let translations;
 
-  const language = (
-    countries[locale] || countries[DEFAULT_LANGUAGE]
-  ).language.toLowerCase();
+  const language = MappedLocales.get(locale) ?? DEFAULT_LANGUAGE;
 
   try {
     translations = await import(`@public/translations/${language}.json`).then(
